@@ -4,6 +4,8 @@ import AdminLayout from "./Layout/AdminLayout";
 import SuperLayout from "./Layout/SuperLayout";
 import "./App.css";
 
+import { Navigate } from "react-router-dom";
+
 import Login from "./Auth/Login";
 import PrivateRoute from "./Auth/PrivateRoute";
 import SuperRoute from "./Auth/SuperRoute";
@@ -82,10 +84,16 @@ import Promocodes from "./Pages/SuperAdmin/Promocodes/Promocodes";
 import AddPromocodes from "./Pages/SuperAdmin/Promocodes/AddPromocodes";
 import EditPromocodes from "./Pages/SuperAdmin/Promocodes/EditPromocodes";
 import SuperProfile from "./Pages/SuperAdmin/Profile";
-const router = createBrowserRouter([ {
+const router = createBrowserRouter([
+   {
+    path: "/",
+    element: <Navigate to="/login" replace />,
+  },
+  {
     path: "/login",
     element: <Login />,
   },
+
   {
     path: "/loginsuper",
     element: <LoginSuper />,

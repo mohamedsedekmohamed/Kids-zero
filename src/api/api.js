@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getToken } from "../utils/auth";
 const api = axios.create({
-  baseURL: "https://mazoom.online", 
+  baseURL: "https://Bcknd.Kidsero.com", 
 });
 
 api.interceptors.request.use((config) => {

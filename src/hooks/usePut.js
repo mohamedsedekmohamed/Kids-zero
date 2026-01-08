@@ -2,23 +2,20 @@ import { useState } from "react";
 import api from "../api/api";
 import { toast } from "react-hot-toast";
 
-export default function usePut(url) {
+export default function usePut(defaultUrl = "") {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // قمنا بتغيير اسم المعامل من body إلى params
-  const putData = async (params = {}) => {
+  const putData = async (body = {}, customUrl = null, toastMessage = null) => {
     try {
       setLoading(true);
       setError(null);
 
-      
-      const queryString = new URLSearchParams(params).toString();
-      const finalUrl = queryString ? `${url}?${queryString}` : url;
+      const url = customUrl || defaultUrl;
+      const res = await api.put(url, body);
 
-      
-      const res = await api.put(finalUrl, {}); 
-      
+      if (toastMessage) toast.success(toastMessage);
+
       return res.data;
     } catch (err) {
       const errorsObj = err.response?.data?.errors;

@@ -15,14 +15,8 @@ function AddHome() {
   ];
 
   const handleSave = (data) => {
-toast.promise(
-  fetch("/api/data"),
-  {
-    loading: "Saving...",
-    success: "Saved!",
-    error: "Error occurred",
-  }
-);
+
+
 
   };
 

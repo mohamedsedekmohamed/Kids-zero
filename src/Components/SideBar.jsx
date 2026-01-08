@@ -45,7 +45,7 @@ const handleLogout = () => {
         </div>
         </button>
 
-        {/* Menu - هذا هو الجزء الذي يحتوي على الـ Scroll */}
+     
         <ul 
           className="flex-1 pt-6 px-3 space-y-2 overflow-y-auto"
           style={{
@@ -56,11 +56,12 @@ const handleLogout = () => {
           
 
           {menuItems.map((item, index) => {
-            const isActive = 
-              item.path === "/" 
-                ? location.pathname === "/" || location.pathname.startsWith("/home")
-                : location.pathname.startsWith(item.path);
-
+           
+const isActive =
+              (item.path === "/admin" || item.path === "/super") 
+                ? location.pathname === item.path || location.pathname === item.path + "/" || location.pathname.startsWith(item.path + "/home")
+                
+              : location.pathname.startsWith(item.path);
             return (
               <li key={index} className="relative">
                 <NavLink

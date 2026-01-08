@@ -13,7 +13,7 @@ export default function useDelete(defaultUrl) {
       const res = await api.delete(customUrl || defaultUrl);
 
       if (res.data.success) {
-        toast.success( "تم المسح بنجاح");
+        toast.success("dlete successfully!");
       } else {
         toast.error(res.data?.error?.message || "Delete failed!");
       }

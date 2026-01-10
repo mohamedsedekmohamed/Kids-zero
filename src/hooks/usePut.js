@@ -18,16 +18,26 @@ export default function usePut(defaultUrl = "") {
 
       return res.data;
     } catch (err) {
-      const errorsObj = err.response?.data?.errors;
-      if (errorsObj && typeof errorsObj === "object") {
-        const allErrors = Object.values(errorsObj).flat();
-        allErrors.forEach((msg) => toast.error(msg));
-        setError(allErrors);
-        throw allErrors;
-      }
-      const generalError = err.response?.data?.message || "حدث خطأ ما";
-      toast.error(generalError);
-      throw err;
+   
+  const error = err?.response?.data?.error;
+
+  let errorMessage = "Error try ";
+
+  if (error?.details && Array.isArray(error.details)) {
+    errorMessage = error.details.map(e => e.message).join("\n");
+  } else if (error?.message) {
+    errorMessage = error.message;
+  } else if (err.message) {
+    errorMessage = err.message;
+  }
+
+  setError(errorMessage);
+  toast.error(errorMessage);
+
+  throw new Error(errorMessage);
+
+
+    
     } finally {
       setLoading(false);
     }

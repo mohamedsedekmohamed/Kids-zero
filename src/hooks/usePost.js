@@ -20,17 +20,26 @@ export default function usePost(defaultUrl = "") {
       toast.success(toastMessage);
 
       return res.data;
-    } catch (err) {
-      const errorMsg =
-        err.response?.data?.errors ||
-        err.response?.data?.error?.message ||
-        err.response?.data?.message ||
-        err.message ||
-        "فشل الطلب";
+    }catch (err) {
+  const error = err?.response?.data?.error;
 
-      setError(errorMsg);
-      toast.error(errorMsg);
-      throw err;
+  let errorMessage = "Error try ";
+
+  if (error?.details && Array.isArray(error.details)) {
+    errorMessage = error.details.map(e => e.message).join("\n");
+  } else if (error?.message) {
+    errorMessage = error.message;
+  } else if (err.message) {
+    errorMessage = err.message;
+  }
+
+  setError(errorMessage);
+  toast.error(errorMessage);
+
+  // لو محتاج توقف التنفيذ
+  throw new Error(errorMessage);
+
+
     } finally {
       setLoading(false);
     }

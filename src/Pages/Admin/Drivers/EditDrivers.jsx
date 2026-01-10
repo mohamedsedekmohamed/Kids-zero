@@ -57,14 +57,12 @@ const EditDrivers = () => {
     try {
       const changedData = getChangedFields(originalData, formData);
 
-      // لو مفيش تغييرات
       if (Object.keys(changedData).length === 0) {
         toast("No changes detected");
         navigate("/admin/drivers");
         return;
       }
 
-      // تحويل الملفات الجديدة لـ Base64
       const fileFields = ["avatar", "licenseImage", "nationalIdImage"];
       for (const key of fileFields) {
         if (changedData[key] instanceof File) {

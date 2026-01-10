@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import MapPicker from './UI/MapPicker';
+import ParentSelect from './UI/ParentSelect';
 // 1. إضافة initialData إلى الـ props
 const AddPage = ({ title, fields, onSave, onCancel, initialData }) => {
   const [formData, setFormData] = useState(() => 
@@ -121,7 +123,6 @@ const navigate = useNavigate();
 
   {field.type === "date" && (
   <div className="flex flex-col w-full">
-    <label className="mb-1 text-sm font-medium text-gray-700">{field.label}</label>
    <DatePicker
   selected={formData[field.name] ? new Date(formData[field.name]) : null}
   onChange={(date) => setFormData(prev => ({
@@ -135,8 +136,37 @@ const navigate = useNavigate();
 />
   </div>
 )}
+{field.type === 'map' && (
+  <div className=" md:col-span-2 w-full flex flex-col gap-2">
+    <label className="text-sm font-semibold uppercase tracking-wider text-four mb-2">
+      Select Location on Map
+    </label>
+    <div className="w-full h-80"> {/* تحديد ارتفاع ثابت */}
+      <MapPicker
+        lat={Number(formData.lat)}
+        lng={Number(formData.lng)}
+        onChange={(lat, lng) =>
+          setFormData(prev => ({
+            ...prev,
+            lat: lat.toFixed(6),
+            lng: lng.toFixed(6),
+          }))
+        }
+      />
+    </div>
+  </div>
+)}
 
 
+{field.type === 'autocomplete' && (
+  <ParentSelect
+    value={formData[field.name]}                    // ← object أو null
+  onChange={(selectedOption) =>                   // ← selectedOption → object كامل أو null
+    setFormData(prev => ({ ...prev, [field.name]: selectedOption }))
+  }
+    options={field.options || []}
+  />
+)}
 
               {field.type === 'select' && (
                 <select
@@ -160,6 +190,11 @@ const navigate = useNavigate();
                   onChange={handleChange}
                 />
               )}
+{field.type === 'custom' && field.render && (
+  <div>
+    {field.render({ value: formData[field.name], onChange: (val) => setFormData(prev => ({ ...prev, [field.name]: val })) })}
+  </div>
+)}
 
               {field.type === 'file' && (
                 <div className="flex items-center gap-4 p-4 border-2 border-dashed border-border rounded-xl bg-muted/5">

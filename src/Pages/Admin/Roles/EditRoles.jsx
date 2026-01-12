@@ -4,7 +4,7 @@ import useGet from "@/hooks/useGet";
 import usePut from "@/hooks/usePut";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
-import Loading from "@/components/Loading";
+import Loading from "@/Components/Loading";
 
 // القائمة المعتمدة من السيرفر بناءً على الخطأ السابق
 const modules = [

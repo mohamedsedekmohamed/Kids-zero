@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import AddPage from "@/components/AddPage";
+import AddPage from "@/Components/AddPage";
 import usePut from "@/hooks/usePut";
 import useGet from "@/hooks/useGet";
 import toast from "react-hot-toast";

@@ -1,4 +1,4 @@
-import AddPage from "@/components/AddPage";
+import AddPage from "@/Components/AddPage";
 import usePost from "@/hooks/usePost";
 import toast, { Toaster }  from "react-hot-toast";
 import { data, useNavigate } from "react-router-dom";

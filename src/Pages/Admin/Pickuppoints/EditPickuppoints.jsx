@@ -4,7 +4,7 @@ import useGet from "@/hooks/useGet";
 import usePut from "@/hooks/usePut";
 import toast from "react-hot-toast";
 import Loading from "@/Components/Loading";
-import AddPage from "@/components/AddPage";
+import AddPage from "@/Components/AddPage";
 
 const EditPickuppoints = () => {
   const navigate = useNavigate();

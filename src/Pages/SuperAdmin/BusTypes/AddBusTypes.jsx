@@ -1,4 +1,4 @@
-import AddPage from "@/components/AddPage";
+import AddPage from "@/Components/AddPage";
 import usePost from "@/hooks/usePost";
 import { useNavigate } from "react-router-dom";
 

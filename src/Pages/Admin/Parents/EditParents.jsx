@@ -5,53 +5,68 @@ import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import Loading from "@/Components/Loading";
 
-const EditParents = () => {
+const EditAdmins = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const { data, loading: loadingGet } = useGet(`/api/admin/parents/${id}`);
+  // 🔹 Get admin by id
+  const { data, loading: loadingGet } = useGet(`/api/admin/admins/${id}`);
 
-  const { putData, loading } = usePut(`/api/admin/parents/${id}`);
+  // 🔹 Put admin
+  const { putData, loading } = usePut(`/api/admin/admins/${id}`);
 
-  const originalData = data?.data?.parent;
+  const originalData = data?.data?.admin;
 
-const getChangedFields = (original, current) => {
-  if (!original) return current;
+  // 🔹 نفس دالة المقارنة بالظبط
+  const getChangedFields = (original, current) => {
+    if (!original) return current;
 
-  const changed = {};
+    const changed = {};
 
-  Object.keys(current).forEach((key) => {
-    const currentValue = current[key];
-    const originalValue = original[key];
+    Object.keys(current).forEach((key) => {
+      const currentValue = current[key];
+      const originalValue = original[key];
 
-    // تجاهل password لو فاضي
-    if (key === "password" && !currentValue) return;
+      // تجاهل password لو فاضي
+      if (key === "password" && !currentValue) return;
 
-    // لو avatar ملف جديد
-    if (key === "avatar" && currentValue instanceof File) {
-      changed.avatar = currentValue;
-      return;
-    }
+      // avatar جديد
+      if (key === "avatar" && currentValue instanceof File) {
+        changed.avatar = currentValue;
+        return;
+      }
 
-    // تجاهل avatar لو String (يعني لم تتغير)
-    if (key === "avatar" && typeof currentValue === "string") return;
+      // تجاهل avatar لو String
+      if (key === "avatar" && typeof currentValue === "string") return;
 
-    // لو القيمة اتغيرت
-    if (currentValue !== originalValue) {
-      changed[key] = currentValue;
-    }
-  });
+      // لو القيمة اتغيرت
+      if (currentValue !== originalValue) {
+        changed[key] = currentValue;
+      }
+    });
 
-  return changed;
-};
+    return changed;
+  };
 
-
+  // 🔹 الفورم
   const formSchema = [
     {
       name: "name",
       label: "Full Name",
       type: "text",
       required: true,
+    },
+    {
+      name: "email",
+      label: "Email",
+      type: "email",
+      required: true,
+      customValidator: (value) => {
+        if (!value) return "Email is required";
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(value)) return "Invalid email format";
+        return null;
+      },
     },
     {
       name: "phone",
@@ -73,14 +88,11 @@ const getChangedFields = (original, current) => {
       placeholder: "Leave empty to keep current password",
     },
     {
-      name: "address",
-      label: "Address",
-      type: "text",
-    },
-    {
-      name: "nationalId",
-      label: "National ID",
-      type: "text",
+      name: "roleId",
+      label: "Role",
+      type: "select",
+      options: [], // تقدر تربطها بـ API لاحقًا
+      required: true,
     },
     {
       name: "avatar",
@@ -90,48 +102,56 @@ const getChangedFields = (original, current) => {
     },
   ];
 
- const handleSave = async (formData) => {
-  try {
-    const changedData = getChangedFields(originalData, formData);
+  // 🔹 الحفظ
+  const handleSave = async (formData) => {
+    try {
+      const changedData = getChangedFields(originalData, formData);
 
-    if (Object.keys(changedData).length === 0) {
-      toast("No changes detected");
-      navigate("/admin/parents");
-      return;
+      if (Object.keys(changedData).length === 0) {
+        toast("No changes detected");
+        navigate("/admin/admins");
+        return;
+      }
+
+      // avatar → Base64
+      if (changedData.avatar instanceof File) {
+        const reader = new FileReader();
+        reader.readAsDataURL(changedData.avatar);
+
+        reader.onload = async () => {
+          await putData({
+            ...changedData,
+            avatar: reader.result,
+          });
+          toast.success("Admin updated successfully!");
+          navigate("/admin/admins");
+        };
+      } else {
+        await putData(changedData);
+        toast.success("Admin updated successfully!");
+        navigate("/admin/admins");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
     }
+  };
 
-    // لو avatar ملف → Base64
-    if (changedData.avatar instanceof File) {
-      const reader = new FileReader();
-      reader.readAsDataURL(changedData.avatar);
-
-      reader.onload = async () => {
-        await putData({
-          ...changedData,
-          avatar: reader.result,
-        });
-        toast.success("Parent updated successfully!");
-        navigate("/admin/parents");
-      };
-    } else {
-      await putData(changedData);
-      toast.success("Parent updated successfully!");
-      navigate("/admin/parents");
-    }
-  } catch (error) {
-    console.error(error);
-    toast.error("Something went wrong");
-  }
-};
-
-
-  if (loadingGet) return <div className="flex justify-center items-center h-screen"><Loading/></div>;
+  if (loadingGet)
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loading />
+      </div>
+    );
 
   return (
     <AddPage
-      title="Edit Parent"
+      title="Edit Admin"
       fields={formSchema}
-      initialData={originalData}
+      initialData={{
+        ...originalData,
+        roleId: originalData?.role?.id, // مهم جدًا
+      }}
       onSave={handleSave}
       onCancel={() => navigate(-1)}
       loading={loading}
@@ -139,4 +159,4 @@ const getChangedFields = (original, current) => {
   );
 };
 
-export default EditParents;
+export default EditAdmins;

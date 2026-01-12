@@ -5,10 +5,22 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 const modules = [
-  { name: "admins", actions: ["View", "Add", "Edit", "Delete", "Status"] },
-  // { name: "buses", actions: ["View", "Add", "Edit"] },
-  // { name: "drivers", actions: ["View"] },
+    { name: "admins", actions: ["View", "Add", "Edit", "Delete", "Status"] },
+  { name: "roles", actions: ["View", "Add", "Edit", "Delete", "Status"] },
+  { name: "bus_types", actions: ["View", "Add", "Edit", "Delete", "Status"] },
+  { name: "buses", actions: ["View", "Add", "Edit", "Delete", "Status"] },
+  { name: "drivers", actions: ["View", "Add", "Edit", "Delete", "Status"] },
+  { name: "codrivers", actions: ["View", "Add", "Edit", "Delete", "Status"] },
+  { name: "pickup_points", actions: ["View", "Add", "Edit", "Delete", "Status"] },
+  { name: "routes", actions: ["View", "Add", "Edit", "Delete", "Status"] },
+  { name: "rides", actions: ["View", "Add", "Edit", "Delete", "Status"] },
+  { name: "notes", actions: ["View", "Add", "Edit", "Delete", "Status"] },
+  { name: "reports", actions: ["View", "Add", "Edit", "Delete", "Status"] },
+  { name: "settings", actions: ["View", "Add", "Edit", "Delete", "Status"] },
+  // { name: "zones", actions: ["View", "Add", "Edit", "Delete", "Status"] },
+  // { name: "cities", actions: ["View", "Add", "Edit", "Delete", "Status"] },
 ];
+
 
 const AddRoles = () => {
   const navigate = useNavigate();
@@ -47,7 +59,7 @@ const AddRoles = () => {
         <div className="space-y-4">
           {modules.map((mod) => (
             <div key={mod.name} className="border p-3 rounded-lg bg-gray-50">
-              <div className="font-semibold mb-2">Model</div>
+              <div className="font-semibold mb-2">{mod.name}</div>
               <div className="flex gap-4 flex-wrap">
                 {mod.actions.map((action) => {
                   const checked = permissions.find((p) => p.module === mod.name)?.actions.includes(action);
@@ -71,25 +83,30 @@ const AddRoles = () => {
   ];
 
   const handleSave = async (formData) => {
-    try {
-   const payload = {
-  name: formData.name,
-  permissions: permissions
-    .filter(p => p.actions.length > 0)
-    .map(p => ({
-      module: p.module,
-      actions: p.actions.map(a => ({ action: a }))  // تحويل كل string لكائن
-    }))
+  try {
+    const payload = {
+      name: formData.name, // اسم الـ Role المدخل في الفورم
+      permissions: permissions
+        // 1. نفلتر الموديولات اللي مفيش فيها أي أكشن مختار
+        .filter((p) => p.actions.length > 0)
+        // 2. نحول شكل البيانات للمطلوب
+        .map((p) => ({
+          module: p.module,
+          actions: p.actions.map((actionName) => ({
+            action: actionName,
+          })),
+        })),
+    };
+
+    console.log("Payload to send:", payload); // للتأكد من الشكل قبل الإرسال
+
+    await postData(payload, null, "Role added successfully!");
+    navigate("/admin/roles");
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to add role");
+  }
 };
-
-
-      await postData(payload, null, "Role added successfully!");
-        navigate("/admin/roles");
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to add role");
-    }
-  };
 
   return (
     <AddPage

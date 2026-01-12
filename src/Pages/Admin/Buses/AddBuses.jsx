@@ -24,7 +24,7 @@ const AddBuses = () => {
     { name: "plateNumber", label: "Plate Number", type: "text", required: true },
     { name: "maxSeats", label: "Max Seats", type: "number", required: true },
     { name: "licenseNumber", label: "License Number", type: "text", required: true },
-    { name: "licenseExpiryDate", label: "License Expiry Date", type: "date",
+    { name: "licenseExpiryDate", label: "License Expiry Date", type: "datetwo",
        required: true },
     {
       name: "busTypeId",
@@ -48,13 +48,27 @@ const AddBuses = () => {
     
     },
   ];
+    const convertFileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
 const handleSave = async (formData) => {
- 
-
-  const [year, month, day] = formData.licenseExpiryDate.split("-");
-  const expiryDateISO = new Date(Date.UTC(+year, +month - 1, +day)).toISOString();
-
   try {
+    const [year, month, day] = formData.licenseExpiryDate.split("-");
+
+    const expiryDateISO = new Date(Date.UTC(+year, +month - 1, +day))
+      .toISOString()
+      .split("T")[0];
+
+    // 🔥 تحويل الصور إلى Base64
+    const licenseImageBase64 = await convertFileToBase64(formData.licenseImage);
+    const busImageBase64 = await convertFileToBase64(formData.busImage);
+
     const payload = {
       busTypeId: formData.busTypeId,
       busNumber: formData.busNumber,
@@ -63,6 +77,8 @@ const handleSave = async (formData) => {
       licenseNumber: formData.licenseNumber,
       licenseExpiryDate: expiryDateISO,
       status: "active",
+      licenseImage: licenseImageBase64,
+      busImage: busImageBase64,
     };
 
     await postData(payload, null, "Bus added successfully!");
@@ -72,6 +88,7 @@ const handleSave = async (formData) => {
     toast.error("Failed to add bus");
   }
 };
+
 
 
   return (

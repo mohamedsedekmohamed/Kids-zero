@@ -1,55 +1,79 @@
 import React, { useState } from "react";
 import useGet from "@/hooks/useGet";
 import useDelete from "@/hooks/useDelete";
-import usePut from "@/hooks/usePut";
 import ReusableTable from "@/Components/UI/ReusableTable";
 import Loading from "@/Components/Loading";
 import { useNavigate } from "react-router-dom";
 import { Trash2, Pencil } from "lucide-react";
 import { Button } from "@/Components/UI/Button";
 import ConfirmModal from "@/Components/UI/ConfirmModal";
+import usePut from "@/hooks/usePut";
 import StatusSwitch from "@/Components/UI/StatusSwitch";
 
-const BusTypes = () => {
+const PaymentMethods = () => {
   const [openDelete, setOpenDelete] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const navigate = useNavigate();
 
-  // ✅ GET Bus Types
-  const {
-    data: getBusTypes,
-    loading,
-    refetch,
-  } = useGet("/api/superadmin/bustypes");
-
-  // ✅ DELETE
-  const { deleteData: deleteBusType } =
-    useDelete("/api/superadmin/bustypes");
-
-  // ✅ UPDATE (Status)
+  // ✅ GET Payment Methods
+  const { data: paymentData, loading, refetch } = useGet(
+    "/api/superadmin/paymentmethods"
+  );
   const { putData } = usePut("");
+
+  // ✅ DELETE Payment Method
+  const { deleteData } = useDelete("/api/superadmin/paymentmethods");
 
   // ✅ Table columns
   const columns = [
-    { header: "Name", key: "name" },
-    { header: "Capacity", key: "capacity" },
+      {
+      header: "Student Info",
+      key: "logo",
+      render: (_, row) => (
+        <div className="flex items-center gap-3">
+          <img
+            src={row.logo}
+            alt={row.name}
+            className="w-10 h-10 rounded-full object-cover border shadow-sm"
+          />
+          <span className="font-medium">{row.name}</span>
+        </div>
+      ),
+    },
     { header: "Description", key: "description" },
+    { header: "Fee Status", key: "feeStatus" },
+    { header: "Fee Amount", key: "feeAmount" },
   ];
 
   // ✅ Table data
   const tableData =
-    getBusTypes?.data?.busTypes?.map((item) => ({
+    paymentData?.data?.paymentMethods?.map((item) => ({
       id: item.id,
       name: item.name,
-      capacity: item.capacity,
       description: item.description,
-      status: item.status,
+      logo: item.logo,
+      isActive: item.isActive ,
+      feeStatus: item.feeStatus ,
+      feeAmount: item.feeAmount,
     })) || [];
+      const handleToggleStatus = async (row) => {
+    const newStatus = row.isActive === "true" ? true : false ;
+    try {
+      await putData(
+        { is_active: newStatus },
+        `/api/superadmin/paymentmethods/${row.id}`,
+        "Status updated!"
+      );
+      refetch();
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   // ✅ Delete handler
   const handleDelete = async () => {
     try {
-      await deleteBusType(`/api/superadmin/bustypes/${selectedId}`);
+      await deleteData(`/api/superadmin/paymentmethods/${selectedId}`);
       refetch();
     } catch (err) {
       console.error(err);
@@ -59,43 +83,30 @@ const BusTypes = () => {
     }
   };
 
-  // ✅ Edit
+  // ✅ Edit handler
   const handleEdit = (row) => {
     navigate(`edit/${row.id}`);
   };
 
-  // ✅ Toggle status
-  const handleToggleStatus = async (row) => {
-    const newStatus = row.status === "active" ? "inactive" : "active";
-    try {
-      await putData(
-        { status: newStatus },
-        `/api/superadmin/bustypes/${row.id}`,
-        "Status updated!"
-      );
-      refetch();
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  if (loading) return    
-   <div className="flex justify-center items-center h-screen">
+  if (loading)
+    return (
+      <div className="flex justify-center items-center h-screen">
         <Loading />
-      </div>;
+      </div>
+    );
 
   return (
     <div className="p-10 bg-background min-h-screen">
       <ReusableTable
-        title="Bus Types"
-        titleAdd="Bus Type"
+        title="Payment Methods"
+        titleAdd="Payment Method"
         columns={columns}
         data={tableData}
         onAddClick={() => navigate("add")}
         renderActions={(row) => (
           <div className="flex gap-2 items-center">
-            <StatusSwitch
-              checked={row.status === "active"}
+              <StatusSwitch
+              checked={row.status === "true"}
               onChange={() => handleToggleStatus(row)}
             />
             <Button variant="edit" size="sm" onClick={() => handleEdit(row)}>
@@ -119,8 +130,8 @@ const BusTypes = () => {
 
       <ConfirmModal
         open={openDelete}
-        title="Delete Bus Type"
-        description="Are you sure you want to delete this bus type?"
+        title="Delete Payment Method"
+        description="Are you sure you want to delete this payment method?"
         onClose={() => setOpenDelete(false)}
         onConfirm={handleDelete}
       />
@@ -128,4 +139,4 @@ const BusTypes = () => {
   );
 };
 
-export default BusTypes;
+export default PaymentMethods;

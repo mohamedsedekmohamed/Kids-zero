@@ -15,6 +15,7 @@ const Buses = () => {
   const [selectedId, setSelectedId] = useState(null);
   const navigate = useNavigate();
 
+
   const { data: getBuses, loading, refetch } = useGet("/api/admin/buses");
   const { deleteData: deleteBus } = useDelete("/api/admin/buses");
   const { putData } = usePut("");
@@ -97,16 +98,41 @@ const Buses = () => {
       console.error(err);
     }
   };
+const [activeTab, setActiveTab] = useState("all"); // all | active | inactive
+const filteredData = tableData.filter((bus) => {
+  if (activeTab === "all") return true;
+  return bus.status === activeTab;
+});
 
   if (loading) return <Loading />;
 
   return (
-    <div className="p-10 bg-background min-h-screen">
+    <div className="  min-h-screen">
+      <div className="flex w-full justify-center  gap-3 mb-2">
+  {["all", "active", "inactive"].map((tab) => (
+    <button
+      key={tab}
+      onClick={() => setActiveTab(tab)}
+      className={`px-4 py-2 rounded-full text-sm font-medium transition
+        ${
+          activeTab === tab
+            ? "bg-one text-white"
+            : "bg-one/50 text-four hover:bg-muted/70"
+        }
+      `}
+    >
+      {tab === "all" && "All Buses"}
+      {tab === "active" && "Active"}
+      {tab === "inactive" && "Inactive"}
+    </button>
+  ))}
+</div>
+
       <ReusableTable
         title="Buses Management"
         titleAdd="Bus"
         columns={columns}
-        data={tableData}
+data={filteredData}
         onAddClick={() => navigate("add")}
         renderActions={(row) => (
           <div className="flex gap-2 items-center">

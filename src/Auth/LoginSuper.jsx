@@ -2,30 +2,35 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import { GiTeacher } from "react-icons/gi";
+import usePost from "@/hooks/usePost";
 
 const LoginSuper = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+const { postData, loading } = usePost();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setLoading(true);
-
     try {
-      const fakeToken = "fake-jwt-token-123456";
-      localStorage.setItem("token", fakeToken);
-      localStorage.setItem("role", "super");
+       const res = await postData(
+      {
+        email,
+        password,
+      },
+      "/api/superadmin/auth/login",
+      "Login successfully!"
+    );
 
-      toast.success("login successfully!");
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("role",  "super");
+
+
       navigate("/super");
     } catch (err) {
      toast.error("Login failed. Invalid email or password.");
 
-    } finally {
-      setLoading(false);
-    }
+    } 
   };
 
   return (

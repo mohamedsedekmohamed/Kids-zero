@@ -60,6 +60,7 @@ import EditParents from "./Pages/Admin/Parents/EditParents";
 import Rides from "./Pages/Admin/Rides/Rides";
 import AddRides from "./Pages/Admin/Rides/AddRides";
 import EditRides from "./Pages/Admin/Rides/EditRides";
+import ManageRideStudents from "./Pages/Admin/Rides/ManageRideStudents";
 
 import Profile from "./Pages/Admin/Profile";
 
@@ -79,6 +80,10 @@ import EditOrganizationTypes from "./Pages/SuperAdmin/OrganizationTypes/EditOrga
 import Plans from "./Pages/SuperAdmin/Plans/Plans";
 import AddPlans from "./Pages/SuperAdmin/Plans/AddPlans";
 import EditPlans from "./Pages/SuperAdmin/Plans/EditPlans";
+
+import Paymentmethods from "./Pages/SuperAdmin/Paymentmethods/Paymentmethods";  
+import AddPaymentmethods from "./Pages/SuperAdmin/Paymentmethods/AddPaymentmethods";
+import EditPaymentmethods from "./Pages/SuperAdmin/Paymentmethods/EditPaymentmethods";
 
 import Promocodes from "./Pages/SuperAdmin/Promocodes/Promocodes";
 import AddPromocodes from "./Pages/SuperAdmin/Promocodes/AddPromocodes";
@@ -157,6 +162,7 @@ const router = createBrowserRouter([
       { path: "rides", element: <Rides /> },
       { path: "rides/add", element: <AddRides /> },
       { path: "rides/edit/:id", element: <EditRides /> },
+      { path: "rides/ManageRideStudents/:id", element: <ManageRideStudents /> },
 
       
       { path: "profile", element: <Profile /> },
@@ -171,11 +177,10 @@ const router = createBrowserRouter([
     </SuperRoute>
   ),
   children: [
-    
-    { index: true, element: <BusTypes /> }, 
+    {index: true, element: <Home />},
     { path: "bustypes", element: <BusTypes /> }, 
-    { path: "bustypes/add", element: <BusTypes /> },
-    { path: "bustypes/edit/:id", element: <BusTypes /> },
+    { path: "bustypes/add", element: <AddBusTypes /> },
+    { path: "bustypes/edit/:id", element: <EditBusTypes /> },
     
     { path: "organization", element: <Organization /> },
     { path: "organization/add", element: <AddOrganization /> },
@@ -188,6 +193,10 @@ const router = createBrowserRouter([
     { path: "plans", element: <Plans /> },
     { path: "plans/add", element: <AddPlans /> },
     { path: "plans/edit/:id", element: <EditPlans /> },
+    
+    { path: "paymentmethods", element: <Paymentmethods /> },
+    { path: "paymentmethods/add", element: <AddPaymentmethods /> },
+    { path: "paymentmethods/edit/:id", element: <EditPaymentmethods /> },
     
     { path: "typesorganization", element: <OrganizationTypes /> },
     { path: "typesorganization/add", element: <AddOrganizationTypes /> },

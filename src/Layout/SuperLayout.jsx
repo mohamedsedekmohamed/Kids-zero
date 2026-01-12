@@ -11,6 +11,8 @@ import {
   LayoutGrid,
   
 } from "lucide-react";
+import { MdOutlinePayment } from "react-icons/md";
+
 const SuperLayout = () => {
 
 const superMenuItems = [
@@ -39,6 +41,11 @@ const superMenuItems = [
     title: "Org Types", 
     icon: <LayoutGrid size={20} />, 
     path: "/super/typesorganization" 
+  },
+  { 
+    title: "Payment methods", 
+    icon: <MdOutlinePayment size={20} />, 
+    path: "/super/paymentmethods" 
   },
  
 ];

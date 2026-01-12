@@ -51,34 +51,36 @@ const navigate = useNavigate();
     }
   };
 
-  const validateField = (field, value) => {
-    let error = "";
-    if (field.required && (!value || value.toString().trim() === "")) {
-      error = "This field is required";
-    }
-    if (value && field.type === "email") {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(value)) error = "Invalid email address";
-    }
-    if (value && field.type === "number") {
-      if (isNaN(value)) error = "Must be a number";
-    }
-    if (field.customValidator) {
-      const customError = field.customValidator(value);
-      if (customError) error = customError;
-    }
-    return error;
-  };
+const validateField = (field, value, formData) => {
+  let error = "";
 
-  const validateForm = () => {
-    const newErrors = {};
-    fields.forEach(field => {
-      const error = validateField(field, formData[field.name]);
-      if (error) newErrors[field.name] = error;
-    });
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  if (field.required && (!value || value.toString().trim() === "")) {
+    error = "This field is required";
+  }
+
+  if (value && field.type === "number") {
+    if (isNaN(value)) error = "Must be a number";
+  }
+
+  if (field.customValidator) {
+    const customError = field.customValidator(value, formData);
+    if (customError) error = customError;
+  }
+
+  return error;
+};
+
+
+
+const validateForm = () => {
+  const newErrors = {};
+  fields.forEach(field => {
+    const error = validateField(field, formData[field.name], formData);
+    if (error) newErrors[field.name] = error;
+  });
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+};
 
   return (
     <div className="p-6 bg-background overflow-auto">
@@ -136,6 +138,33 @@ const navigate = useNavigate();
 />
   </div>
 )}
+ {field.type === "datetwo" && (
+  <div className="flex flex-col w-full">
+    <DatePicker
+      selected={formData[field.name] ? new Date(formData[field.name]) : null}
+      onChange={(date) => {
+        if (date) {
+          // استخراج السنة والشهر واليوم يدوياً لضمان عدم حدوث تغيير بسبب التوقيت
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const day = String(date.getDate()).padStart(2, '0');
+          const formattedDate = `${year}-${month}-${day}`;
+          
+          setFormData(prev => ({
+            ...prev,
+            [field.name]: formattedDate
+          }));
+        } else {
+          setFormData(prev => ({ ...prev, [field.name]: "" }));
+        }
+      }}
+      dateFormat="yyyy-MM-dd"
+      minDate={new Date()}
+      placeholderText={field.placeholder}
+      className="w-full p-3 rounded-xl border border-gray-300 bg-white text-gray-900"
+    />
+  </div>
+)}
 {field.type === 'map' && (
   <div className=" md:col-span-2 w-full flex flex-col gap-2">
     <label className="text-sm font-semibold uppercase tracking-wider text-four mb-2">
@@ -167,6 +196,27 @@ const navigate = useNavigate();
     options={field.options || []}
   />
 )}
+{field.type === 'switch' && (
+  <div className="flex items-center gap-3 mt-2">
+    <span className="text-sm font-medium text-four">{field.label}</span>
+    <button
+      type="button"
+      onClick={() =>
+        setFormData(prev => ({ ...prev, [field.name]: !prev[field.name] }))
+      }
+      className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors duration-300 ${
+        formData[field.name] ? "bg-green-500" : "bg-gray-300"
+      }`}
+    >
+      <div
+        className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-300 ${
+          formData[field.name] ? "translate-x-6" : "translate-x-0"
+        }`}
+      />
+    </button>
+  </div>
+)}
+
 
               {field.type === 'select' && (
                 <select
@@ -192,10 +242,14 @@ const navigate = useNavigate();
               )}
 {field.type === 'custom' && field.render && (
   <div>
-    {field.render({ value: formData[field.name], onChange: (val) => setFormData(prev => ({ ...prev, [field.name]: val })) })}
+    {/* أضفنا formData هنا كخيار ثالث لكي نتمكن من قراءة أي قيمة أخرى بالنموذج */}
+    {field.render({ 
+      value: formData[field.name], 
+      onChange: (val) => setFormData(prev => ({ ...prev, [field.name]: val })),
+      formData: formData // <--- أضف هذا السطر
+    })}
   </div>
 )}
-
               {field.type === 'file' && (
                 <div className="flex items-center gap-4 p-4 border-2 border-dashed border-border rounded-xl bg-muted/5">
                   {previews[field.name] ? (

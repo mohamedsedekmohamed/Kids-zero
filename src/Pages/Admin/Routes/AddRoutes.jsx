@@ -11,7 +11,6 @@ const AddRoutes = () => {
   const { data: pickupPointsData } = useGet("/api/admin/pickuppoints");
   const { postData, loading } = usePost("/api/admin/routes");
 
-  // تحويل البيانات لجعلها مناسبة لـ react-select
   const pickupOptions =
     pickupPointsData?.data?.pickupPoints?.map((p) => ({
       value: p.id,

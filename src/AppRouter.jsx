@@ -159,6 +159,9 @@ const router = createBrowserRouter([
       { path: "parents/add", element: <AddParents /> },
       { path: "parents/edit/:id", element: <EditParents /> },
 
+
+
+      
       { path: "rides", element: <Rides /> },
       { path: "rides/add", element: <AddRides /> },
       { path: "rides/edit/:id", element: <EditRides /> },

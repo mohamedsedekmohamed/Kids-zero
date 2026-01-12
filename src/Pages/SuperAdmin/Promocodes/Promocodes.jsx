@@ -5,7 +5,7 @@ import ReusableTable from "@/Components/UI/ReusableTable";
 import Loading from "@/Components/Loading";
 import { useNavigate } from "react-router-dom";
 import { Trash2, Pencil } from "lucide-react";
-import { Button } from "@/Components/UI/Button";
+import { Button } from "@/Components/UI/button";
 import ConfirmModal from "@/Components/UI/ConfirmModal";
 
 const Promocodes = () => {

@@ -15,6 +15,13 @@ import Home from "./Pages/Admin/Home/Home";
 import AddHome from "./Pages/Admin/Home/AddHome";
 import EditHome from "./Pages/Admin/Home/EditHome";
 
+import City from "./Pages/Admin/Cities/City";
+import AddCity from "./Pages/Admin/Cities/AddCity";
+import EditCity from "./Pages/Admin/Cities/EditCity";
+
+import Zone from "./Pages/Admin/Zones/Zone";
+import AddZone from "./Pages/Admin/Zones/AddZone";
+import EditZone from "./Pages/Admin/Zones/EditZone";
 
 import Admins from "./Pages/Admin/Admins/Admins";
 import AddAdmins from "./Pages/Admin/Admins/AddAdmins";
@@ -61,8 +68,14 @@ import Rides from "./Pages/Admin/Rides/Rides";
 import AddRides from "./Pages/Admin/Rides/AddRides";
 import EditRides from "./Pages/Admin/Rides/EditRides";
 import ManageRideStudents from "./Pages/Admin/Rides/ManageRideStudents";
+import Scheduling from "./Pages/Admin/Rides/Scheduling";
 
 import Profile from "./Pages/Admin/Profile";
+
+import Peyment from './Pages/Admin/Payments/Payments'
+import Subscribtions from './Pages/Admin/Subscribtions/Subscribtions'
+import Feeinstallments from './Pages/Admin/Feeinstallments/Feeinstallments'
+import Invoices from './Pages/Admin/Invoices/Invoices'
 
 // super
 import BusTypes from "./Pages/SuperAdmin/BusTypes/BusTypes";
@@ -158,17 +171,30 @@ const router = createBrowserRouter([
       { path: "parents", element: <Parents /> },
       { path: "parents/add", element: <AddParents /> },
       { path: "parents/edit/:id", element: <EditParents /> },
+      
+      { path: "city", element: <City /> },
+      { path: "city/add", element: <AddCity /> },
+      { path: "city/edit/:id", element: <EditCity /> },
 
-
-
+      { path: "zone", element: <Zone /> },
+      { path: "zone/add", element: <AddZone /> },
+      { path: "zone/edit/:id", element: <EditZone /> },
+      
+      
       
       { path: "rides", element: <Rides /> },
       { path: "rides/add", element: <AddRides /> },
       { path: "rides/edit/:id", element: <EditRides /> },
       { path: "rides/ManageRideStudents/:id", element: <ManageRideStudents /> },
-
+      { path: "rides/scheduling", element: <Scheduling /> },
+      
       
       { path: "profile", element: <Profile /> },
+
+      { path: "peyment", element: <Peyment /> },
+      { path: "feeinstallments", element: <Feeinstallments /> },
+      { path: "subscribtions", element: <Subscribtions /> },
+      { path: "invoices", element: <Invoices /> },
     ],
   },
   

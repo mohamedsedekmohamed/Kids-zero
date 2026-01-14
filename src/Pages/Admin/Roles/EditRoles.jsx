@@ -6,50 +6,48 @@ import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import Loading from "@/Components/Loading";
 
-// القائمة المعتمدة من السيرفر بناءً على الخطأ السابق
-const modules = [
-  { name: "admins", actions: ["View", "Add", "Edit", "Delete", "Status"] },
-  { name: "roles", actions: ["View", "Add", "Edit", "Delete", "Status"] },
-  { name: "bus_types", actions: ["View", "Add", "Edit", "Delete", "Status"] },
-  { name: "buses", actions: ["View", "Add", "Edit", "Delete", "Status"] },
-  { name: "drivers", actions: ["View", "Add", "Edit", "Delete", "Status"] },
-  { name: "codrivers", actions: ["View", "Add", "Edit", "Delete", "Status"] },
-  { name: "pickup_points", actions: ["View", "Add", "Edit", "Delete", "Status"] },
-  { name: "routes", actions: ["View", "Add", "Edit", "Delete", "Status"] },
-  { name: "rides", actions: ["View", "Add", "Edit", "Delete", "Status"] },
-  { name: "notes", actions: ["View", "Add", "Edit", "Delete", "Status"] },
-  { name: "reports", actions: ["View", "Add", "Edit", "Delete", "Status"] },
-  { name: "settings", actions: ["View", "Add", "Edit", "Delete", "Status"] },
-];
-
 const EditRoles = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  // جلب البيانات الحالية للـ Role
+  const { data: selectionData, error: selectionError } = useGet("/api/admin/roles/permissions");
   const { data, loading: loadingGet } = useGet(`/api/admin/roles/${id}`);
   const { putData, loading: loadingPut } = usePut(`/api/admin/roles/${id}`);
 
+  const [modules, setModules] = useState([]);
+  const [allActions, setAllActions] = useState([]);
   const [permissions, setPermissions] = useState([]);
 
-  // تحديث حالة الـ permissions عند وصول البيانات من السيرفر
+  // تجهيز الموديولات والأكشنات من الـ API
   useEffect(() => {
-    if (data?.data?.role) {
-      const serverPermissions = data.data.role.permissions || [];
-      
-      // نقوم بإنشاء الحالة بناءً على قائمة الموديولات الشاملة
-      const initialPermissions = modules.map((m) => {
-        const found = serverPermissions.find((p) => p.module === m.name);
+    if (selectionData?.data) {
+      const { modules: apiModules, actions } = selectionData.data;
+      setModules(apiModules);
+      setAllActions(actions);
+      setPermissions(apiModules.map((m) => ({ module: m, actions: [] })));
+    }
+  }, [selectionData]);
+
+  // تحميل بيانات الـ Role الحالية
+  useEffect(() => {
+    if (data?.data?.role && modules.length) {
+      const rolePermissions = data.data.role.permissions || [];
+      const initialPermissions = modules.map((mod) => {
+        const found = rolePermissions.find((p) => p.module === mod);
         return {
-          module: m.name,
-          // استخراج أسماء الأكشنز فقط من المصفوفة المعقدة القادمة من السيرفر
+          module: mod,
           actions: found ? found.actions.map((a) => a.action) : [],
         };
       });
       setPermissions(initialPermissions);
     }
-  }, [data]);
+  }, [data, modules]);
 
+  useEffect(() => {
+    if (selectionError) toast.error("Failed to load permissions");
+  }, [selectionError]);
+
+  // تغيير الأكشنات الفردية
   const handleActionChange = (moduleName, action, checked) => {
     setPermissions((prev) =>
       prev.map((perm) =>
@@ -65,17 +63,31 @@ const EditRoles = () => {
     );
   };
 
+  // اختيار/إلغاء كل الأكشنات لموديول
+  const handleToggleAll = (moduleName, checked) => {
+    setPermissions((prev) =>
+      prev.map((perm) =>
+        perm.module === moduleName
+          ? {
+              ...perm,
+              actions: checked ? [...allActions] : [],
+            }
+          : perm
+      )
+    );
+  };
+
   const handleSave = async (formData) => {
     try {
       const payload = {
         name: formData.name,
+        status: formData.status,
         permissions: permissions
           .filter((p) => p.actions.length > 0)
           .map((p) => ({
             module: p.module,
             actions: p.actions.map((a) => ({ action: a })),
           })),
-        status: formData.status
       };
 
       await putData(payload);
@@ -87,7 +99,13 @@ const EditRoles = () => {
     }
   };
 
-  if (loadingGet) return <div className="flex justify-center items-center h-screen"><Loading /></div>;
+  if (loadingGet || !modules.length) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loading />
+      </div>
+    );
+  }
 
   const roleData = data?.data?.role;
 
@@ -98,39 +116,48 @@ const EditRoles = () => {
       type: "text", 
       required: true 
     },
-   
     {
       name: "permissions",
       label: "Permissions",
       type: "custom",
       fullWidth: true,
       render: () => (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {modules.map((mod) => (
-            <div key={mod.name} className="border p-4 rounded-lg bg-white shadow-sm">
-              <div className="font-bold text-blue-600 mb-3 capitalize">
-                {mod.name.replace("_", " ")}
+        <div className="grid grid-cols-1 gap-4">
+          {modules.map((mod) => {
+            const modulePerm = permissions.find((p) => p.module === mod);
+            const allChecked = modulePerm?.actions.length === allActions.length;
+            return (
+              <div key={mod} className="border p-4 rounded-lg bg-white shadow-sm">
+                <div className="flex justify-between items-center mb-2">
+                  <div className="font-bold text-blue-600 capitalize">{mod.replace("_", " ")}</div>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={allChecked}
+                      onChange={(e) => handleToggleAll(mod, e.target.checked)}
+                    />
+                    <span className="text-sm font-medium">All</span>
+                  </label>
+                </div>
+                <div className="flex gap-3 flex-wrap">
+                  {allActions.map((action) => {
+                    const isChecked = modulePerm?.actions.includes(action);
+                    return (
+                      <label key={action} className="flex items-center gap-2 cursor-pointer bg-gray-50 px-2 py-1 rounded hover:bg-gray-100">
+                        <input
+                          type="checkbox"
+                          className="w-4 h-4"
+                          checked={!!isChecked}
+                          onChange={(e) => handleActionChange(mod, action, e.target.checked)}
+                        />
+                        <span className="text-sm">{action}</span>
+                      </label>
+                    );
+                  })}
+                </div>
               </div>
-              <div className="flex gap-3 flex-wrap">
-                {mod.actions.map((action) => {
-                  const isChecked = permissions
-                    .find((p) => p.module === mod.name)
-                    ?.actions.includes(action);
-                  return (
-                    <label key={action} className="flex items-center gap-2 cursor-pointer bg-gray-50 px-2 py-1 rounded hover:bg-gray-100">
-                      <input
-                        type="checkbox"
-                        className="w-4 h-4"
-                        checked={!!isChecked}
-                        onChange={(e) => handleActionChange(mod.name, action, e.target.checked)}
-                      />
-                      <span className="text-sm">{action}</span>
-                    </label>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       ),
     },

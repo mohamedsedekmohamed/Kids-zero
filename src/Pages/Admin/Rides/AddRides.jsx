@@ -86,15 +86,37 @@ const AddRides = () => {
       options: [{ value: "repeat", label: "Repeat" }, { value: "once", label: "Once" }],
       required: true,
     },
-    {
-      name: "repeatType",
-      label: "Repeat Type",
-      type: "select",
-      options: [{ value: "limited", label: "Limited" }, { value: "unlimited", label: "Unlimited" }],
-      required: true,
-    },
-    { name: "startDate", label: "Start Date", type: "datetwo", required: true },
-    { name: "endDate", label: "End Date", type: "datetwo", required: true },
+{
+  name: "repeatType",
+  label: "Repeat Type",
+  type: "select",
+  options: [
+    { value: "limited", label: "Limited" },
+    { value: "unlimited", label: "Unlimited" },
+  ],
+  required: true,
+  hidden: (formData) => formData.frequency !== "repeat",
+},
+
+{
+  name: "startDate",
+  label: "Start Date",
+  type: "datetwo",
+  required: true,
+  hidden: (formData) =>
+    formData.frequency !== "repeat" ||
+    formData.repeatType !== "limited",
+},
+{
+  name: "endDate",
+  label: "End Date",
+  type: "datetwo",
+  required: true,
+  hidden: (formData) =>
+    formData.frequency !== "repeat" ||
+    formData.repeatType !== "limited",
+},
+
     { name: "routeId", label: "Select Route", type: "autocomplete", options: routeOptions, required: true },
     { name: "busId", label: "Select Bus", type: "autocomplete", options: busOptions, required: true },
     { name: "driverId", label: "Select Driver", type: "autocomplete", options: driverOptions, required: true },
@@ -235,23 +257,39 @@ const AddRides = () => {
     if (selectedStudents.some(s => !s.pickupPointId)) return toast.error("Please select a pickup point for all students");
 
     try {
-      const payload = {
-        busId: formData.busId?.value || formData.busId,
-        driverId: formData.driverId?.value || formData.driverId,
-        codriverId: formData.codriverId?.value || formData.codriverId,
-        routeId: routeId,
-        name: formData.name,
-        rideType: formData.rideType,
-        frequency: formData.frequency,
-        repeatType: formData.repeatType,
-        startDate: formData.startDate,
-        endDate: formData.endDate,
-        students: selectedStudents.map((s) => ({
-          studentId: s.studentId,
-          pickupPointId: s.pickupPointId,
-          pickupTime: s.pickupTime,
-        })),
-      };
+  const payload = {
+  busId: formData.busId?.value || formData.busId,
+  driverId: formData.driverId?.value || formData.driverId,
+  codriverId: formData.codriverId?.value || formData.codriverId,
+  routeId: routeId,
+  name: formData.name,
+  rideType: formData.rideType,
+  frequency: formData.frequency,
+
+  repeatType:
+    formData.frequency === "repeat"
+      ? formData.repeatType
+      : null,
+
+  startDate:
+    formData.frequency === "repeat" &&
+    formData.repeatType === "limited"
+      ? formData.startDate
+      : null,
+
+  endDate:
+    formData.frequency === "repeat" &&
+    formData.repeatType === "limited"
+      ? formData.endDate
+      : null,
+
+  students: selectedStudents.map((s) => ({
+    studentId: s.studentId,
+    pickupPointId: s.pickupPointId,
+    pickupTime: s.pickupTime,
+  })),
+};
+
 
       await postData(payload, null, "Ride added successfully!");
       navigate("/admin/rides");

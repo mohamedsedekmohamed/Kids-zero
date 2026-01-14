@@ -90,7 +90,8 @@ const Drivers = () => {
     } catch (err) { console.error(err); }
   };
 
-  if (loading) return <Loading />;
+  if (loading) return <div className="flex justify-center items-center h-screen"> <Loading />  </div>
+
 
   return (
     <div className="p-10 bg-background min-h-screen">

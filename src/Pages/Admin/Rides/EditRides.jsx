@@ -48,7 +48,7 @@ const EditRides = () => {
       });
 
       // تحديث قائمة الطلاب المضافين
-      const mappedStudents = students?.all?.map((s) => ({
+      const mappedStudents = students?.map((s) => ({
         studentId: s.student?.id,
         studentName: s.student?.name,
         pickupPointId: s.pickupPoint?.id || "",
@@ -119,15 +119,36 @@ const EditRides = () => {
       options: [{ value: "repeat", label: "Repeat" }, { value: "once", label: "Once" }],
       required: true,
     },
-    {
-      name: "repeatType",
-      label: "Repeat Type",
-      type: "select",
-      options: [{ value: "limited", label: "Limited" }, { value: "unlimited", label: "Unlimited" }],
-      required: true,
-    },
-    { name: "startDate", label: "Start Date", type: "date", required: true },
-    { name: "endDate", label: "End Date", type: "date", required: true },
+  {
+  name: "repeatType",
+  label: "Repeat Type",
+  type: "select",
+  options: [
+    { value: "limited", label: "Limited" },
+    { value: "unlimited", label: "Unlimited" },
+  ],
+  required: true,
+  hidden: (formData) => formData.frequency !== "repeat",
+},
+{
+  name: "startDate",
+  label: "Start Date",
+  type: "date",
+  required: true,
+  hidden: (formData) =>
+    formData.frequency !== "repeat" ||
+    formData.repeatType !== "limited",
+},
+{
+  name: "endDate",
+  label: "End Date",
+  type: "date",
+  required: true,
+  hidden: (formData) =>
+    formData.frequency !== "repeat" ||
+    formData.repeatType !== "limited",
+},
+
     { name: "routeId", label: "Select Route", type: "autocomplete", options: routeOptions, required: true },
     { name: "busId", label: "Select Bus", type: "autocomplete", options: busOptions, required: true },
     { name: "driverId", label: "Select Driver", type: "autocomplete", options: driverOptions, required: true },
@@ -245,23 +266,39 @@ if (invalidStudent) {
   return toast.error("Please complete pickup point and time for all students");
 }
     // تنظيف البيانات للإرسال
-    const payload = {
-      busId: formData.busId?.value || formData.busId,
-      driverId: formData.driverId?.value || formData.driverId,
-      codriverId: formData.codriverId?.value || formData.codriverId,
-      routeId: routeId,
-      name: formData.name,
-      rideType: formData.rideType,
-      frequency: formData.frequency,
-      repeatType: formData.repeatType,
-      startDate: formData.startDate,
-      endDate: formData.endDate,
-      students: selectedStudents.map((s) => ({
-        studentId: s.studentId,
-        pickupPointId: s.pickupPointId,
-        pickupTime: s.pickupTime,
-      })),
-    };
+  const payload = {
+  busId: formData.busId?.value || formData.busId,
+  driverId: formData.driverId?.value || formData.driverId,
+  codriverId: formData.codriverId?.value || formData.codriverId,
+  routeId: routeId,
+  name: formData.name,
+  rideType: formData.rideType,
+  frequency: formData.frequency,
+
+  repeatType:
+    formData.frequency === "repeat"
+      ? formData.repeatType
+      : null,
+
+  startDate:
+    formData.frequency === "repeat" &&
+    formData.repeatType === "limited"
+      ? formData.startDate
+      : null,
+
+  endDate:
+    formData.frequency === "repeat" &&
+    formData.repeatType === "limited"
+      ? formData.endDate
+      : null,
+
+  students: selectedStudents.map((s) => ({
+    studentId: s.studentId,
+    pickupPointId: s.pickupPointId,
+    pickupTime: s.pickupTime,
+  })),
+};
+
 
     try {
       await putData(payload, null, "Ride updated successfully!");

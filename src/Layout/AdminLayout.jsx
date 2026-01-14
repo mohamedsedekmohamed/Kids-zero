@@ -12,7 +12,11 @@ import {
   MapPin,
   ShieldCheck,
   Route,
- 
+ DiamondMinus ,
+ LandPlot ,
+Spool ,WalletCards , 
+PenTool,
+BanknoteArrowDown 
 } from "lucide-react";
 import { GiCaptainHatProfile } from "react-icons/gi";
 import { MdSupportAgent } from "react-icons/md";
@@ -35,12 +39,18 @@ const menuItems = [
   { title: "Roles", icon: <ShieldCheck size={20} />, path: "/admin/roles" },
 
   { title: "Routes", icon: <Route size={20} />, path: "/admin/routes" },
+  { title: "Cities", icon: <LandPlot size={20} />, path: "/admin/city" },
+  { title: "Zones", icon: <DiamondMinus size={20} />, path: "/admin/zone" },
 
   { title: "Drivers", icon: <GiCaptainHatProfile size={20} />, path: "/admin/drivers" },
   { title: "Codrivers", icon: <MdSupportAgent size={20} />, path: "/admin/codrivers" },
   { title: "Students", icon: <PiStudentFill size={20} />, path: "/admin/students" },
   { title: "Parents", icon: <RiParentFill size={20} />, path: "/admin/parents" },
   { title: "Rides", icon: <AiOutlineGateway size={20} />, path: "/admin/rides" },
+  { title: "Subscribtions", icon: <Spool size={20} />, path: "/admin/subscribtions" },
+  { title: "Peyment", icon: <BanknoteArrowDown size={20} />, path: "/admin/peyment" },
+  { title: "Fee Installments", icon: <PenTool size={20} />, path: "/admin/feeinstallments" },
+  { title: "Invoices", icon: <WalletCards size={20} />, path: "/admin/invoices" },
 ];
   return (
     <div className="flex h-screen gap-1 bg-gray-100 font-sans" >

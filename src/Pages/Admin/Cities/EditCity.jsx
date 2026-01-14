@@ -6,27 +6,27 @@ import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import Loading from "@/Components/Loading";
 
-const EditDepartments = () => {
+const EditCity = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const { data: departmentData, loading: loadingGet } = useGet(`/api/admin/departments/${id}`);
+  const { data:cityData, loading: loadingGet } = useGet(`/api/admin/cities/${id}`);
   const { putData, loading: loadingPut } = usePut("");
 
   const [initialData, setInitialData] = useState(null);
 
   // تحميل بيانات القسم عند الوصول
   useEffect(() => {
-    if (departmentData?.data?.department) {
-      const dept = departmentData.data.department;
+    if (cityData?.data?.city) {
+      const dept = cityData.data.city;
       setInitialData({
         name: dept.name,
       });
     }
-  }, [departmentData]);
+  }, [cityData]);
 
   const formSchema = [
-    { name: "name", label: "Department Name", type: "text", required: true },
+    { name: "name", label: "City Name", type: "text", required: true },
   ];
 
   const handleSave = async (formData) => {
@@ -36,27 +36,28 @@ const EditDepartments = () => {
         description: formData.description,
       };
 
-      await putData(payload, `/api/admin/departments/${id}`, "Department updated successfully!");
-      navigate("/admin/departments");
+      await putData(payload, `/api/admin/cities/${id}`, "City updated successfully!");
+      navigate("/admin/city");
     } catch (err) {
       console.error(err);
     }
   };
-
   if (!initialData || loadingGet) return <div className="flex justify-center items-center
   h-screen
   "><Loading/></div>;
 
   return (
     <AddPage
-      title="Edit Department"
+      title="Edit City"
       fields={formSchema}
       initialData={initialData}
       onSave={handleSave}
-      onCancel={() => navigate("/admin/departments")}
+      onCancel={() => navigate("/admin/city")}
       loading={loadingPut}
     />
   );
 };
 
-export default EditDepartments;
+
+
+export default EditCity

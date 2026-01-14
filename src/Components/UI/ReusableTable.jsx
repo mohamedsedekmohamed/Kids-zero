@@ -47,12 +47,16 @@ const ReusableTable = ({ title, columns, data, onAddClick, titleAdd, renderActio
           />
         </div>
 
+{titleAdd && (
+  
         <button
           onClick={onAddClick}
           className="w-full md:w-auto bg-one hover:opacity-90 text-white px-6 py-2 rounded-lg font-bold transition-all shadow-md flex items-center justify-center gap-2"
         >
           <span className="text-lg">+</span> Add {titleAdd}
         </button>
+)}
+        
       </div>
 
       {/* Table Container */}

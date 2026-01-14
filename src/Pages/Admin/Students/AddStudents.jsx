@@ -15,6 +15,11 @@ const AddStudent = () => {
       value: p.id,
       label: `${p.name} - ${p.phone}`,
     })) || [];
+  const zoneOptions =
+    parentsData?.data?.zones?.map((p) => ({
+      value: p.id,
+      label: `${p.name}-cost(${p.cost})`,
+    })) || [];
 
   const formSchema = [
    
@@ -26,6 +31,14 @@ const AddStudent = () => {
      label: "Select Parent",
      type: "autocomplete",
      options: parentsOptions,
+     required: true,
+     fullWidth: true,
+   },
+    {
+     name: "zoneId",
+     label: "Select Zone",
+     type: "autocomplete",
+     options: zoneOptions,
      required: true,
      fullWidth: true,
    },
@@ -44,13 +57,13 @@ const AddStudent = () => {
     try {
       const payload = { ...formData ,
          parentId: formData.parentId?.value,
-      };
+zoneId: formData.zoneId?.value
+        };
       if (formData.avatar instanceof File) {
         payload.avatar = await convertFileToBase64(formData.avatar);
       }
 
       await postData(payload, null, "Student added successfully!");
-      toast.success("Student added successfully!");
       navigate("/admin/students");
     } catch (err) {
       console.error(err);

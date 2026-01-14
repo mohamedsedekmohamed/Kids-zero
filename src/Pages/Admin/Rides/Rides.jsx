@@ -75,11 +75,12 @@ const Rides = () => {
     navigate(`edit/${row.id}`);
   };
   const handlManageRideStudents = (row) => {
-    navigate(`manageridestudents/${row.id}`);
+    navigate(`manageridestudents/${row.id}`); 
   };
 
   // ✅ Change Status
   const handleChangeStatus = async (id, status) => {
+    if(status==="")return
     try {
       await putData({ status }, `/api/admin/rides/${id}`, "Status updated!");
       refetch();
@@ -115,7 +116,10 @@ const Rides = () => {
           </button>
         ))}
       </div>
-
+  <button onClick={()=>navigate("scheduling")} className="px-4 py-2 rounded-full text-sm font-medium transition
+   w-full bg-one text-white hover:bg-one/80">
+   Scheduling Upcoming
+                        </button>
 
       {/* جدول الرحلات */}
       <ReusableTable
@@ -131,15 +135,14 @@ const Rides = () => {
               onChange={(e) => handleChangeStatus(row.id, e.target.value)}
               className="border rounded px-2 py-1 text-sm"
             >
+              <option value="">Select</option>
               <option value="scheduled">Scheduled</option>
               <option value="in_progress">In Progress</option>
               <option value="completed">Completed</option>
               <option value="cancelled">Cancelled</option>
             </select>
-           <Button variant="secondary" size="sm" onClick={() => handlManageRideStudents(row)}>
-Add Students 
-                        </Button>
-
+        
+          
            <Button variant="edit" size="sm" onClick={() => handleEdit(row)}>
               <Pencil className="size-4" />
               Edit

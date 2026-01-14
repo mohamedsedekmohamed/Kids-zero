@@ -104,7 +104,8 @@ const filteredData = tableData.filter((bus) => {
   return bus.status === activeTab;
 });
 
-  if (loading) return <Loading />;
+  if (loading) return <div className="flex justify-center items-center h-screen"> <Loading />  </div>
+
 
   return (
     <div className="  min-h-screen">

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import useGet from "@/hooks/useGet";
 import useDelete from "@/hooks/useDelete";
+import usePut from "@/hooks/usePut";
 import ReusableTable from "@/Components/UI/ReusableTable";
 import Loading from "@/Components/Loading";
 import { useNavigate } from "react-router-dom";
@@ -8,28 +9,29 @@ import { Trash2, Pencil } from "lucide-react";
 import { Button } from "@/Components/UI/button";
 import ConfirmModal from "@/Components/UI/ConfirmModal";
 
-const Departments = () => {
+const City = () => {
   const [openDelete, setOpenDelete] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const navigate = useNavigate();
 
-  const { data: getDepartments, loading, refetch } = useGet("/api/admin/departments");
-  const { deleteData: deleteDepartment } = useDelete("/api/admin/departments");
+  const { data: getCity , loading, refetch } = useGet("/api/admin/cities");
+  const { deleteData: deleteDepartment } = useDelete("/api/admin/cities");
+  const { putData } = usePut("");
 
   // تعريف الأعمدة
   const columns = [
-    { header: "Department Name", key: "name" },
+    { header: "City Name", key: "name" },
   ];
 
   const tableData =
-    getDepartments?.data?.departments?.map((dept) => ({
+    getCity?.data?.cities?.map((dept) => ({
       id: dept.id,
       name: dept.name,
     })) || [];
 
   const handleDelete = async () => {
     try {
-      await deleteDepartment(`/api/admin/departments/${selectedId}`);
+      await deleteDepartment(`/api/admin/cities/${selectedId}`);
       refetch();
     } catch (err) {
       console.error(err);
@@ -40,20 +42,20 @@ const Departments = () => {
   };
 
 
-
   if (loading) return <div className="flex justify-center items-center h-screen"> <Loading />  </div>
+
 
   return (
     <div className="p-10 bg-background min-h-screen">
       <ReusableTable
-        title="Departments Management"
-        titleAdd="Department"
+        title="City Management"
+        titleAdd="City"
         columns={columns}
         data={tableData}
         onAddClick={() => navigate("add")}
         renderActions={(row) => (
           <div className="flex gap-2 items-center">
-        
+            
 
             <Button variant="edit" size="sm" onClick={() => navigate(`edit/${row.id}`)}>
               <Pencil className="size-4" />
@@ -75,8 +77,8 @@ const Departments = () => {
       {/* Confirm Delete Modal */}
       <ConfirmModal
         open={openDelete}
-        title="Delete Department"
-        description="Are you sure you want to delete this department? This action cannot be undone."
+        title="Delete City"
+        description="Are you sure you want to delete this City? This action cannot be undone."
         onClose={() => setOpenDelete(false)}
         onConfirm={handleDelete}
       />
@@ -84,4 +86,5 @@ const Departments = () => {
   );
 };
 
-export default Departments;
+
+export default City

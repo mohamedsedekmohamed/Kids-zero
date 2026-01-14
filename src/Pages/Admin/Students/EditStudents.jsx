@@ -15,7 +15,7 @@ const EditStudent = () => {
     `/api/admin/students/${id}`
   );
 
-  // جلب بيانات الآباء للاختيار
+  // جلب بيانات الآباء والمناطق للاختيار
   const { data: parentsData, loading: loadingParents } = useGet(
     "/api/admin/students/selection"
   );
@@ -25,7 +25,7 @@ const EditStudent = () => {
   const [initialData, setInitialData] = useState(null);
   const [originalData, setOriginalData] = useState(null);
 
-  // تحويل الآباء إلى خيارات autocomplete
+  // 1. تحويل الآباء إلى خيارات autocomplete (محفوظ بـ useMemo)
   const parentsOptions = useMemo(() => {
     return (
       parentsData?.data?.parents?.map((p) => ({
@@ -35,26 +35,43 @@ const EditStudent = () => {
     );
   }, [parentsData]);
 
-  useEffect(() => {
-    if (!studentData?.data?.student || parentsOptions.length === 0) return;
+  // 2. تحويل المناطق إلى خيارات (تم إضافة useMemo هنا لمنع تكرار الرندر)
+  const zoneOptions = useMemo(() => {
+    return (
+      parentsData?.data?.zones?.map((p) => ({
+        value: p.id,
+        label: `${p.name} - cost(${p.cost})`,
+      })) || []
+    );
+  }, [parentsData]);
 
-    const s = studentData.data.student;
+  // 3. ضبط البيانات الأولية عند اكتمال التحميل
+  useEffect(() => {
+    const s = studentData?.data?.student;
+    
+    // تأكدنا هنا أن البيانات موجودة قبل البدء
+    if (!s) return;
 
     const parentOption = parentsOptions.find(
       (p) => String(p.value) === String(s.parent?.id)
     );
 
+    const zoneOption = zoneOptions.find(
+      (p) => String(p.value) === String(s.zone?.id)
+    );
+
     const initData = {
-      name: s.name,
-      grade: s.grade,
-      classroom: s.classroom,
+      name: s.name || "",
+      grade: s.grade || "",
+      classroom: s.classroom || "",
       parentId: parentOption || null,
-      avatar: s.avatar,
+      avatar: s.avatar || "",
+      zoneId: zoneOption || null,
     };
 
     setInitialData(initData);
-    setOriginalData(initData); // حفظ نسخة أصلية للمقارنة لاحقًا
-  }, [studentData, parentsOptions]);
+    setOriginalData(initData);
+  }, [studentData, parentsOptions, zoneOptions]);
 
   const formSchema = [
     { name: "name", label: "Student Name", type: "text", required: true },
@@ -65,6 +82,14 @@ const EditStudent = () => {
       label: "Select Parent",
       type: "autocomplete",
       options: parentsOptions,
+      required: true,
+      fullWidth: true,
+    },
+    {
+      name: "zoneId",
+      label: "Select Zone",
+      type: "autocomplete",
+      options: zoneOptions,
       required: true,
       fullWidth: true,
     },
@@ -79,31 +104,33 @@ const EditStudent = () => {
       reader.onerror = (err) => reject(err);
     });
 
-  // دالة تتحقق من التعديلات فقط
+  // 4. تحسين دالة التحقق لتشمل الـ zoneId وأي حقول Object أخرى
   const getChangedFields = (original, current) => {
     if (!original) return current;
-
     const changed = {};
 
     Object.keys(current).forEach((key) => {
       const currentValue = current[key];
       const originalValue = original[key];
 
-      // ملفات
+      // معالجة الملفات
       if (key === "avatar") {
         if (currentValue instanceof File) changed[key] = currentValue;
         return;
       }
 
-      // parentId قيمة داخل object
-      if (key === "parentId") {
+      // معالجة الـ Autocomplete (parentId & zoneId)
+      if (key === "parentId" || key === "zoneId") {
         if (currentValue?.value !== originalValue?.value) {
           changed[key] = currentValue;
         }
         return;
       }
 
-      if (currentValue !== originalValue) changed[key] = currentValue;
+      // معالجة النصوص العادية
+      if (currentValue !== originalValue) {
+        changed[key] = currentValue;
+      }
     });
 
     return changed;
@@ -119,17 +146,18 @@ const EditStudent = () => {
         return;
       }
 
-      // تحويل الملفات لـ Base64
-      if (changedData.avatar instanceof File) {
-        changedData.avatar = await convertFileToBase64(changedData.avatar);
+      // تحضير البيانات للإرسال
+      const payload = { ...changedData };
+
+      if (payload.avatar instanceof File) {
+        payload.avatar = await convertFileToBase64(payload.avatar);
       }
 
-      // parentId تحويل للاستخدام API
-      if (changedData.parentId) {
-        changedData.parentId = changedData.parentId.value;
-      }
+      if (payload.parentId) payload.parentId = payload.parentId.value;
+      if (payload.zoneId) payload.zoneId = payload.zoneId.value;
 
-      await putData(changedData);
+      await putData(payload);
+
       toast.success("Student updated successfully!");
       navigate("/admin/students");
     } catch (err) {
@@ -138,12 +166,14 @@ const EditStudent = () => {
     }
   };
 
-  if (loadingStudent || loadingParents || !initialData)
+  // حالة التحميل: ننتظر بيانات الطالب الأساسية وبيانات القوائم
+  if (loadingStudent || loadingParents || !initialData) {
     return (
       <div className="flex justify-center items-center h-screen">
         <Loading />
       </div>
     );
+  }
 
   return (
     <AddPage

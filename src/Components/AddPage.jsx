@@ -104,15 +104,26 @@ const validateForm = () => {
         className="space-y-6"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-card p-8 rounded-2xl border border-border">
-          {fields.map((field) => (
-            <div key={field.name} className={`flex flex-col gap-2 ${field.fullWidth ? 'md:col-span-2' : ''}`}>
+     {fields.map((field) => {
+  // 👇 لو الحقل مخفي، ما نرسموش
+  if (typeof field.hidden === "function" && field.hidden(formData)) {
+    return null;
+  }
+
+  return (
+    <div
+      key={field.name}
+      className={`flex flex-col gap-2 ${field.fullWidth ? 'md:col-span-2' : ''}`}
+    >
               <label className="text-sm font-semibold uppercase tracking-wider text-four">
                 {field.label} {field.required && <span className="text-one">*</span>}
               </label>
 
               {['text','email','number','password'].includes(field.type) && (
                 <input
+                
                   type={field.type}
+                  min={0}
                   name={field.name}
                   value={formData[field.name] || ''}
                   placeholder={field.placeholder}
@@ -266,8 +277,9 @@ const validateForm = () => {
 
               {errors[field.name] && <span className="text-red-500 text-sm">{errors[field.name]}</span>}
             </div>
-          ))}
-        </div>
+  );
+})}   
+     </div>
 
         <div className="flex justify-end gap-4">
           <button type="button" onClick={onCancel} className="px-6 py-2 border border-border rounded-xl cursor-pointer">Cancel</button>

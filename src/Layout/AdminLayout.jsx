@@ -37,7 +37,7 @@ const AppLayout = () => {
     { title: "Students", icon: <PiStudentFill size={20} />, path: "/admin/students" },
     { title: "Parents", icon: <RiParentFill size={20} />, path: "/admin/parents" },
     { title: "Rides", icon: <AiOutlineGateway size={20} />, path: "/admin/rides" },
-      // { title: "Subscriptions", icon: <Spool size={20} />, path: "/admin/subscribtions" },
+      { title: "Subscriptions", icon: <Spool size={20} />, path: "/admin/subscribtions" },
     { title: "Payment", icon: <BanknoteArrowDown size={20} />, path: "/admin/peyment" },
     { title: "Fee Installments", icon: <PenTool size={20} />, path: "/admin/feeinstallments" },
     { title: "Invoices", icon: <WalletCards size={20} />, path: "/admin/invoices" },

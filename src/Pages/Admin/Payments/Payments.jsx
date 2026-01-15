@@ -168,7 +168,7 @@ const Payments = () => {
         title="Payments Management"
         columns={columns}
                 titleAdd="Payments"
-
+   
         data={filteredData}
                 onAddClick={() => navigate("add")}
 
@@ -177,7 +177,7 @@ const Payments = () => {
       {/* ================= Receipt Modal ================= */}
       <ConfirmModal
         open={openImage}
-        title="Payment Receipt"
+        title="Payment Receipt" 
         description={
           selectedImage && (
             <img

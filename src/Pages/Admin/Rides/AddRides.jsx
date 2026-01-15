@@ -120,7 +120,7 @@ const AddRides = () => {
     { name: "routeId", label: "Select Route", type: "autocomplete", options: routeOptions, required: true },
     { name: "busId", label: "Select Bus", type: "autocomplete", options: busOptions, required: true },
     { name: "driverId", label: "Select Driver", type: "autocomplete", options: driverOptions, required: true },
-    { name: "codriverId", label: "Select Co-Driver", type: "autocomplete", options: codriverOptions, required: true },
+    { name: "codriverId", label: "Select Co-Driver", type: "autocomplete", options: codriverOptions },
     
     {
       name: "studentsSection",

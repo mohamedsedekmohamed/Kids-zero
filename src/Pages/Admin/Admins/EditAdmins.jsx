@@ -94,13 +94,15 @@ const EditAdmins = () => {
       type: "password",
       placeholder: "Leave empty to keep current password",
     },
-    {
-      name: "roleId",
-      label: "Role",
-      type: "select",
-      options: parentsOptions,
-      required: true,
-    },
+      {
+        name: "roleId",
+        label: "Role",
+        type: "select",
+        options: parentsOptions,
+        // required: true,
+          hidden: (formData) => formData.type === "organizer",
+
+      },
 
   ];
 
@@ -114,7 +116,9 @@ const EditAdmins = () => {
         navigate("/admin/admins");
         return;
       }
-
+  if (data.type === "organizer") {
+      delete changedData.roleId;
+    }
       // avatar → Base64
       if (changedData.avatar instanceof File) {
         const reader = new FileReader();

@@ -119,7 +119,18 @@ const validateForm = () => {
                 {field.label} {field.required && <span className="text-one">*</span>}
               </label>
 
-              {['text','email','number','password'].includes(field.type) && (
+              {['text','email','password'].includes(field.type) && (
+                <input
+                  type={field.type}
+                  name={field.name}
+                  value={formData[field.name] || ''}
+                  placeholder={field.placeholder}
+                  className="p-3 rounded-xl border border-border bg-background focus:ring-2 focus:ring-one outline-none transition-all"
+                  onChange={handleChange}
+                  required={field.required}
+                />
+              )}
+              {['number'].includes(field.type) && (
                 <input
                 
                   type={field.type}

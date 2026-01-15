@@ -52,31 +52,50 @@ const AddAdmins = () => {
       }
     },
     { name: "password", label: "Password", type: "password", placeholder: "Enter password", required: true },
-    { name: "roleId", label: "Role", type: "select", placeholder: "Select role", options: parentsOptions, required: true },
+{
+  name: "roleId",
+  label: "Role",
+  type: "select",
+  placeholder: "Select role",
+  options: parentsOptions,
+  required: true,
+  hidden: (formData) => formData.type === "organizer"
+}
   ];
 
-  const handleSave = async (data) => {
-    try {
-      const payload = { ...data, type: "admin" }; // نوع الأدمن ثابت
+const handleSave = async (data) => {
+  try {
+    const payload = { ...data };
 
-      if (data.avatar && data.avatar instanceof File) {
-        const reader = new FileReader();
-        reader.readAsDataURL(data.avatar);
-
-        reader.onload = async () => {
-          await postData({ ...payload, avatar: reader.result }, null, "Admin added successfully!");
-          navigate("/admin/admins");
-        };
-
-        reader.onerror = () => toast.error("Failed to read avatar file");
-      } else {
-        await postData(payload, null, "Admin added successfully!");
-        navigate("/admin/admins");
-      }
-    } catch (err) {
-      console.error(err);
+    if (data.type === "organizer") {
+      delete payload.roleId;
     }
-  };
+if (data.type === "admin" && data.roleId) {
+  toast.error("Admin can not have a role");
+    }
+    if (data.avatar && data.avatar instanceof File) {
+      const reader = new FileReader();
+      reader.readAsDataURL(data.avatar);
+
+      reader.onload = async () => {
+        await postData(
+          { ...payload, avatar: reader.result },
+          null,
+          "Admin added successfully!"
+        );
+        navigate("/admin/admins");
+      };
+
+      reader.onerror = () => toast.error("Failed to read avatar file");
+    } else {
+      await postData(payload, null, "Admin added successfully!");
+      navigate("/admin/admins");
+    }
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 
   return (
     <AddPage

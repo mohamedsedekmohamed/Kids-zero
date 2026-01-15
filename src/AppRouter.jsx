@@ -5,6 +5,8 @@ import SuperLayout from "./Layout/SuperLayout";
 import "./App.css";
 
 import { Navigate } from "react-router-dom";
+import ErrorPage from "./ErrorPage";
+import Unauthorized from "./Auth/Unauthorized";
 
 import Login from "./Auth/Login";
 import PrivateRoute from "./Auth/PrivateRoute";
@@ -29,7 +31,7 @@ import EditAdmins from "./Pages/Admin/Admins/EditAdmins";
 
 import Buses from "./Pages/Admin/Buses/Buses";
 import AddBuses from "./Pages/Admin/Buses/AddBuses";
-import EditBuses from "./Pages/Admin/Buses/EditBuses"
+import EditBuses from "./Pages/Admin/Buses/EditBuses";
 
 import Departments from "./Pages/Admin/Departments/Departments";
 import AddDepartments from "./Pages/Admin/Departments/AddDepartments";
@@ -55,7 +57,6 @@ import Codrivers from "./Pages/Admin/Codrivers/Codrivers";
 import AddCodrivers from "./Pages/Admin/Codrivers/AddCodrivers";
 import EditCodrivers from "./Pages/Admin/Codrivers/EditCodrivers";
 
-
 import Students from "./Pages/Admin/Students/Students";
 import AddStudents from "./Pages/Admin/Students/AddStudents";
 import EditStudents from "./Pages/Admin/Students/EditStudents";
@@ -72,10 +73,11 @@ import Scheduling from "./Pages/Admin/Rides/Scheduling";
 
 import Profile from "./Pages/Admin/Profile";
 
-import Peyment from './Pages/Admin/Payments/Payments'
-import Subscribtions from './Pages/Admin/Subscribtions/Subscribtions'
-import Feeinstallments from './Pages/Admin/Feeinstallments/Feeinstallments'
-import Invoices from './Pages/Admin/Invoices/Invoices'
+import Peyment from "./Pages/Admin/Payments/Payments";
+import AddPaymentsa from "./Pages/Admin/Payments/AddPayments";
+import Subscribtions from "./Pages/Admin/Subscribtions/Subscribtions";
+import Feeinstallments from "./Pages/Admin/Feeinstallments/Feeinstallments";
+import Invoices from "./Pages/Admin/Invoices/Invoices";
 
 // super
 import BusTypes from "./Pages/SuperAdmin/BusTypes/BusTypes";
@@ -94,7 +96,7 @@ import Plans from "./Pages/SuperAdmin/Plans/Plans";
 import AddPlans from "./Pages/SuperAdmin/Plans/AddPlans";
 import EditPlans from "./Pages/SuperAdmin/Plans/EditPlans";
 
-import Paymentmethods from "./Pages/SuperAdmin/Paymentmethods/Paymentmethods";  
+import Paymentmethods from "./Pages/SuperAdmin/Paymentmethods/Paymentmethods";
 import AddPaymentmethods from "./Pages/SuperAdmin/Paymentmethods/AddPaymentmethods";
 import EditPaymentmethods from "./Pages/SuperAdmin/Paymentmethods/EditPaymentmethods";
 
@@ -102,8 +104,9 @@ import Promocodes from "./Pages/SuperAdmin/Promocodes/Promocodes";
 import AddPromocodes from "./Pages/SuperAdmin/Promocodes/AddPromocodes";
 import EditPromocodes from "./Pages/SuperAdmin/Promocodes/EditPromocodes";
 import SuperProfile from "./Pages/SuperAdmin/Profile";
+import LandPage from "./LandPage/LandPage";
 const router = createBrowserRouter([
-   {
+  {
     path: "/",
     element: <Navigate to="/login" replace />,
   },
@@ -112,6 +115,10 @@ const router = createBrowserRouter([
     element: <Login />,
   },
 
+  {
+    path: "/landpage",
+    element: <LandPage />,
+  },
   {
     path: "/loginsuper",
     element: <LoginSuper />,
@@ -171,7 +178,7 @@ const router = createBrowserRouter([
       { path: "parents", element: <Parents /> },
       { path: "parents/add", element: <AddParents /> },
       { path: "parents/edit/:id", element: <EditParents /> },
-      
+
       { path: "city", element: <City /> },
       { path: "city/add", element: <AddCity /> },
       { path: "city/edit/:id", element: <EditCity /> },
@@ -179,62 +186,66 @@ const router = createBrowserRouter([
       { path: "zone", element: <Zone /> },
       { path: "zone/add", element: <AddZone /> },
       { path: "zone/edit/:id", element: <EditZone /> },
-      
-      
-      
+
       { path: "rides", element: <Rides /> },
       { path: "rides/add", element: <AddRides /> },
       { path: "rides/edit/:id", element: <EditRides /> },
       { path: "rides/ManageRideStudents/:id", element: <ManageRideStudents /> },
       { path: "rides/scheduling", element: <Scheduling /> },
-      
-      
+
       { path: "profile", element: <Profile /> },
 
       { path: "peyment", element: <Peyment /> },
+      { path: "peyment/add", element: <AddPaymentsa /> },
       { path: "feeinstallments", element: <Feeinstallments /> },
       { path: "subscribtions", element: <Subscribtions /> },
+
       { path: "invoices", element: <Invoices /> },
+     
+
+      { path: "*", element: <ErrorPage /> },
     ],
   },
-  
+
   {
     path: "/super",
     element: (
-    <SuperRoute>
-      <SuperLayout />
-    </SuperRoute>
-  ),
-  children: [
-    {index: true, element: <Home />},
-    { path: "bustypes", element: <BusTypes /> }, 
-    { path: "bustypes/add", element: <AddBusTypes /> },
-    { path: "bustypes/edit/:id", element: <EditBusTypes /> },
-    
-    { path: "organization", element: <Organization /> },
-    { path: "organization/add", element: <AddOrganization /> },
-    { path: "organization/edit/:id", element: <EditOrganization /> },
-    
-    { path: "promocodes", element: <Promocodes /> },
-    { path: "promocodes/add", element: <AddPromocodes /> },
-    { path: "promocodes/edit/:id", element: <EditPromocodes /> },
-    
-    { path: "plans", element: <Plans /> },
-    { path: "plans/add", element: <AddPlans /> },
-    { path: "plans/edit/:id", element: <EditPlans /> },
-    
-    { path: "paymentmethods", element: <Paymentmethods /> },
-    { path: "paymentmethods/add", element: <AddPaymentmethods /> },
-    { path: "paymentmethods/edit/:id", element: <EditPaymentmethods /> },
-    
-    { path: "typesorganization", element: <OrganizationTypes /> },
-    { path: "typesorganization/add", element: <AddOrganizationTypes /> },
-    { path: "typesorganization/edit/:id", element: <EditOrganizationTypes /> },
-    
-    { path: "profile", element: <SuperProfile /> },
-    
-  ],
-},
+      <SuperRoute>
+        <SuperLayout />
+      </SuperRoute>
+    ),
+    children: [
+      { index: true, element: <Home /> },
+      { path: "bustypes", element: <BusTypes /> },
+      { path: "bustypes/add", element: <AddBusTypes /> },
+      { path: "bustypes/edit/:id", element: <EditBusTypes /> },
+
+      { path: "organization", element: <Organization /> },
+      { path: "organization/add", element: <AddOrganization /> },
+      { path: "organization/edit/:id", element: <EditOrganization /> },
+
+      { path: "promocodes", element: <Promocodes /> },
+      { path: "promocodes/add", element: <AddPromocodes /> },
+      { path: "promocodes/edit/:id", element: <EditPromocodes /> },
+
+      { path: "plans", element: <Plans /> },
+      { path: "plans/add", element: <AddPlans /> },
+      { path: "plans/edit/:id", element: <EditPlans /> },
+
+      { path: "paymentmethods", element: <Paymentmethods /> },
+      { path: "paymentmethods/add", element: <AddPaymentmethods /> },
+      { path: "paymentmethods/edit/:id", element: <EditPaymentmethods /> },
+
+      { path: "typesorganization", element: <OrganizationTypes /> },
+      { path: "typesorganization/add", element: <AddOrganizationTypes /> },
+      {
+        path: "typesorganization/edit/:id",
+        element: <EditOrganizationTypes />,
+      },
+
+      { path: "profile", element: <SuperProfile /> },
+    ],
+  },
 ]);
 
 export default router;

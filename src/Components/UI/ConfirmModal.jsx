@@ -29,13 +29,16 @@ const ConfirmModal = ({ open, onClose, onConfirm, title, description }) => {
             Cancel
           </button>
 
+          {onConfirm &&(
           <button
             onClick={onConfirm}
             className="px-4 py-2 rounded-lg bg-red-600 text-white flex items-center gap-2 hover:bg-red-700 transition"
           >
-            <Trash2 className="w-4 h-4" />
+
+              <Trash2 className="w-4 h-4" />
             Delete
           </button>
+            )}
         </div>
       </div>
     </div>

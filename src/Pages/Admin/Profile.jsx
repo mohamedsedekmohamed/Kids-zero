@@ -3,6 +3,7 @@ import { FaUser, FaEnvelope, FaCamera, FaLock, FaShieldAlt } from "react-icons/f
 import usePut from "@/hooks/usePut";
 import useGet from "@/hooks/useGet";
 import Loading from "@/Components/Loading";
+import toast from "react-hot-toast";
 
 const Profile = () => {
   const { data, loading } = useGet("/api/admin/profile");
@@ -23,7 +24,6 @@ const Profile = () => {
         ...prev,
         name: admin.name || "",
         email: admin.email || "",
-        avatar: admin.avatar || "https://via.placeholder.com/150",
       }));
     }
   }, [data]);
@@ -43,18 +43,17 @@ const Profile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (form.newPassword && form.newPassword !== form.confirmPassword) {
-      return alert("Passwords do not match! ❌");
+      return toast.error("Passwords do not match! ❌");
     }
 
     await putData({
       name: form.name,
       email: form.email,
       avatar: form.avatar,
-      oldPassword: form.oldPassword || undefined,
-      newPassword: form.newPassword || undefined,
+      password: form.newPassword || undefined,
     });
 
-    alert("Profile updated successfully! ✅");
+    toast.success("Profile updated successfully! ✅");
     setForm({ ...form, newPassword: "", confirmPassword: "" });
   };
 
@@ -85,23 +84,9 @@ const Profile = () => {
         <form onSubmit={handleSubmit} className="px-8 pb-10">
           
           {/* Avatar Section */}
-          <div className="flex justify-center -mt-16 mb-10">
-            <div className="relative">
-              <div className="w-36 h-36 rounded-full border-[6px] border-white shadow-2xl overflow-hidden bg-white">
-                <img
-                  src={form.avatar}
-                  alt="avatar"
-                  className="w-full h-full object-cover transform transition-transform duration-500 hover:scale-110"
-                />
-              </div>
-              <label className="absolute bottom-2 right-2 bg-one text-white p-3 rounded-full cursor-pointer shadow-lg hover:scale-110 transition-all active:scale-95 border-2 border-white">
-                <FaCamera size={18} />
-                <input hidden type="file" accept="image/*" onChange={handleImage} />
-              </label>
-            </div>
-          </div>
+       
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-2">
             {/* Left Column: Basic Info */}
             <div className="space-y-5">
               <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] px-1">Personal Details</h3>
@@ -136,7 +121,7 @@ const Profile = () => {
             </div>
 
             {/* Right Column: Security */}
-            <div className="space-y-5">
+            {/* <div className="space-y-5">
               <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] px-1 flex items-center gap-2">
                 <FaShieldAlt className="text-one" /> Password Security
               </h3>
@@ -168,11 +153,11 @@ const Profile = () => {
                   className="block w-full pl-11 pr-4 py-3.5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-4 focus:ring-one/10 focus:border-one outline-none transition-all"
                 />
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* Action Button */}
-          <div className="mt-10">
+          {/* <div className="mt-10">
             <button
               disabled={saving}
               className="w-full bg-one text-white py-4 rounded-2xl font-bold text-lg shadow-[0_10px_25px_-5px_rgba(var(--color-one),0.4)] hover:shadow-[0_15px_30px_-5px_rgba(var(--color-one),0.6)] hover:-translate-y-0.5 transition-all active:scale-95 disabled:opacity-70 disabled:transform-none"
@@ -184,7 +169,7 @@ const Profile = () => {
                 </div>
               ) : "Update Profile"}
             </button>
-          </div>
+          </div> */}
         </form>
       </div>
     </div>

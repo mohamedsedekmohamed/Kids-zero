@@ -15,11 +15,7 @@ const Navbar = ({route}) => {
       <div className="flex items-center justify-between h-16 px-6">
 
         {/* الجزء الأيمن */}
-        <div className="flex items-center gap-x-4">
-          <button className="p-2 rounded-lg hover:bg-gray-100 text-gray-600 lg:hidden">
-            <Menu size={24} />
-          </button>
-        </div>
+      
 
         {/* الجزء الأيسر */}
         <div className="flex items-center gap-x-4">

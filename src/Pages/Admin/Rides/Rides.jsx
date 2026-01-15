@@ -74,9 +74,7 @@ const Rides = () => {
   const handleEdit = (row) => {
     navigate(`edit/${row.id}`);
   };
-  const handlManageRideStudents = (row) => {
-    navigate(`manageridestudents/${row.id}`); 
-  };
+
 
   // ✅ Change Status
   const handleChangeStatus = async (id, status) => {

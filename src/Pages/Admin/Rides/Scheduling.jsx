@@ -4,6 +4,7 @@ import ReusableTable from "@/Components/UI/ReusableTable";
 import Loading from "@/Components/Loading";
 import { format, parseISO } from "date-fns";
 import { Button } from "@/Components/UI/button";
+import { useNavigate } from "react-router-dom";
 
 const Scheduling = () => {
   const { data: ridesData, loading } = useGet("/api/admin/rides/upcoming");
@@ -11,6 +12,7 @@ const Scheduling = () => {
   // فلتر التاريخ
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const navigate = useNavigate();
 
   const columns = [
     { header: "Date", key: "date" },
@@ -46,7 +48,9 @@ const Scheduling = () => {
     setStartDate("");
     setEndDate("");
   };
-
+  const handlManageRideStudents = (row) => {
+    navigate(`manageridestudents/${row.id}`); 
+  };
   if (loading)
     return (
       <div className="flex justify-center items-center h-screen">
@@ -57,48 +61,64 @@ const Scheduling = () => {
   return (
     <div className="p-10 bg-background min-h-screen">
       {/* فلتر التاريخ */}
-   <div className="flex flex-col md:flex-row md:items-end gap-6 p-6 bg-white rounded-2xl shadow-sm border border-slate-100 mb-8">
-  <div className="flex-1 space-y-2">
-    <label className="text-sm font-semibold text-one  my-2 ml-1">
-      Start Date 
-    </label>
-    <div className="relative group my-2">
-      <input
-        type="date"
-        value={startDate}
-        onChange={(e) => setStartDate(e.target.value)}
-        className="w-full bg-slate-50 border-none ring-1 ring-slate-200 rounded-xl p-3 text-slate-600 focus:ring-2 focus:ring-one focus:bg-white transition-all duration-200 outline-none"
-      />
-    </div>
-  </div>
+      <div className="flex flex-col md:flex-row md:items-end gap-6 p-6 bg-white rounded-2xl shadow-sm border border-slate-100 mb-8">
+        <div className="flex-1 space-y-2">
+          <label className="text-sm font-semibold text-one  my-2 ml-1">
+            Start Date
+          </label>
+          <div className="relative group my-2">
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="w-full bg-slate-50 border-none ring-1 ring-slate-200 rounded-xl p-3 text-slate-600 focus:ring-2 focus:ring-one focus:bg-white transition-all duration-200 outline-none"
+            />
+          </div>
+        </div>
 
-  {/* End Date Field */}
-  <div className="flex-1 space-y-2 ">
-    <label className="text-sm font-semibold text-one ml-1 ">
-      End Date 
-    </label>
-    <div className="relative group my-2">
-      <input
-        type="date"
-        value={endDate}
-        onChange={(e) => setEndDate(e.target.value)}
-        className="w-full bg-slate-50 border-none ring-1 ring-slate-200 rounded-xl p-3 text-slate-600 focus:ring-2 focus:ring-one focus:bg-white transition-all duration-200 outline-none"
-      />
-    </div>
-  </div>
+        {/* End Date Field */}
+        <div className="flex-1 space-y-2 ">
+          <label className="text-sm font-semibold text-one ml-1 ">
+            End Date
+          </label>
+          <div className="relative group my-2">
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="w-full bg-slate-50 border-none ring-1 ring-slate-200 rounded-xl p-3 text-slate-600 focus:ring-2 focus:ring-one focus:bg-white transition-all duration-200 outline-none"
+            />
+          </div>
+        </div>
 
-  {/* Action Button */}
-  <div className="flex items-center">
-    <Button 
-      variant="ghost" 
-      onClick={handleReset}
-      className="h-[48px] px-6 text-slate-500 hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors font-medium"
-    >
-Reset    </Button>
-  </div>
-</div>
-            
-      <ReusableTable title="Scheduling Management" columns={columns} data={tableData} />
+        {/* Action Button */}
+        <div className="flex items-center">
+          <Button
+            variant="ghost"
+            onClick={handleReset}
+            className="h-[48px] px-6 text-slate-500 hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors font-medium"
+          >
+            Reset{" "}
+          </Button>
+        </div>
+      </div>
+
+      <ReusableTable
+        title="Scheduling Management"
+        columns={columns}
+        data={tableData}
+                renderActions={(row) => (
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              onClick={() => handlManageRideStudents(row)}
+              className="h-[48px] px-6 text-black-500 bg-gray-300 border-one border-1  hover:bg-one/10 rounded-xl transition-colors font-medium"
+            >
+              Manage Students
+            </Button>
+          </div>
+        )}
+      />
     </div>
   );
 };

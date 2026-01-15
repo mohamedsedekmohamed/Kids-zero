@@ -190,7 +190,7 @@ const router = createBrowserRouter([
       { path: "rides", element: <Rides /> },
       { path: "rides/add", element: <AddRides /> },
       { path: "rides/edit/:id", element: <EditRides /> },
-      { path: "rides/ManageRideStudents/:id", element: <ManageRideStudents /> },
+      { path: "rides/scheduling/ManageRideStudents/:id", element: <ManageRideStudents /> },
       { path: "rides/scheduling", element: <Scheduling /> },
 
       { path: "profile", element: <Profile /> },

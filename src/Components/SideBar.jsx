@@ -10,7 +10,7 @@ const SideBar = ({ menuItems, isExpanded, setIsExpanded, isMobileOpen, setIsMobi
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
-    navigate("/login", { replace: true });
+    navigate("/", { replace: true });
   };
 
   // دالة لإغلاق القائمة في الموبايل عند الضغط على أي رابط

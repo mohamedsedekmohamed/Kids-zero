@@ -106,19 +106,19 @@ import EditPromocodes from "./Pages/SuperAdmin/Promocodes/EditPromocodes";
 import SuperProfile from "./Pages/SuperAdmin/Profile";
 import LandPage from "./LandPage/LandPage";
 const router = createBrowserRouter([
+  // {
+  //   path: "/",
+  //   element: <Navigate to="/landpage" replace />,
+  // },
   {
     path: "/",
-    element: <Navigate to="/login" replace />,
+    element: <LandPage />,
   },
   {
     path: "/login",
     element: <Login />,
   },
 
-  {
-    path: "/landpage",
-    element: <LandPage />,
-  },
   {
     path: "/loginsuper",
     element: <LoginSuper />,

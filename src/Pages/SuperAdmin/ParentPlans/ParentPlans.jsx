@@ -8,40 +8,34 @@ import { Trash2, Pencil } from "lucide-react";
 import { Button } from "@/Components/UI/button";
 import ConfirmModal from "@/Components/UI/ConfirmModal";
 
-const Plans = () => {
+const ParentPlans = () => {
   const [openDelete, setOpenDelete] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const navigate = useNavigate();
 
-  const { data, loading, refetch } = useGet("/api/superadmin/plans");
-  const { deleteData } = useDelete("/api/superadmin/plans");
+  const { data, loading, refetch } = useGet("/api/superadmin/parentplans");
+  const { deleteData } = useDelete("/api/superadmin/parentplans");
 
-  // Table Columns
   const columns = [
     { header: "Plan Name", key: "name" },
     { header: "Price", key: "price" },
-    { header: "Max Buses", key: "maxBuses" },
-    { header: "Max Drivers", key: "maxDrivers" },
-    { header: "Max Students", key: "maxStudents" },
-    { header: "Subscription Fees", key: "subscriptionFees" },
     { header: "Min Subscription Pay", key: "minSubscriptionFeesPay" },
+    { header: "Subscription Fees", key: "subscriptionFees" },
   ];
 
   const tableData =
-    data?.data?.plans?.map((plan) => ({
+    data?.data?.parentPlans?.map((plan) => ({
       id: plan.id,
       name: plan.name,
       price: plan.price,
-      maxBuses: plan.maxBuses,
-      maxDrivers: plan.maxDrivers,
-      maxStudents: plan.maxStudents,
-      subscriptionFees: plan.subscriptionFees,
       minSubscriptionFeesPay: plan.minSubscriptionFeesPay,
+      subscriptionFees: plan.subscriptionFees,
+
     })) || [];
 
   const handleDelete = async () => {
     try {
-      await deleteData(`/api/superadmin/plans/${selectedId}`);
+      await deleteData(`/api/superadmin/parentplans/${selectedId}`);
       refetch();
     } catch (error) {
       console.error(error);
@@ -61,8 +55,8 @@ const Plans = () => {
   return (
     <div className="p-10 bg-background min-h-screen">
       <ReusableTable
-        title="Plans Management"
-        titleAdd="Plan"
+        title="Parent Plans Management"
+        titleAdd="Parent Plan"
         columns={columns}
         data={tableData}
         onAddClick={() => navigate("add")}
@@ -90,10 +84,9 @@ const Plans = () => {
         )}
       />
 
-      {/* Confirm Delete Modal */}
       <ConfirmModal
         open={openDelete}
-        title="Delete Plan"
+        title="Delete Parent Plan"
         description="Are you sure you want to delete this plan? This action cannot be undone."
         onClose={() => setOpenDelete(false)}
         onConfirm={handleDelete}
@@ -102,4 +95,4 @@ const Plans = () => {
   );
 };
 
-export default Plans;
+export default ParentPlans;

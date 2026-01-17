@@ -3,7 +3,8 @@ import { Outlet } from "react-router-dom";
 import SideBar from "../Components/SideBar";
 import Navbar from "../Components/Navbar";
 import { Toaster } from "react-hot-toast";
-import { Menu } from "lucide-react"; // أيقونة القائمة للموبايل
+import { Menu } from "lucide-react";
+ // أيقونة القائمة للموبايل
 
 // ... (نفس الـ imports الخاصة بالأيقونات كما هي)
 import {
@@ -40,7 +41,7 @@ const AppLayout = () => {
       { title: "Subscriptions", icon: <Spool size={20} />, path: "/admin/subscribtions" },
     { title: "Payment", icon: <BanknoteArrowDown size={20} />, path: "/admin/peyment" },
     { title: "Fee Installments", icon: <PenTool size={20} />, path: "/admin/feeinstallments" },
-    { title: "Invoices", icon: <WalletCards size={20} />, path: "/admin/invoices" },
+    { title: "invoices", icon: <WalletCards size={20} />, path: "/admin/invoices" },
   ];
 
   return (
@@ -62,8 +63,8 @@ const AppLayout = () => {
         menuItems={menuItems} 
         isExpanded={isExpanded} 
         setIsExpanded={setIsExpanded}
-        isMobileOpen={isMobileOpen}       // جديد
-        setIsMobileOpen={setIsMobileOpen} // جديد
+        isMobileOpen={isMobileOpen}       
+        setIsMobileOpen={setIsMobileOpen} 
       />
 
       <div className="flex-1 flex flex-col h-full relative overflow-hidden">

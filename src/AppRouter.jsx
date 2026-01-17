@@ -45,6 +45,7 @@ import Roles from "./Pages/Admin/Roles/Roles";
 import AddRoles from "./Pages/Admin/Roles/AddRoles";
 import EditRoles from "./Pages/Admin/Roles/EditRoles";
 
+
 import Routes from "./Pages/Admin/Routes/Routes";
 import AddRoutes from "./Pages/Admin/Routes/AddRoutes";
 import EditRoutes from "./Pages/Admin/Routes/EditRoutes";
@@ -105,6 +106,24 @@ import AddPromocodes from "./Pages/SuperAdmin/Promocodes/AddPromocodes";
 import EditPromocodes from "./Pages/SuperAdmin/Promocodes/EditPromocodes";
 import SuperProfile from "./Pages/SuperAdmin/Profile";
 import LandPage from "./LandPage/LandPage";
+
+import Subscribers from './Pages/SuperAdmin/Subscribers/Subscribers'
+import SuperInvoices from './Pages/SuperAdmin/Invoices/Invoices'
+
+import ParentPlans from "./Pages/SuperAdmin/ParentPlans/ParentPlans";
+import AddParentPlans from "./Pages/SuperAdmin/ParentPlans/AddParentPlans";
+import EditParentPlans from "./Pages/SuperAdmin/ParentPlans/EditParentPlans";
+
+import SuperAddAdmins from "./Pages/SuperAdmin/Admins/AddAdmins";
+import SuperAdmins from "./Pages/SuperAdmin/Admins/Admins";
+import SuperEditAdmins from "./Pages/SuperAdmin/Admins/EditAdmins";
+
+import SuperRoles from "./Pages/SuperAdmin/Roles/Roles";
+import SuperAddRoles from "./Pages/SuperAdmin/Roles/AddRoles";
+import SuperEditRoles from "./Pages/SuperAdmin/Roles/EditRoles";
+
+import Installments from './Pages/SuperAdmin/Installments/Installments'
+
 const router = createBrowserRouter([
   // {
   //   path: "/",
@@ -219,6 +238,19 @@ const router = createBrowserRouter([
       { path: "bustypes", element: <BusTypes /> },
       { path: "bustypes/add", element: <AddBusTypes /> },
       { path: "bustypes/edit/:id", element: <EditBusTypes /> },
+      
+      { path: "parentplans", element: <ParentPlans /> },
+      { path: "parentplans/add", element: <AddParentPlans /> },
+      { path: "parentplans/edit/:id", element: <EditParentPlans /> },
+      
+      { path: "admins", element: <SuperAdmins /> },
+      { path: "admins/add", element: <SuperAddAdmins /> },
+      { path: "admins/edit/:id", element: <SuperEditAdmins /> }   ,
+      
+      
+ { path: "roles", element: <SuperRoles /> },
+      { path: "roles/add", element: <SuperAddRoles /> },
+      { path: "roles/edit/:id", element: <SuperEditRoles /> },
 
       { path: "organization", element: <Organization /> },
       { path: "organization/add", element: <AddOrganization /> },
@@ -242,8 +274,13 @@ const router = createBrowserRouter([
         path: "typesorganization/edit/:id",
         element: <EditOrganizationTypes />,
       },
+      { path: "invoice", element: <SuperInvoices /> },
 
       { path: "profile", element: <SuperProfile /> },
+      { path: "subscribers", element: <Subscribers /> },
+      { path: "installments", element: <Installments /> },
+            { path: "*", element: <ErrorPage /> },
+
     ],
   },
 ]);

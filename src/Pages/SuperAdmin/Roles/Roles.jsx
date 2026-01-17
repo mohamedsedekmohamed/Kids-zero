@@ -1,81 +1,77 @@
 import React, { useState } from "react";
 import useGet from "@/hooks/useGet";
 import useDelete from "@/hooks/useDelete";
+import usePut from "@/hooks/usePut";
 import ReusableTable from "@/Components/UI/ReusableTable";
 import Loading from "@/Components/Loading";
 import { useNavigate } from "react-router-dom";
 import { Trash2, Pencil } from "lucide-react";
 import { Button } from "@/Components/UI/button";
 import ConfirmModal from "@/Components/UI/ConfirmModal";
+import StatusSwitch from "@/Components/UI/StatusSwitch";
 
-const Plans = () => {
+const Roles = () => {
   const [openDelete, setOpenDelete] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const navigate = useNavigate();
 
-  const { data, loading, refetch } = useGet("/api/superadmin/plans");
-  const { deleteData } = useDelete("/api/superadmin/plans");
+  const { data: getRoles, loading, refetch } = useGet("/api/superadmin/roles");
+  const { deleteData: deleteRole } = useDelete("/api/superadmin/roles");
+  const { putData } = usePut("");
 
-  // Table Columns
   const columns = [
-    { header: "Plan Name", key: "name" },
-    { header: "Price", key: "price" },
-    { header: "Max Buses", key: "maxBuses" },
-    { header: "Max Drivers", key: "maxDrivers" },
-    { header: "Max Students", key: "maxStudents" },
-    { header: "Subscription Fees", key: "subscriptionFees" },
-    { header: "Min Subscription Pay", key: "minSubscriptionFeesPay" },
+    { header: "Role Name", key: "name" },
   ];
 
   const tableData =
-    data?.data?.plans?.map((plan) => ({
-      id: plan.id,
-      name: plan.name,
-      price: plan.price,
-      maxBuses: plan.maxBuses,
-      maxDrivers: plan.maxDrivers,
-      maxStudents: plan.maxStudents,
-      subscriptionFees: plan.subscriptionFees,
-      minSubscriptionFeesPay: plan.minSubscriptionFeesPay,
+    getRoles?.data?.roles?.map((role) => ({
+      id: role.id,
+      name: role.name,
+      status: role.status || "active",
     })) || [];
 
   const handleDelete = async () => {
     try {
-      await deleteData(`/api/superadmin/plans/${selectedId}`);
+      await deleteRole(`/api/superadmin/roles/${selectedId}`);
       refetch();
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
     } finally {
       setOpenDelete(false);
       setSelectedId(null);
     }
   };
 
-  if (loading)
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <Loading />
-      </div>
-    );
+  const handleToggleStatus = async (row) => {
+    const newStatus = row.status === "active" ? "inactive" : "active";
+    try {
+      await putData({ status: newStatus }, `/api/superadmin/roles/${row.id}`, "Status updated!");
+      refetch();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  if (loading) return <div className="flex justify-center items-center h-screen"> <Loading />  </div>
+
 
   return (
     <div className="p-10 bg-background min-h-screen">
       <ReusableTable
-        title="Plans Management"
-        titleAdd="Plan"
+        title="Roles Management"
+        titleAdd="Role"
         columns={columns}
         data={tableData}
         onAddClick={() => navigate("add")}
         renderActions={(row) => (
           <div className="flex gap-2 items-center">
-            <Button
-              variant="edit"
-              size="sm"
-              onClick={() => navigate(`edit/${row.id}`)}
-            >
+            <Button variant="edit" size="sm" onClick={() => navigate(`edit/${row.id}`)}>
               <Pencil className="size-4" />
             </Button>
-
+              <StatusSwitch
+              checked={row.status === "active"}
+              onChange={() => handleToggleStatus(row)}
+            />
             <Button
               variant="delete"
               size="sm"
@@ -90,11 +86,10 @@ const Plans = () => {
         )}
       />
 
-      {/* Confirm Delete Modal */}
       <ConfirmModal
         open={openDelete}
-        title="Delete Plan"
-        description="Are you sure you want to delete this plan? This action cannot be undone."
+        title="Delete Role"
+        description="Are you sure you want to delete this role? This action cannot be undone."
         onClose={() => setOpenDelete(false)}
         onConfirm={handleDelete}
       />
@@ -102,4 +97,4 @@ const Plans = () => {
   );
 };
 
-export default Plans;
+export default Roles;

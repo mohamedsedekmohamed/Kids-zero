@@ -6,28 +6,25 @@ import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import Loading from "@/Components/Loading";
 
-const EditPlans = () => {
+const EditParentPlans = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
   const { data: planData, loading: loadingGet } = useGet(
-    `/api/superadmin/plans/${id}`
+    `/api/superadmin/parentplans/${id}`
   );
   const { putData, loading: loadingPut } = usePut("");
 
   const [initialData, setInitialData] = useState(null);
 
-  // Load plan data
   useEffect(() => {
-    if (planData?.data?.plan) {
-      const plan = planData.data.plan;
+    if (planData?.data?.parentPlan) {
+      const plan = planData.data.parentPlan;
       setInitialData({
         name: plan.name,
-        price_semester: plan.price_semester,
-        price_year: plan.price_year,
-        max_buses: plan.max_buses,
-        max_drivers: plan.max_drivers,
-        max_students: plan.max_students,
+        price: plan.price,
+    
+        minSubscriptionfeesPay: plan.minSubscriptionFeesPay,
         subscriptionFees: plan.subscriptionFees,
       });
     }
@@ -35,33 +32,10 @@ const EditPlans = () => {
 
   const formSchema = [
     { name: "name", label: "Plan Name", type: "text", required: true },
-    {
-      name: "price_semester",
-      label: "Semester Price",
-      type: "number",
-      required: true,
-    },
-    {
-      name: "price_year",
-      label: "Year Price",
-      type: "number",
-      required: true,
-    },
-    {
-      name: "max_buses",
-      label: "Max Buses",
-      type: "number",
-      required: true,
-    },
-    {
-      name: "max_drivers",
-      label: "Max Drivers",
-      type: "number",
-      required: true,
-    },
-    {
-      name: "max_students",
-      label: "Max Students",
+    { name: "price", label: "Price", type: "number", required: true },
+  {
+      name: "minSubscriptionfeesPay",
+      label: "Min Subscription Pay",
       type: "number",
       required: true,
     },
@@ -77,23 +51,22 @@ const EditPlans = () => {
     try {
       const payload = {
         name: formData.name,
-        price_semester: Number(formData.price_semester),
-        price_year: Number(formData.price_year),
-        max_buses: Number(formData.max_buses),
-        max_drivers: Number(formData.max_drivers),
-        max_students: Number(formData.max_students),
+        price: Number(formData.price),
+        startDate: formData.startDate,
+        endDate: formData.endDate,
+        minSubscriptionfeesPay: Number(formData.minSubscriptionfeesPay),
         subscriptionFees: Number(formData.subscriptionFees),
       };
 
       await putData(
         payload,
-        `/api/superadmin/plans/${id}`,
-        "Plan updated successfully!"
+        `/api/superadmin/parentplans/${id}`,
+        "Parent plan updated successfully!"
       );
-      navigate("/superadmin/plans");
+      navigate("/super/parentplans");
     } catch (err) {
       console.error(err);
-      toast.error("Failed to update Plan");
+      toast.error("Failed to update Parent Plan");
     }
   };
 
@@ -106,14 +79,14 @@ const EditPlans = () => {
 
   return (
     <AddPage
-      title="Edit Plan"
+      title="Edit Parent Plan"
       fields={formSchema}
       initialData={initialData}
       onSave={handleSave}
-      onCancel={() => navigate("/superadmin/plans")}
+      onCancel={() => navigate("/super/parentplans")}
       loading={loadingPut}
     />
   );
 };
 
-export default EditPlans;
+export default EditParentPlans;

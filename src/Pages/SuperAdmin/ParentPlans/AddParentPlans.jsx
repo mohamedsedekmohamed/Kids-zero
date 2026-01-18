@@ -28,9 +28,10 @@ const AddParentPlans = () => {
       type: "number",
       required: true,
     },
+ 
     {
-      name: "subscriptionFees",
-      label: "Subscription Fees",
+      name: "min_subscriptionfeesPay",
+      label: "Min Subscription Fees",
       type: "number",
       required: true,
     },

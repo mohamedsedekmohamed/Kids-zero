@@ -16,17 +16,12 @@ const AddPlans = () => {
       required: true,
     },
     {
-      name: "price_semester",
-      label: "Semester Price",
+      name: "price",
+      label: "Price",
       type: "number",
       required: true,
     },
-    {
-      name: "price_year",
-      label: "Year Price",
-      type: "number",
-      required: true,
-    },
+    
     {
       name: "max_buses",
       label: "Max Buses",
@@ -51,22 +46,28 @@ const AddPlans = () => {
       type: "number",
       required: true,
     },
+    {
+      name: "min_subscriptionfeesPay",
+      label: "Min Subscription Fees",
+      type: "number",
+      required: true,
+    },
   ];
 
   const handleSave = async (formData) => {
     try {
       const payload = {
         name: formData.name,
-        price_semester: Number(formData.price_semester),
-        price_year: Number(formData.price_year),
+        price: Number(formData.price),
         max_buses: Number(formData.max_buses),
         max_drivers: Number(formData.max_drivers),
         max_students: Number(formData.max_students),
         subscriptionFees: Number(formData.subscriptionFees),
+        min_subscriptionfeesPay: Number(formData.min_subscriptionfeesPay),
       };
 
       await postData(payload, null, "Plan added successfully!");
-      navigate("/superadmin/plans");
+      navigate("/super/plans");
     } catch (err) {
       console.error(err);
       toast.error("Failed to add Plan");
@@ -78,7 +79,7 @@ const AddPlans = () => {
       title="Add New Plan"
       fields={formSchema}
       onSave={handleSave}
-      onCancel={() => navigate("/superadmin/plans")}
+      onCancel={() => navigate("/super/plans")}
       loading={loading}
     />
   );

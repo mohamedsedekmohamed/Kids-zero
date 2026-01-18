@@ -124,6 +124,7 @@ import SuperEditRoles from "./Pages/SuperAdmin/Roles/EditRoles";
 
 import Installments from './Pages/SuperAdmin/Installments/Installments'
 
+import SuperPayments from "./Pages/SuperAdmin/Payments/Payments";
 const router = createBrowserRouter([
   // {
   //   path: "/",
@@ -279,6 +280,7 @@ const router = createBrowserRouter([
       { path: "profile", element: <SuperProfile /> },
       { path: "subscribers", element: <Subscribers /> },
       { path: "installments", element: <Installments /> },
+      { path: "payments", element: <SuperPayments /> },
             { path: "*", element: <ErrorPage /> },
 
     ],

@@ -48,6 +48,13 @@ const AddOrganization = () => {
       required: true,
     },
     {
+      name: "adminPassword",
+      label: "Password",
+      type: "number",
+      placeholder: "Enter Admin Password",
+      required: true,
+    },
+    {
       name: "address",
       label: "Address",
       type: "text",
@@ -91,6 +98,7 @@ const AddOrganization = () => {
         phone: data.phone,
         email: data.email,
         address: data.address,
+        adminPassword: data.adminPassword,
         organizationTypeId: data.organizationTypeId,
         logo: logoBase64, // expect Base64 string
       };

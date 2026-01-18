@@ -1,10 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import useGet from "@/hooks/useGet";
 import ReusableTable from "@/Components/UI/ReusableTable";
 import Loading from "@/Components/Loading";
+import axios from "axios";
+import { getToken } from "@/utils/auth";
+import toast ,{Toaster} from "react-hot-toast";
 
 const Installments = () => {
   const { data, loading } = useGet("/api/superadmin/payments/installments/all");
+const token =getToken();
+const [showRejectModal, setShowRejectModal] = useState(false);
+const [selectedId, setSelectedId] = useState(null);
+const [rejectedReason, setRejectedReason] = useState("");
 
   const columns = [
   
@@ -47,6 +54,46 @@ const Installments = () => {
       createdAt: new Date(item.createdAt).toLocaleDateString(),
     })) || [];
 
+
+    const handleActionChange = (action, id) => {
+  if (action === "approve") {
+    approveInstallment(id);
+  }
+
+  if (action === "reject") {
+    setSelectedId(id);
+    setShowRejectModal(true);
+  }
+};
+
+const approveInstallment = async (id) => {
+  await axios.put(
+    `https://Bcknd.Kidsero.com/api/superadmin/payments/installments/${id}/approve`,
+    null,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
+
+const rejectInstallment = async () => {
+  if (!rejectedReason.trim()) return;
+
+  await axios.put(
+    `https://Bcknd.Kidsero.com/api/superadmin/payments/installments/${selectedId}/reject`,
+    { rejectedReason },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  setShowRejectModal(false);
+  setRejectedReason("");
+};
   if (loading)
     return (
       <div className="flex justify-center items-center h-screen">
@@ -75,8 +122,62 @@ const Installments = () => {
         title="Installments Management"
         columns={columns}
         data={tableData}
-        hideAdd
+renderActions={(row) =>
+  row.status === "pending" && (
+    <select
+      defaultValue=""
+      onChange={(e) => handleActionChange(e.target.value, row.id)}
+      className="border rounded px-2 py-1 text-sm"
+    >
+      <option value="" disabled>
+        Select Action
+      </option>
+      <option value="approve">Approve</option>
+      <option value="reject">Reject</option>
+    </select>
+  )
+}
+
+
       />
+      <Toaster/>
+      {showRejectModal && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+    <div className="bg-white w-full max-w-md rounded-xl p-6 shadow-lg">
+      <h2 className="text-lg font-semibold mb-4 text-gray-800">
+        Reject Installment
+      </h2>
+
+      <textarea
+        value={rejectedReason}
+        onChange={(e) => setRejectedReason(e.target.value)}
+        placeholder="Write rejection reason..."
+        className="w-full h-28 border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-red-500"
+      />
+
+      <div className="flex justify-end gap-3 mt-4">
+        <button
+          onClick={() => {
+            setShowRejectModal(false);
+            setRejectedReason("");
+          }}
+          className="px-4 py-2 rounded-lg border"
+        >
+          Cancel
+        </button>
+
+        <button
+          onClick={rejectInstallment}
+          disabled={!rejectedReason.trim()}
+          className="px-4 py-2 rounded-lg bg-red-600 text-white disabled:opacity-50"
+        >
+          Reject
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 };

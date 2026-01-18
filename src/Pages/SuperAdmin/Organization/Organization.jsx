@@ -26,8 +26,7 @@ const Organization = () => {
     { header: "Phone", key: "phone" },
     { header: "Type", key: "organizationType" },
     { header: "Status", key: "status" },
-    { header: "Created At", key: "createdAt" },
-    { header: "Updated At", key: "updatedAt" },
+
   ];
 
   // ✅ Prepare table data

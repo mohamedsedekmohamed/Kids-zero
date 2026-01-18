@@ -48,40 +48,49 @@ const EditOrganization = () => {
   }, [typesData]);
 
   // ✅ Detect changed fields
-  const getChangedFields = (original, current) => {
-    if (!original) return current;
+const getChangedFields = (original, current) => {
+  if (!original) return current;
 
-    const changed = {};
-    Object.keys(current).forEach((key) => {
-      const currentValue = current[key];
-      let originalValue;
+  const changed = {};
+  Object.keys(current).forEach((key) => {
+    // ❌ تجاهل الباسورد هنا
+    if (key === "adminPassword") return;
 
-      switch (key) {
-        case "organizationTypeId":
-          originalValue = original.organizationType?.id || "";
-          break;
-        case "logo":
-          originalValue = original.logo;
-          break;
-        default:
-          originalValue = original[key];
-      }
+    const currentValue = current[key];
+    let originalValue;
 
-      if (currentValue === "" || currentValue === undefined) return;
+    switch (key) {
+      case "organizationTypeId":
+        originalValue = original.organizationType?.id || "";
+        break;
+      case "logo":
+        originalValue = original.logo;
+        break;
+      default:
+        originalValue = original[key];
+    }
 
-      if (currentValue !== originalValue) {
-        changed[key] = currentValue;
-      }
-    });
+    if (currentValue === "" || currentValue === undefined) return;
 
-    return changed;
-  };
+    if (currentValue !== originalValue) {
+      changed[key] = currentValue;
+    }
+  });
+
+  return changed;
+};
 
   // ✅ Form schema
   const formSchema = [
     { name: "name", label: "Organization Name", type: "text", required: true },
     { name: "phone", label: "Phone", type: "text", required: true },
     { name: "email", label: "Email", type: "email", required: true },
+     {
+      name: "adminPassword",
+      label: "Password",
+      type: "number",
+      placeholder: "Enter Admin Password",
+    },
     { name: "address", label: "Address", type: "text", required: true },
     {
       name: "organizationTypeId",
@@ -94,34 +103,39 @@ const EditOrganization = () => {
   ];
 
   // ✅ Save handler
-  const handleSave = async (data) => {
-    try {
-      const changedData = getChangedFields(originalData, data);
+const handleSave = async (data) => {
+  try {
+    const changedData = getChangedFields(originalData, data);
 
-      if (Object.keys(changedData).length === 0) {
-        toast("No changes detected");
-        navigate("/super/organizations");
-        return;
-      }
-
-      // تحويل الصورة الجديدة إلى Base64 إذا تم تغييرها
-      if (changedData.logo instanceof File) {
-        const reader = new FileReader();
-        changedData.logo = await new Promise((resolve, reject) => {
-          reader.onload = () => resolve(reader.result);
-          reader.onerror = (err) => reject(err);
-          reader.readAsDataURL(changedData.logo);
-        });
-      }
-
-      await putData(changedData);
-      toast.success("Organization updated successfully!");
-      navigate("/super/organization");
-    } catch (err) {
-      console.error(err);
-      toast.error("Something went wrong");
+    // ✅ لو كتب باسورد → ابعته
+    if (data.adminPassword && data.adminPassword.trim() !== "") {
+      changedData.adminPassword = data.adminPassword;
     }
-  };
+
+    if (Object.keys(changedData).length === 0) {
+      toast("No changes detected");
+      navigate("/super/organizations");
+      return;
+    }
+
+    // ✅ تحويل اللوجو Base64 لو اتغير
+    if (changedData.logo instanceof File) {
+      const reader = new FileReader();
+      changedData.logo = await new Promise((resolve, reject) => {
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(changedData.logo);
+      });
+    }
+
+    await putData(changedData);
+    toast.success("Organization updated successfully!");
+    navigate("/super/organization");
+  } catch (err) {
+    console.error(err);
+    toast.error("Something went wrong");
+  }
+};
 
   if (loadingGet || !formData)
     return (

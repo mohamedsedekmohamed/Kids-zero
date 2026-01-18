@@ -18,6 +18,7 @@ import {
 import { MdOutlinePayment } from "react-icons/md";
 import { Menu } from "lucide-react";
 import { RiParentFill } from "react-icons/ri";
+import { RiSecurePaymentFill } from "react-icons/ri";
 
 const SuperLayout = () => {
   const [isExpanded, setIsExpanded] = useState(true);
@@ -61,6 +62,7 @@ const superMenuItems = [
     { title: "Invoices", icon: <WalletCards size={20} />, path: "/super/invoice" },
     { title: "Roles", icon: <ShieldCheck size={20} />, path: "/super/roles" },
     { title: " Installments", icon: <PenTool size={20} />, path: "/super/installments" },
+    { title: " Payments", icon: <RiSecurePaymentFill size={20} />, path: "/super/payments" },
 
  
 ];
@@ -101,7 +103,7 @@ const superMenuItems = [
             
             {/* جعل الناف بار يأخذ باقي المساحة */}
             <div className="flex-1">
-                 <Navbar route="/admin/profile" />
+                 <Navbar route="/super/profile" />
             </div>
         </div>
 

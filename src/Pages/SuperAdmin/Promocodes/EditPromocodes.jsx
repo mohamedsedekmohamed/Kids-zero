@@ -106,11 +106,11 @@ const EditPromocodes = () => {
         return null;
       },
     },
-    { name: "start_date", label: "Start Date", type: "date", required: true },
+    { name: "start_date", label: "Start Date", type: "datetwo", required: true },
     {
       name: "end_date",
       label: "End Date",
-      type: "date",
+      type: "datetwo",
       required: true,
       customValidator: (value, formData) => {
         if (!value) return "End date is required";

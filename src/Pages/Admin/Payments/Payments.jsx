@@ -6,12 +6,16 @@ import { Button } from "@/Components/UI/button";
 import ConfirmModal from "@/Components/UI/ConfirmModal";
 import { Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { can } from "@/utils/can"; 
 
 const Payments = () => {
   const [activeTab, setActiveTab] = useState("all"); // all | completed | pending | rejected
   const [openImage, setOpenImage] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const navigate = useNavigate();
+
+  const user = JSON.parse(localStorage.getItem("user"));
+
 
   const { data, loading } = useGet("/api/admin/payments");
 
@@ -88,14 +92,7 @@ const Payments = () => {
       ]
     : []),
 
-  {
-    header: "Created At",
-    key: "createdAt",
-  },
-  {
-    header: "Updated At",
-    key: "updatedAt",
-  },
+ 
 ];
 
   
@@ -167,11 +164,10 @@ const Payments = () => {
       <ReusableTable
         title="Payments Management"
         columns={columns}
-                titleAdd="Payments"
-   
+        titleAdd="Payments"
         data={filteredData}
-                onAddClick={() => navigate("add")}
-
+         viewAdd={can(user, "payments", "Add")}
+         onAddClick={() => navigate("add")}
       />
 
       {/* ================= Receipt Modal ================= */}
@@ -188,7 +184,7 @@ const Payments = () => {
           )
         }
         onClose={() => setOpenImage(false)}
-        hideActions
+        
       />
     </div>
   );

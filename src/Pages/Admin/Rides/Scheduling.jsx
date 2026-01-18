@@ -5,9 +5,11 @@ import Loading from "@/Components/Loading";
 import { format, parseISO } from "date-fns";
 import { Button } from "@/Components/UI/button";
 import { useNavigate } from "react-router-dom";
+import { can } from "@/utils/can";
 
 const Scheduling = () => {
   const { data: ridesData, loading } = useGet("/api/admin/rides/upcoming");
+  const user = JSON.parse(localStorage.getItem("user"));
 
   // فلتر التاريخ
   const [startDate, setStartDate] = useState("");
@@ -49,7 +51,7 @@ const Scheduling = () => {
     setEndDate("");
   };
   const handlManageRideStudents = (row) => {
-    navigate(`manageridestudents/${row.id}`); 
+    navigate(`manageridestudents/${row.id}`);
   };
   if (loading)
     return (
@@ -107,15 +109,17 @@ const Scheduling = () => {
         title="Scheduling Management"
         columns={columns}
         data={tableData}
-                renderActions={(row) => (
+        renderActions={(row) => (
           <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              onClick={() => handlManageRideStudents(row)}
-              className="h-[48px] px-6 text-black-500 bg-gray-300 border-one border-1  hover:bg-one/10 rounded-xl transition-colors font-medium"
-            >
-              Manage Students
-            </Button>
+            {can(user, "rides", "View") && (
+              <Button
+                variant="ghost"
+                onClick={() => handlManageRideStudents(row)}
+                className="h-[48px] px-6 text-black-500 bg-gray-300 border-one border-1  hover:bg-one/10 rounded-xl transition-colors font-medium"
+              >
+                Manage Students
+              </Button>
+            )}
           </div>
         )}
       />

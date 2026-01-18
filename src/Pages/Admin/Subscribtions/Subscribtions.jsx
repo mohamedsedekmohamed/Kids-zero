@@ -4,8 +4,11 @@ import ReusableTable from "@/Components/UI/ReusableTable";
 import Loading from "@/Components/Loading";
 import usePost from "@/hooks/usePost";
 import toast from "react-hot-toast";
+import { can } from "@/utils/can"; 
 
 const Subscribtions = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+
   const [activeTab, setActiveTab] = useState("all");
 
   const { data, loading, refetch } = useGet("/api/admin/subscribtions");
@@ -191,6 +194,7 @@ const sub=data?.data?.subscriptionStatus
         columns={columns}
         data={tableData}
         renderActions={(row) =>
+            {can(user, "subscribtions", "Status") && (
           ( sub === "subscribed") && (
             <button
               onClick={() => {
@@ -202,6 +206,7 @@ const sub=data?.data?.subscriptionStatus
               Renew
             </button>
           )
+            )}
         }
       />
 

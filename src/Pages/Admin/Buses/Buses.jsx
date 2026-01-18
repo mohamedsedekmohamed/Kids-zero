@@ -9,6 +9,7 @@ import { Trash2, Pencil } from "lucide-react";
 import { Button } from "@/Components/UI/button";
 import ConfirmModal from "@/Components/UI/ConfirmModal";
 import StatusSwitch from "@/Components/UI/StatusSwitch";
+import { can } from "@/utils/can"; 
 
 const Buses = () => {
   const [openDelete, setOpenDelete] = useState(false);
@@ -16,6 +17,7 @@ const Buses = () => {
   const navigate = useNavigate();
 
 
+  const user = JSON.parse(localStorage.getItem("user"));
   const { data: getBuses, loading, refetch } = useGet("/api/admin/buses");
   const { deleteData: deleteBus } = useDelete("/api/admin/buses");
   const { putData } = usePut("");
@@ -134,16 +136,26 @@ const filteredData = tableData.filter((bus) => {
         titleAdd="Bus"
         columns={columns}
 data={filteredData}
+        viewAdd={can(user, "buses", "Add")}
+
         onAddClick={() => navigate("add")}
         renderActions={(row) => (
           <div className="flex gap-2 items-center">
+  {can(user, "buses", "Status") && (
+
             <StatusSwitch
               checked={row.status === "active"}
               onChange={() => handleToggleStatus(row)}
             />
+  )}
+              {can(user, "buses", "Edit") && (
+            
             <Button variant="edit" size="sm" onClick={() => navigate(`edit/${row.id}`)}>
               <Pencil className="size-4" />
             </Button>
+              )}
+              {can(user, "buses", "Delete") && (
+            
             <Button
               variant="delete"
               size="sm"
@@ -154,6 +166,7 @@ data={filteredData}
             >
               <Trash2 className="size-4" />
             </Button>
+              )}
           </div>
         )}
       />

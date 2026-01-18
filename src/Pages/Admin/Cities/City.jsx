@@ -7,8 +7,11 @@ import { useNavigate } from "react-router-dom";
 import { Trash2, Pencil } from "lucide-react";
 import { Button } from "@/Components/UI/button";
 import ConfirmModal from "@/Components/UI/ConfirmModal";
+import { can } from "@/utils/can"; 
 
 const City = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+
   const [openDelete, setOpenDelete] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const navigate = useNavigate();
@@ -50,14 +53,19 @@ const City = () => {
         titleAdd="City"
         columns={columns}
         data={tableData}
+                viewAdd={can(user, "city", "Add")}
+        
         onAddClick={() => navigate("add")}
         renderActions={(row) => (
           <div className="flex gap-2 items-center">
             
+  {can(user, "city", "Edit") && (
 
             <Button variant="edit" size="sm" onClick={() => navigate(`edit/${row.id}`)}>
               <Pencil className="size-4" />
             </Button>
+            )}
+              {can(user, "city", "Delete") && (
             <Button
               variant="delete"
               size="sm"
@@ -68,6 +76,7 @@ const City = () => {
             >
               <Trash2 className="size-4" />
             </Button>
+             )}
           </div>
         )}
       />

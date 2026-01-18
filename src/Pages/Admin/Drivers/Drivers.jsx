@@ -9,11 +9,13 @@ import { Trash2, Pencil } from "lucide-react";
 import { Button } from "@/Components/UI/button";
 import ConfirmModal from "@/Components/UI/ConfirmModal";
 import StatusSwitch from "@/Components/UI/StatusSwitch";
+import { can } from "@/utils/can"; 
 
 const Drivers = () => {
   const [openDelete, setOpenDelete] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user"));
 
   const { data: getDrivers, loading, refetch } = useGet("/api/admin/drivers");
   const { deleteData: deleteDriver } = useDelete("/api/admin/drivers");
@@ -100,16 +102,25 @@ const Drivers = () => {
         titleAdd="Driver"
         columns={columns}
         data={tableData}
+        viewAdd={can(user, "drivers", "Add")}
         onAddClick={() => navigate("add")}
         renderActions={(row) => (
           <div className="flex gap-2 items-center">
+              {can(user, "drivers", "Status") && (
+            
             <StatusSwitch
               checked={row.status === "active"}
               onChange={() => handleToggleStatus(row)}
             />
+              )}
+                {can(user, "drivers", "Edit") && (
+              
             <Button variant="edit" size="sm" onClick={() => navigate(`edit/${row.id}`)}>
               <Pencil className="size-4" />
             </Button>
+                )}
+                  {can(user, "drivers", "Delete") && (
+                
             <Button
               variant="delete"
               size="sm"
@@ -120,6 +131,8 @@ const Drivers = () => {
             >
               <Trash2 className="size-4" />
             </Button>
+              )}
+
           </div>
         )}
       />

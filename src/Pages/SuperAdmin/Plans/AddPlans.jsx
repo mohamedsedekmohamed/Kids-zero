@@ -54,25 +54,41 @@ const AddPlans = () => {
     },
   ];
 
-  const handleSave = async (formData) => {
-    try {
-      const payload = {
-        name: formData.name,
-        price: Number(formData.price),
-        max_buses: Number(formData.max_buses),
-        max_drivers: Number(formData.max_drivers),
-        max_students: Number(formData.max_students),
-        subscriptionFees: Number(formData.subscriptionFees),
-        min_subscriptionfeesPay: Number(formData.min_subscriptionfeesPay),
-      };
+const handleSave = async (formData) => {
+  try {
+    // تحويل القيم لأرقام
+    const maxBuses = Number(formData.max_buses);
+    const maxDrivers = Number(formData.max_drivers);
+    const maxStudents = Number(formData.max_students);
+    const subscriptionFees = Number(formData.subscriptionFees);
+    const minSubscriptionFeesPay = Number(formData.min_subscriptionfeesPay);
 
-      await postData(payload, null, "Plan added successfully!");
-      navigate("/super/plans");
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to add Plan");
+    // تحقق من القيم
+    if (minSubscriptionFeesPay > subscriptionFees) {
+      toast.error("Minimum subscription fees must be less than total subscription fees");
+      return;
     }
-  };
+
+  
+
+    const payload = {
+      name: formData.name,
+      price: Number(formData.price),
+      max_buses: maxBuses,
+      max_drivers: maxDrivers,
+      max_students: maxStudents,
+      subscriptionFees: subscriptionFees,
+      min_subscriptionfeesPay: minSubscriptionFeesPay,
+    };
+
+    await postData(payload, null, "Plan added successfully!");
+    navigate("/super/plans");
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to add Plan");
+  }
+};
+
 
   return (
     <AddPage

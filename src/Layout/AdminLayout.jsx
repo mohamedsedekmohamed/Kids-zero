@@ -16,33 +16,42 @@ import { MdSupportAgent } from "react-icons/md";
 import { PiStudentFill } from "react-icons/pi";
 import { RiParentFill } from "react-icons/ri";
 import { AiOutlineGateway } from "react-icons/ai";
+import { canView } from "@/utils/canView";
 
 const AppLayout = () => {
   // حالة للكمبيوتر: توسيع/طي القائمة
   const [isExpanded, setIsExpanded] = useState(true);
   // حالة للموبايل: إظهار/إخفاء القائمة
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+const user = JSON.parse(localStorage.getItem("user"));
 
-  const menuItems = [
-    { title: "Home", icon: <Home size={20} />, path: "/admin" },
-    { title: "Admins", icon: <LayoutDashboard size={20} />, path: "/admin/admins" },
-    { title: "Buses", icon: <Bus size={20} />, path: "/admin/buses" },
-    { title: "Departments", icon: <Building2 size={20} />, path: "/admin/departments" },
-    { title: "Pickuppoints", icon: <MapPin size={20} />, path: "/admin/pickuppoints" },
-    { title: "Roles", icon: <ShieldCheck size={20} />, path: "/admin/roles" },
-    { title: "Routes", icon: <Route size={20} />, path: "/admin/routes" },
-    { title: "Cities", icon: <LandPlot size={20} />, path: "/admin/city" },
-    { title: "Zones", icon: <DiamondMinus size={20} />, path: "/admin/zone" },
-    { title: "Drivers", icon: <GiCaptainHatProfile size={20} />, path: "/admin/drivers" },
-    { title: "Codrivers", icon: <MdSupportAgent size={20} />, path: "/admin/codrivers" },
-    { title: "Students", icon: <PiStudentFill size={20} />, path: "/admin/students" },
-    { title: "Parents", icon: <RiParentFill size={20} />, path: "/admin/parents" },
-    { title: "Rides", icon: <AiOutlineGateway size={20} />, path: "/admin/rides" },
-      { title: "Subscriptions", icon: <Spool size={20} />, path: "/admin/subscribtions" },
-    { title: "Payment", icon: <BanknoteArrowDown size={20} />, path: "/admin/peyment" },
-    { title: "Fee Installments", icon: <PenTool size={20} />, path: "/admin/feeinstallments" },
-    { title: "invoices", icon: <WalletCards size={20} />, path: "/admin/invoices" },
-  ];
+const menuItems = [
+  { title: "Home", icon: <Home size={20} />, path: "/admin", module: null },
+  { title: "Admins", icon: <LayoutDashboard size={20} />, path: "/admin/admins", module: "admins" },
+  { title: "Buses", icon: <Bus size={20} />, path: "/admin/buses", module: "buses" },
+  { title: "Departments", icon: <Building2 size={20} />, path: "/admin/departments", module: "departments" },
+  { title: "Pickuppoints", icon: <MapPin size={20} />, path: "/admin/pickuppoints", module: "pickup_points" },
+  { title: "Roles", icon: <ShieldCheck size={20} />, path: "/admin/roles", module: "roles" },
+  { title: "Routes", icon: <Route size={20} />, path: "/admin/routes", module: "routes" },
+  { title: "Cities", icon: <LandPlot size={20} />, path: "/admin/city", module: "cities" },
+  { title: "Zones", icon: <DiamondMinus size={20} />, path: "/admin/zone", module: "zones" },
+  { title: "Drivers", icon: <GiCaptainHatProfile size={20} />, path: "/admin/drivers", module: "drivers" },
+  { title: "Codrivers", icon: <MdSupportAgent size={20} />, path: "/admin/codrivers", module: "codrivers" },
+  { title: "Students", icon: <PiStudentFill size={20} />, path: "/admin/students", module: "students" },
+  // { title: "Parents", icon: <RiParentFill size={20} />, path: "/admin/parents", module: "parents" },
+  { title: "Rides", icon: <AiOutlineGateway size={20} />, path: "/admin/rides", module: "rides" },
+  { title: "Subscriptions", icon: <Spool size={20} />, path: "/admin/subscribtions", module: "subscriptions" },
+  { title: "Payment", icon: <BanknoteArrowDown size={20} />, path: "/admin/peyment", module: "payments" },
+  { title: "Fee Installments", icon: <PenTool size={20} />, path: "/admin/feeinstallments", module: "fee_installments" },
+  { title: "Invoices", icon: <WalletCards size={20} />, path: "/admin/invoices", module: "invoices" },
+];
+
+
+const filteredMenu = menuItems.filter(item => {
+  if (!item.module) return true;
+  return canView(user, item.module);
+});
+
 
   return (
     <div className="flex h-screen bg-gray-100 font-sans overflow-hidden relative">
@@ -60,7 +69,7 @@ const AppLayout = () => {
       )}
 
       <SideBar 
-        menuItems={menuItems} 
+        menuItems={filteredMenu} 
         isExpanded={isExpanded} 
         setIsExpanded={setIsExpanded}
         isMobileOpen={isMobileOpen}       

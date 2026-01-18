@@ -9,11 +9,13 @@ import { Trash2, Pencil } from "lucide-react";
 import { Button } from "@/Components/UI/button";
 import ConfirmModal from "@/Components/UI/ConfirmModal";
 import StatusSwitch from "@/Components/UI/StatusSwitch";
+import { can } from "@/utils/can"; 
 
 const Codrivers = () => {
   const [openDelete, setOpenDelete] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user"));
 
   const { data: getCodrivers, loading, refetch } = useGet("/api/admin/codrivers");
   const { deleteData: deleteCodriver } = useDelete("/api/admin/codrivers");
@@ -102,16 +104,21 @@ const Codrivers = () => {
       <ReusableTable
         title="Co-Drivers Management"
         titleAdd="Co-Driver"
+         viewAdd={can(user, "codrivers", "Add")}
         columns={columns}
         data={tableData}
         onAddClick={() => navigate("add")}
         renderActions={(row) => (
           <div className="flex gap-2 items-center">
+              {can(user, "codrivers", "Status") && (
+            
             <StatusSwitch
               checked={row.status === "active"}
               onChange={() => handleToggleStatus(row)}
             />
-
+              )}
+                {can(user, "codrivers", "Edit") && (
+              
             <Button
               variant="edit"
               size="sm"
@@ -119,7 +126,9 @@ const Codrivers = () => {
             >
               <Pencil className="size-4" />
             </Button>
-
+                )}
+                  {can(user, "codrivers", "Delete") && (
+                
             <Button
               variant="delete"
               size="sm"
@@ -130,6 +139,7 @@ const Codrivers = () => {
             >
               <Trash2 className="size-4" />
             </Button>
+                  )}
           </div>
         )}
       />

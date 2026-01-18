@@ -10,12 +10,12 @@ import Unauthorized from "./Auth/Unauthorized";
 
 import Login from "./Auth/Login";
 import PrivateRoute from "./Auth/PrivateRoute";
+import SaveRoute from "./Auth/SaveRoute";
 import SuperRoute from "./Auth/SuperRoute";
 import LoginSuper from "./Auth/LoginSuper";
 
 import Home from "./Pages/Admin/Home/Home";
-import AddHome from "./Pages/Admin/Home/AddHome";
-import EditHome from "./Pages/Admin/Home/EditHome";
+
 
 import City from "./Pages/Admin/Cities/City";
 import AddCity from "./Pages/Admin/Cities/AddCity";
@@ -146,83 +146,406 @@ const router = createBrowserRouter([
   {
     path: "/admin/*",
     element: (
-      <PrivateRoute>
+      <SaveRoute>
         <AdminLayout />
-      </PrivateRoute>
+      </SaveRoute>
     ),
     children: [
       { index: true, element: <Home /> },
-      { path: "home/add", element: <AddHome /> },
-      { path: "home/edit/:id", element: <EditHome /> },
+  
+{
+  path: "admins",
+  element: (
+    <PrivateRoute requiredModule="admins" requiredAction="View">
+      <Admins />
+    </PrivateRoute>
+  ),
+},
+{
+  path: "admins/add",
+  element: (
+    <PrivateRoute requiredModule="admins" requiredAction="Add">
+      <AddAdmins />
+    </PrivateRoute>
+  ),
+},
+{
+  path: "admins/edit/:id",
+  element: (
+    <PrivateRoute requiredModule="admins" requiredAction="Edit">
+      <EditAdmins />
+    </PrivateRoute>
+  ),
+},
 
-      { path: "admins", element: <Admins /> },
-      { path: "admins/add", element: <AddAdmins /> },
-      { path: "admins/edit/:id", element: <EditAdmins /> },
+ {
+  path: "buses",
+  element: (
+    <PrivateRoute requiredModule="buses" requiredAction="View">
+      <Buses />
+    </PrivateRoute>
+  ),
+},
+{
+  path: "buses/add",
+  element: (
+    <PrivateRoute requiredModule="buses" requiredAction="Add">
+      <AddBuses />
+    </PrivateRoute>
+  ),
+},
+{
+  path: "buses/edit/:id",
+  element: (
+    <PrivateRoute requiredModule="buses" requiredAction="Edit">
+      <EditBuses />
+    </PrivateRoute>
+  ),
+},
+{
+  path: "departments",
+  element: (
+    <PrivateRoute requiredModule="departments" requiredAction="View">
+      <Departments />
+    </PrivateRoute>
+  ),
+},
+{
+  path: "departments/add",
+  element: (
+    <PrivateRoute requiredModule="departments" requiredAction="Add">
+      <AddDepartments />
+    </PrivateRoute>
+  ),
+},
+{
+  path: "departments/edit/:id",
+  element: (
+    <PrivateRoute requiredModule="departments" requiredAction="Edit">
+      <EditDepartments />
+    </PrivateRoute>
+  ),
+},
 
-      { path: "buses", element: <Buses /> },
-      { path: "buses/add", element: <AddBuses /> },
-      { path: "buses/edit/:id", element: <EditBuses /> },
 
-      { path: "departments", element: <Departments /> },
-      { path: "departments/add", element: <AddDepartments /> },
-      { path: "departments/edit/:id", element: <EditDepartments /> },
 
-      { path: "pickuppoints", element: <Pickuppoints /> },
-      { path: "pickuppoints/add", element: <AddPickuppoints /> },
-      { path: "pickuppoints/edit/:id", element: <EditPickuppoints /> },
+{
+  path: "pickuppoints",
+  element: (
+    <PrivateRoute requiredModule="pickup_points" requiredAction="View">
+      <Pickuppoints />
+    </PrivateRoute>
+  ),
+},
+{
+  path: "pickuppoints/add",
+  element: (
+    <PrivateRoute requiredModule="pickup_points" requiredAction="Add">
+      <AddPickuppoints />
+    </PrivateRoute>
+  ),
+},
+{
+  path: "pickuppoints/edit/:id",
+  element: (
+    <PrivateRoute requiredModule="pickup_points" requiredAction="Edit">
+      <EditPickuppoints />
+    </PrivateRoute>
+  ),
+},
 
-      { path: "roles", element: <Roles /> },
-      { path: "roles/add", element: <AddRoles /> },
-      { path: "roles/edit/:id", element: <EditRoles /> },
 
-      { path: "roles", element: <Roles /> },
-      { path: "roles/add", element: <AddRoles /> },
-      { path: "roles/edit/:id", element: <EditRoles /> },
+{
+  path: "roles",
+  element: (
+    <PrivateRoute requiredModule="roles" requiredAction="View">
+      <Roles />
+    </PrivateRoute>
+  ),
+},
+{
+  path: "roles/add",
+  element: (
+    <PrivateRoute requiredModule="roles" requiredAction="Add">
+      <AddRoles />
+    </PrivateRoute>
+  ),
+},
+{
+  path: "roles/edit/:id",
+  element: (
+    <PrivateRoute requiredModule="roles" requiredAction="Edit">
+      <EditRoles />
+    </PrivateRoute>
+  ),
+},
+    
+  
+{
+  path: "routes",
+  element: (
+    <PrivateRoute requiredModule="routes" requiredAction="View">
+      <Routes />
+    </PrivateRoute>
+  ),
+},
+{
+  path: "routes/add",
+  element: (
+    <PrivateRoute requiredModule="routes" requiredAction="Add">
+      <AddRoutes />
+    </PrivateRoute>
+  ),
+},
+{
+  path: "routes/edit/:id",
+  element: (
+    <PrivateRoute requiredModule="routes" requiredAction="Edit">
+      <EditRoutes />
+    </PrivateRoute>
+  ),
+},
+ 
 
-      { path: "routes", element: <Routes /> },
-      { path: "routes/add", element: <AddRoutes /> },
-      { path: "routes/edit/:id", element: <EditRoutes /> },
+{
+  path: "drivers",
+  element: (
+    <PrivateRoute requiredModule="drivers" requiredAction="View">
+      <Drivers />
+    </PrivateRoute>
+  ),
+},
+{
+  path: "drivers/add",
+  element: (
+    <PrivateRoute requiredModule="drivers" requiredAction="Add">
+      <AddDrivers />
+    </PrivateRoute>
+  ),
+},
+{
+  path: "drivers/edit/:id",
+  element: (
+    <PrivateRoute requiredModule="drivers" requiredAction="Edit">
+      <EditDrivers />
+    </PrivateRoute>
+  ),
+},
 
-      { path: "drivers", element: <Drivers /> },
-      { path: "drivers/add", element: <AddDrivers /> },
-      { path: "drivers/edit/:id", element: <EditDrivers /> },
 
-      { path: "codrivers", element: <Codrivers /> },
-      { path: "codrivers/add", element: <AddCodrivers /> },
-      { path: "codrivers/edit/:id", element: <EditCodrivers /> },
 
-      { path: "students", element: <Students /> },
-      { path: "students/add", element: <AddStudents /> },
-      { path: "students/edit/:id", element: <EditStudents /> },
+{
+  path: "codrivers",
+  element: (
+    <PrivateRoute requiredModule="codrivers" requiredAction="View">
+      <Codrivers />
+    </PrivateRoute>
+  ),
+},
+{
+  path: "codrivers/add",
+  element: (
+    <PrivateRoute requiredModule="codrivers" requiredAction="Add">
+      <AddCodrivers />
+    </PrivateRoute>
+  ),
+},
+{
+  path: "codrivers/edit/:id",
+  element: (
+    <PrivateRoute requiredModule="codrivers" requiredAction="Edit">
+      <EditCodrivers />
+    </PrivateRoute>
+  ),
+},
 
-      { path: "parents", element: <Parents /> },
-      { path: "parents/add", element: <AddParents /> },
-      { path: "parents/edit/:id", element: <EditParents /> },
 
-      { path: "city", element: <City /> },
-      { path: "city/add", element: <AddCity /> },
-      { path: "city/edit/:id", element: <EditCity /> },
 
-      { path: "zone", element: <Zone /> },
-      { path: "zone/add", element: <AddZone /> },
-      { path: "zone/edit/:id", element: <EditZone /> },
+{
+  path: "students",
+  element: (
+    <PrivateRoute requiredModule="students" requiredAction="View">
+      <Students />
+    </PrivateRoute>
+  ),
+},
+{
+  path: "students/add",
+  element: (
+    <PrivateRoute requiredModule="students" requiredAction="Add">
+      <AddStudents />
+    </PrivateRoute>
+  ),
+},
+{
+  path: "students/edit/:id",
+  element: (
+    <PrivateRoute requiredModule="students" requiredAction="Edit">
+      <EditStudents />
+    </PrivateRoute>
+  ),
+},
 
-      { path: "rides", element: <Rides /> },
-      { path: "rides/add", element: <AddRides /> },
-      { path: "rides/edit/:id", element: <EditRides /> },
-      { path: "rides/scheduling/ManageRideStudents/:id", element: <ManageRideStudents /> },
-      { path: "rides/scheduling", element: <Scheduling /> },
+{
+  path: "city",
+  element: (
+    <PrivateRoute requiredModule="city" requiredAction="View">
+      <City />
+    </PrivateRoute>
+  ),
+},
+{
+  path: "city/add",
+  element: (
+    <PrivateRoute requiredModule="city" requiredAction="Add">
+      <AddCity />
+    </PrivateRoute>
+  ),
+},
+{
+  path: "city/edit/:id",
+  element: (
+    <PrivateRoute requiredModule="city" requiredAction="Edit">
+      <EditCity />
+    </PrivateRoute>
+  ),
+},
+   
 
-      { path: "profile", element: <Profile /> },
 
-      { path: "peyment", element: <Peyment /> },
-      { path: "peyment/add", element: <AddPaymentsa /> },
-      { path: "feeinstallments", element: <Feeinstallments /> },
-      { path: "subscribtions", element: <Subscribtions /> },
+{
+  path: "zone",
+  element: (
+    <PrivateRoute requiredModule="zone" requiredAction="View">
+      <Zone />
+    </PrivateRoute>
+  ),
+},
+{
+  path: "zone/add",
+  element: (
+    <PrivateRoute requiredModule="zone" requiredAction="Add">
+      <AddZone />
+    </PrivateRoute>
+  ),
+},
+{
+  path: "zone/edit/:id",
+  element: (
+    <PrivateRoute requiredModule="zone" requiredAction="Edit">
+      <EditZone />
+    </PrivateRoute>
+  ),
+},
 
-      { path: "invoices", element: <Invoices /> },
+{
+  path: "rides",
+  element: (
+    <PrivateRoute requiredModule="rides" requiredAction="View">
+      <Rides />
+    </PrivateRoute>
+  ),
+},
+{
+  path: "rides/add",
+  element: (
+    <PrivateRoute requiredModule="rides" requiredAction="Add">
+      <AddRides />
+    </PrivateRoute>
+  ),
+},
+
+{
+  path: "rides/edit/:id",
+  element: (
+    <PrivateRoute requiredModule="rides" requiredAction="Edit">
+      <EditRides />
+    </PrivateRoute>
+  ),
+},
+
+
+{
+  path: "rides/scheduling/ManageRideStudents/:id",
+  element: (
+    <PrivateRoute requiredModule="rides" requiredAction="View">
+      <ManageRideStudents />
+    </PrivateRoute>
+  ),
+},
+
+
+{
+  path: "rides/scheduling",
+  element: (
+    <PrivateRoute requiredModule="rides" requiredAction="View">
+      <Scheduling />
+    </PrivateRoute>
+  ),
+},
+
+     
+{
+  path: "profile",
+  element: (
+    <PrivateRoute requiredModule="profile" requiredAction="View">
+      <Profile />
+    </PrivateRoute>
+  ),
+},
+
+
+{
+  path: "peyment",
+  element: (
+    <PrivateRoute requiredModule="peyment" requiredAction="View">
+      <Peyment />
+    </PrivateRoute>
+  ),
+},
+{
+  path: "peyment/add",
+  element: (
+    <PrivateRoute requiredModule="peyment" requiredAction="Add">
+      <AddPaymentsa />
+    </PrivateRoute>
+  ),
+},
+
+{
+  path: "feeinstallments",
+  element: (
+    <PrivateRoute requiredModule="feeinstallments" requiredAction="View">
+      <Feeinstallments />
+    </PrivateRoute>
+  ),
+},
+
+{
+  path: "subscribtions",
+  element: (
+    <PrivateRoute requiredModule="subscribtions" requiredAction="View">
+      <Subscribtions />
+    </PrivateRoute>
+  ),
+},
+
+
+{
+  path: "invoices",
+  element: (
+    <PrivateRoute requiredModule="invoices" requiredAction="View">
+      <Invoices />
+    </PrivateRoute>
+  ),
+},
+
+      { path: "unauthorized", element: <Unauthorized /> },
      
 
+      // { path: "parents", element: <Parents /> },
+      // { path: "parents/add", element: <AddParents /> },
+      // { path: "parents/edit/:id", element: <EditParents /> },
       { path: "*", element: <ErrorPage /> },
     ],
   },
@@ -241,7 +564,7 @@ const router = createBrowserRouter([
       { path: "bustypes/edit/:id", element: <EditBusTypes /> },
       
       { path: "parentplans", element: <ParentPlans /> },
-      { path: "parentplans/add", element: <AddParentPlans /> },
+      { path: "parentplans/add", element: <AddParentPlans /> },  
       { path: "parentplans/edit/:id", element: <EditParentPlans /> },
       
       { path: "admins", element: <SuperAdmins /> },

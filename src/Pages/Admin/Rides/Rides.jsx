@@ -8,8 +8,11 @@ import { useNavigate } from "react-router-dom";
 import { Trash2, Pencil } from "lucide-react";
 import { Button } from "@/Components/UI/button";
 import ConfirmModal from "@/Components/UI/ConfirmModal";
+import { can } from "@/utils/can"; 
 
 const Rides = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+
   const [openDelete, setOpenDelete] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [activeTab, setActiveTab] = useState("all"); // all | upcoming | current | past
@@ -114,10 +117,12 @@ const Rides = () => {
           </button>
         ))}
       </div>
+                    {can(user, "rides", "View") && (
   <button onClick={()=>navigate("scheduling")} className="px-4 py-2 rounded-full text-sm font-medium transition
    w-full bg-one text-white hover:bg-one/80">
    Scheduling Upcoming
                         </button>
+                    )}
 
       {/* جدول الرحلات */}
       <ReusableTable
@@ -125,9 +130,12 @@ const Rides = () => {
         titleAdd="Ride"
         columns={columns}
         data={filteredRides}
+        viewAdd={can(user, "rides", "Add")}
         onAddClick={() => navigate("add")}
         renderActions={(row) => (
           <div className="flex gap-2 items-center">
+              {can(user, "rides", "Status") && (
+            
             <select
               value={row.status}
               onChange={(e) => handleChangeStatus(row.id, e.target.value)}
@@ -139,12 +147,16 @@ const Rides = () => {
               <option value="completed">Completed</option>
               <option value="cancelled">Cancelled</option>
             </select>
-        
+          )}
+
+            {can(user, "admins", "Edit") && (
           
            <Button variant="edit" size="sm" onClick={() => handleEdit(row)}>
               <Pencil className="size-4" />
               Edit
             </Button>
+            )}  
+              {can(user, "admins", "Delete") && (
             <Button
               variant="delete"
               size="sm"
@@ -156,6 +168,8 @@ const Rides = () => {
               <Trash2 className="size-4" />
               Delete
             </Button>
+              )}
+
           </div>
         )}
       />

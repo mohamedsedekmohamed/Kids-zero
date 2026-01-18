@@ -1,9 +1,17 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
+import  { Toaster } from "react-hot-toast";
 import { GiTeacher } from "react-icons/gi";
 import usePost from "@/hooks/usePost";
 
+
+const buildPermissionsMap = (permissions = []) => {
+  const map = {};
+  permissions.forEach((p) => {
+    map[p.module] = p.actions.map((a) => a.action);
+  });
+  return map;
+};
 const Login = () => {
 const { postData, loading } = usePost();
   const navigate = useNavigate();
@@ -25,7 +33,17 @@ const { postData, loading } = usePost();
     );
 
       localStorage.setItem("token", res.data.token);
-      localStorage.setItem("role", res.role || "admin");
+      localStorage.setItem("role", "admin" );
+            const user = res.data.user;
+
+      const permissionsMap = buildPermissionsMap(user.permissions);
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          ...user,
+          permissionsMap,
+        })
+      );
 
       navigate("/admin");
     } catch (err) {

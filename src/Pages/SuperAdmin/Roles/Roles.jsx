@@ -65,13 +65,13 @@ const Roles = () => {
         onAddClick={() => navigate("add")}
         renderActions={(row) => (
           <div className="flex gap-2 items-center">
-            <Button variant="edit" size="sm" onClick={() => navigate(`edit/${row.id}`)}>
-              <Pencil className="size-4" />
-            </Button>
               <StatusSwitch
               checked={row.status === "active"}
               onChange={() => handleToggleStatus(row)}
             />
+            <Button variant="edit" size="sm" onClick={() => navigate(`edit/${row.id}`)}>
+              <Pencil className="size-4" />
+            </Button>
             <Button
               variant="delete"
               size="sm"

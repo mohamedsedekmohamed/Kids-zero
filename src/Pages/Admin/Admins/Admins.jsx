@@ -9,8 +9,13 @@ import { Trash2, Pencil } from "lucide-react";
 import { Button } from "@/Components/UI/button";
 import ConfirmModal from "@/Components/UI/ConfirmModal";
 import StatusSwitch from "@/Components/UI/StatusSwitch";
+import { can } from "@/utils/can"; 
 
-const Admins = () => {
+const Admins = () => {  
+
+  const user = JSON.parse(localStorage.getItem("user"));
+
+
   const [openDelete, setOpenDelete] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const navigate = useNavigate();
@@ -87,29 +92,37 @@ const Admins = () => {
         titleAdd="Admin"
         columns={columns}
         data={tableData}
+        viewAdd={can(user, "admins", "Add")}
         onAddClick={() => navigate("add")}
         renderActions={(row) => (
-          <div className="flex gap-2 items-center">
-            <StatusSwitch
-              checked={row.status === "active"}
-              onChange={() => handleToggleStatus(row)}
-            />
-            <Button variant="edit" size="sm" onClick={() => handleEdit(row)}>
-              <Pencil className="size-4" />
-              Edit
-            </Button>
-            <Button
-              variant="delete"
-              size="sm"
-              onClick={() => {
-                setSelectedId(row.id);
-                setOpenDelete(true);
-              }}
-            >
-              <Trash2 className="size-4" />
-              Delete
-            </Button>
-          </div>
+<div className="flex gap-2 items-center">
+  {can(user, "admins", "Status") && (
+    <StatusSwitch
+      checked={row.status === "active"}
+      onChange={() => handleToggleStatus(row)}
+    />
+  )}
+  {can(user, "admins", "Edit") && (
+    <Button variant="edit" size="sm" onClick={() => handleEdit(row)}>
+      <Pencil className="size-4" />
+      Edit
+    </Button>
+)}  
+  {can(user, "admins", "Delete") && (
+    <Button
+      variant="delete"
+      size="sm"
+      onClick={() => {
+        setSelectedId(row.id);
+        setOpenDelete(true);
+      }}
+    >
+      <Trash2 className="size-4" />
+      Delete
+    </Button>
+  )}
+</div>
+
         )}
         renderplus={(row) => (
           <div className="flex gap-2">

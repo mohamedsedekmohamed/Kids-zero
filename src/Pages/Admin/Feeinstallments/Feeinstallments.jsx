@@ -105,7 +105,7 @@ const FeeInstallments = () => {
           title="Subscription Status"
           columns={statusColumns}
           data={statusTableData}
-          hideActions
+          
         />
       )}
 
@@ -114,7 +114,6 @@ const FeeInstallments = () => {
           title="Installment History"
           columns={historyColumns}
           data={historyTableData}
-          hideActions
         />
       )}
     </div>

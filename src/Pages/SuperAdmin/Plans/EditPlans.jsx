@@ -75,6 +75,13 @@ const EditPlans = () => {
   ];
 
   const handleSave = async (formData) => {
+    const subscriptionFees = Number(formData.subscriptionFees);
+    const minSubscriptionFeesPay = Number(formData.min_subscriptionfeesPay);
+      if (minSubscriptionFeesPay > subscriptionFees) {
+      toast.error("Minimum subscription fees must be less than total subscription fees");
+      return;
+    }
+
     try {
       const payload = {
         name: formData.name,

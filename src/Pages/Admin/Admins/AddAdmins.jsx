@@ -58,7 +58,6 @@ const AddAdmins = () => {
   type: "select",
   placeholder: "Select role",
   options: parentsOptions,
-  required: true,
   hidden: (formData) => formData.type === "organizer"
 }
   ];
@@ -66,7 +65,9 @@ const AddAdmins = () => {
 const handleSave = async (data) => {
   try {
     const payload = { ...data };
-
+if(data.type === "admin" && !data.roleId){
+  toast.error("Admin must have a role");
+}
     if (data.type === "organizer") {
       delete payload.roleId;
     }

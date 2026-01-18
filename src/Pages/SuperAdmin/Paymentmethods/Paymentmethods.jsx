@@ -57,7 +57,7 @@ const PaymentMethods = () => {
       feeAmount: item.feeAmount,
     })) || [];
       const handleToggleStatus = async (row) => {
-    const newStatus = row.isActive === "true" ? true : false ;
+    const newStatus = row.isActive === false ? true : false ;
     try {
       await putData(
         { is_active: newStatus },
@@ -106,7 +106,7 @@ const PaymentMethods = () => {
         renderActions={(row) => (
           <div className="flex gap-2 items-center">
               <StatusSwitch
-              checked={row.status === "true"}
+              checked={row.isActive}
               onChange={() => handleToggleStatus(row)}
             />
             <Button variant="edit" size="sm" onClick={() => handleEdit(row)}>

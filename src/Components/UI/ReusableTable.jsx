@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import TruncatedText from "./TruncatedText";
 
-const ReusableTable = ({ title, columns, data, onAddClick, titleAdd, renderActions }) => {
+const ReusableTable = ({ title, columns, data, onAddClick, titleAdd, viewAdd=true, renderActions }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
@@ -48,13 +48,15 @@ const ReusableTable = ({ title, columns, data, onAddClick, titleAdd, renderActio
         </div>
 
 {titleAdd && (
-  
+  viewAdd && (
         <button
           onClick={onAddClick}
           className="w-full md:w-auto bg-one hover:opacity-90 text-white px-6 py-2 rounded-lg font-bold transition-all shadow-md flex items-center justify-center gap-2"
         >
           <span className="text-lg">+</span> Add {titleAdd}
         </button>
+  )
+    
 )}
         
       </div>

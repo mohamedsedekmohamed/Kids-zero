@@ -9,7 +9,7 @@ const LoginSuper = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 const { postData, loading } = usePost();
-
+    
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -24,7 +24,14 @@ const { postData, loading } = usePost();
 
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("role",  "super");
+                  const superAdmin = res.data.superAdmin;
 
+  localStorage.setItem(
+        "superAdmin",
+        JSON.stringify({
+        superAdmin
+        })
+      );
 
       navigate("/super");
     } catch (err) {

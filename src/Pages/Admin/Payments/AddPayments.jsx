@@ -191,6 +191,7 @@ const formSchema = [
     type: "number",
     required: true,
   },
+
   {
     name: "receiptImagepayment",
     label: "Receipt Payment",

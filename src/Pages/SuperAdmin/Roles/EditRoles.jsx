@@ -31,7 +31,7 @@ const EditRoles = () => {
   // تحميل بيانات الـ Role الحالية
   useEffect(() => {
     if (data?.data?.role && modules.length) {
-      const rolePermissions = data.data.role.permissions || [];
+      const rolePermissions = data.data?.role?.permissions || [];
       const initialPermissions = modules.map((mod) => {
         const found = rolePermissions.find((p) => p.module === mod);
         return {

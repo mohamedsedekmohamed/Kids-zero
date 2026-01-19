@@ -24,6 +24,8 @@ const SuperLayout = () => {
   const [isExpanded, setIsExpanded] = useState(true);
   // حالة للموبايل: إظهار/إخفاء القائمة
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+    const superAdmin = JSON.parse(localStorage.getItem("superAdmin")) || {};
+console.log(superAdmin)
 const superMenuItems = [
  
   { 
@@ -67,7 +69,7 @@ const superMenuItems = [
  
 ];
   return (
-    <div className="flex h-screen bg-gray-100 font-sans overflow-hidden relative">
+    <div className="flex h-screen bg-gray-100 font-sans overflow-hidden">
       
       {/* 1. تمرير حالات الموبايل للـ SideBar 
          2. إضافة الـ Overlay (الخلفية السوداء) عند فتح الموبايل
@@ -76,7 +78,7 @@ const superMenuItems = [
       {/* خلفية سوداء تظهر فقط في الموبايل عند فتح القائمة */}
       {isMobileOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          className="fixed inset-0 bg-black/50 z-40 md:hidden transition-opacity"
           onClick={() => setIsMobileOpen(false)}
         />
       )}
@@ -89,11 +91,9 @@ const superMenuItems = [
         setIsMobileOpen={setIsMobileOpen} 
       />
 
-      <div className="flex-1 flex flex-col h-full relative overflow-hidden">
-        
-        {/* Navbar Wrapper contains Mobile Toggle + Original Navbar */}
-        <div className="flex items-center bg-white md:bg-transparent">
-            {/* زر القائمة يظهر فقط في الموبايل (md:hidden) */}
+      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
+        <header className="flex items-center bg-white border-b border-gray-100 shrink-0">
+   
             <button 
               className="p-4 md:hidden text-gray-600 focus:outline-none"
               onClick={() => setIsMobileOpen(true)}
@@ -103,12 +103,15 @@ const superMenuItems = [
             
             {/* جعل الناف بار يأخذ باقي المساحة */}
             <div className="flex-1">
-                 <Navbar route="/super/profile" />
+                 <Navbar route="/super/profile" 
+                 name={superAdmin?.superAdmin.name}
+                 email={superAdmin?.superAdmin.email}
+                 />
             </div>
-        </div>
+        </header>
 
         <main 
-          className="flex-1 overflow-y-auto p-2"
+         className="flex-1 overflow-y-auto p-4 custom-scrollbar bg-gray-50"
           style={{
             scrollbarWidth: 'none', 
             msOverflowStyle: 'none',

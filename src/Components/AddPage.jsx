@@ -143,7 +143,20 @@ const validateForm = () => {
                   required={field.required}
                 />
               )}
-
+{['numberstep'].includes(field.type) && (
+  <input
+    type={field.type}
+    min={0}
+    // إضافة الخاصية التالية للسماح بالأرقام العشرية
+    step="any" 
+    name={field.name}
+    value={formData[field.name] || ''}
+    placeholder={field.placeholder}
+    className="p-3 rounded-xl border border-border bg-background focus:ring-2 focus:ring-one outline-none transition-all"
+    onChange={handleChange}
+    required={field.required}
+  />
+)}
 
   {field.type === "date" && (
   <div className="flex flex-col w-full">

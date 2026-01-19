@@ -217,7 +217,7 @@ const AddPayments = () => {
     {
       name: "amount",
       label: "Amount to Pay",
-      type: "number",
+      type: "numberstep",
       required: true,
     },
     {
@@ -233,26 +233,35 @@ const AddPayments = () => {
       fullWidth: true,
     },
     {
-      name: "nextDueDate",
-      label: "Next Due Date",
-      type: "date",
-      hidden: (formData) => {
-        const selectedPlan = plansData?.data?.plans?.find(
-          (p) => p.id === formData.planId?.value
-        );
-        if (!selectedPlan) return true;
-        
-        let finalFees = selectedPlan.subscriptionFees;
-        if (promoData) {
-          if (promoData.promocodeType === "percentage") {
-            finalFees = finalFees - (finalFees * promoData.amount) / 100;
-          } else {
-            finalFees = finalFees - promoData.amount;
-          }
-        }
-        return parseFloat(formData.amount || 0) >= finalFees;
-      },
-    },
+  name: "nextDueDate",
+  label: "Next Due Date",
+  type: "date",
+  hidden: (formData) => {
+    const selectedPlan = plansData?.data?.plans?.find(
+      (p) => p.id === formData.planId?.value
+    );
+    
+    const selectedMethod = paymentMethodsData?.data?.paymentMethods?.find(
+      (m) => m.id === formData.paymentMethodId?.value
+    );
+
+    if (!selectedPlan) return true;
+
+    let finalFees = selectedPlan.subscriptionFees;
+    if (promoData) {
+      if (promoData.promocodeType === "percentage") {
+        finalFees = finalFees - (finalFees * promoData.amount) / 100;
+      } else {
+        finalFees = finalFees - promoData.amount;
+      }
+    }
+
+    const methodFee = parseFloat(selectedMethod?.feeAmount || 0);
+    const totalRequired = finalFees + methodFee;
+
+    return parseFloat(formData.amount || 0) >= totalRequired;
+  },
+},
   ];
 
   const convertFileToBase64 = (file) =>
@@ -263,76 +272,88 @@ const AddPayments = () => {
       reader.onerror = (err) => reject(err);
     });
 
-  const handleSave = async (formData) => {
-    try {
-      const selectedPlan = plansData?.data?.plans?.find(
-        (p) => p.id === formData.planId?.value
-      );
-      if (!selectedPlan) {
-        toast.error("Please select a valid plan");
-        return;
-      }
+const handleSave = async (formData) => {
+  try {
+    const selectedPlan = plansData?.data?.plans?.find(
+      (p) => p.id === formData.planId?.value
+    );
 
-      const amount = parseFloat(formData.amount);
-      
-      // Calculate max allowed based on promo
-      let maxAllowed = selectedPlan.subscriptionFees;
-      if (promoData) {
-        if (promoData.promocodeType === "percentage") {
-          maxAllowed = maxAllowed - (maxAllowed * promoData.amount) / 100;
-        } else {
-          maxAllowed = maxAllowed - promoData.amount;
-        }
-      }
+    // 1. جلب وسيلة الدفع المختارة لمعرفة الرسوم الخاصة بها
+    const selectedMethod = paymentMethodsData?.data?.paymentMethods?.find(
+      (m) => m.id === formData.paymentMethodId?.value
+    );
 
-      if (amount < selectedPlan.minSubscriptionFeesPay) {
-        toast.error(`Amount must be at least ${selectedPlan.minSubscriptionFeesPay}`);
-        return;
-      }
-      
-      if (amount > maxAllowed) {
-        toast.error(`Amount cannot exceed the discounted price: ${maxAllowed}`);
-        return;
-      }
-
-      let receiptBase64payment = null;
-      if (formData.receiptImagepayment instanceof File) {
-        receiptBase64payment = await convertFileToBase64(formData.receiptImagepayment);
-      }
-      let receiptBase64plan = null;
-      if (formData.receiptImageplan instanceof File) {
-        receiptBase64plan = await convertFileToBase64(formData.receiptImageplan);
-      }
-
-      const payload = {
-        planId: formData.planId?.value,
-        paymentMethodId: formData.paymentMethodId?.value,
-        amount,
-        ...(amount < maxAllowed && {
-          nextDueDate: formData.nextDueDate,
-        }),
-        ...(receiptBase64payment && { receiptImage: receiptBase64payment }),
-      };
-      if(promoData?.code){
-        payload.promoCode = promoData.code
-      }
-
-      const payload1 = {
-        planId: formData.planId?.value,
-        paymentMethodId: formData.paymentMethodId?.value,
-        ...(receiptBase64plan && { receiptImage: receiptBase64plan }),
-      };
-
-      await payment(payload, null, "Payment added successfully!");
-      await payplan(payload1, null, "Pay Plan Price added successfully!");
-
-      toast.success("Both operations completed!");
-      navigate("/admin/peyment");
-    } catch (error) {
-      console.error(error);
-      toast.error("Process failed");
+    if (!selectedPlan || !selectedMethod) {
+      toast.error("Please select a plan and payment method");
+      return;
     }
-  };
+
+    const amountPaid = parseFloat(formData.amount); // المبلغ الذي أدخله المستخدم
+    const methodFee = parseFloat(selectedMethod.feeAmount || 0); // رسوم الوسيلة
+
+    // 2. حساب السعر النهائي للخطة بعد الخصم (بدون رسوم الوسيلة)
+    let discountedPlanPrice = selectedPlan.subscriptionFees;
+    if (promoData) {
+      if (promoData.promocodeType === "percentage") {
+        discountedPlanPrice -= (discountedPlanPrice * promoData.amount) / 100;
+      } else {
+        discountedPlanPrice -= promoData.amount;
+      }
+    }
+
+   
+    const totalRequiredAmount = discountedPlanPrice + methodFee;
+    const minRequiredAmount = selectedPlan.minSubscriptionFeesPay + methodFee;
+
+    if (amountPaid < minRequiredAmount) {
+      toast.error(`Minimum payment (including fees) is: ${minRequiredAmount}`);
+      return;
+    }
+
+    if (amountPaid > totalRequiredAmount) {
+      toast.error(`Total amount cannot exceed: ${totalRequiredAmount}`);
+      return;
+    }
+
+    let receiptBase64payment = null;
+    if (formData.receiptImagepayment instanceof File) {
+      receiptBase64payment = await convertFileToBase64(formData.receiptImagepayment);
+    }
+    let receiptBase64plan = null;
+    if (formData.receiptImageplan instanceof File) {
+      receiptBase64plan = await convertFileToBase64(formData.receiptImageplan);
+    }
+
+    const payload = {
+      planId: formData.planId?.value,
+      paymentMethodId: formData.paymentMethodId?.value,
+      amount: amountPaid, 
+      ...(amountPaid < totalRequiredAmount && {
+        nextDueDate: formData.nextDueDate,
+      }),
+      ...(receiptBase64payment && { receiptImage: receiptBase64payment }),
+    };
+
+    if (promoData?.code) {
+      payload.promoCode = promoData.code;
+    }
+
+    const payload1 = {
+      planId: formData.planId?.value,
+      paymentMethodId: formData.paymentMethodId?.value,
+      ...(receiptBase64plan && { receiptImage: receiptBase64plan }),
+    };
+
+    await payment(payload, null, "Payment added successfully!");
+    await payplan(payload1, null, "Pay Plan Price added successfully!");
+
+    toast.success("Both operations completed!");
+    navigate("/admin/peyment");
+  } catch (error) {
+    console.error(error);
+    toast.error("Process failed");
+  }
+};
 
   return (
     <AddPage

@@ -53,19 +53,19 @@ const City = () => {
         titleAdd="City"
         columns={columns}
         data={tableData}
-                viewAdd={can(user, "city", "Add")}
+                viewAdd={can(user, "City", "Add")}
         
         onAddClick={() => navigate("add")}
         renderActions={(row) => (
           <div className="flex gap-2 items-center">
             
-  {can(user, "city", "Edit") && (
+  {can(user, "City", "Edit") && (
 
             <Button variant="edit" size="sm" onClick={() => navigate(`edit/${row.id}`)}>
               <Pencil className="size-4" />
             </Button>
             )}
-              {can(user, "city", "Delete") && (
+              {can(user, "City", "Delete") && (
             <Button
               variant="delete"
               size="sm"

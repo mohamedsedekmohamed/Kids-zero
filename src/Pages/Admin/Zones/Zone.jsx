@@ -65,13 +65,13 @@ const Zone = () => {
         renderActions={(row) => (
           <div className="flex gap-2 items-center">
             
-  {can(user, "admins", "Edit") && (
+  {can(user, "Zone", "Edit") && (
 
             <Button variant="edit" size="sm" onClick={() => navigate(`edit/${row.id}`)}>
               <Pencil className="size-4" />
             </Button>
             )}  
-              {can(user, "admins", "Delete") && (
+              {can(user, "Zone", "Delete") && (
             <Button
               variant="delete"
               size="sm"

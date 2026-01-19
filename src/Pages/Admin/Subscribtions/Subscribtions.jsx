@@ -194,7 +194,7 @@ const sub=data?.data?.subscriptionStatus
         columns={columns}
         data={tableData}
         renderActions={(row) =>
-            {can(user, "subscribtions", "Status") && (
+            {can(user, "Subscription", "Status") && (
           ( sub === "subscribed") && (
             <button
               onClick={() => {

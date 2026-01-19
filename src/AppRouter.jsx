@@ -393,7 +393,7 @@ const router = createBrowserRouter([
 {
   path: "city",
   element: (
-    <PrivateRoute requiredModule="city" requiredAction="View">
+    <PrivateRoute requiredModule="City" requiredAction="View">
       <City />
     </PrivateRoute>
   ),
@@ -401,7 +401,7 @@ const router = createBrowserRouter([
 {
   path: "city/add",
   element: (
-    <PrivateRoute requiredModule="city" requiredAction="Add">
+    <PrivateRoute requiredModule="City" requiredAction="Add">
       <AddCity />
     </PrivateRoute>
   ),
@@ -409,7 +409,7 @@ const router = createBrowserRouter([
 {
   path: "city/edit/:id",
   element: (
-    <PrivateRoute requiredModule="city" requiredAction="Edit">
+    <PrivateRoute requiredModule="City" requiredAction="Edit">
       <EditCity />
     </PrivateRoute>
   ),
@@ -420,7 +420,7 @@ const router = createBrowserRouter([
 {
   path: "zone",
   element: (
-    <PrivateRoute requiredModule="zone" requiredAction="View">
+    <PrivateRoute requiredModule="Zone" requiredAction="View">
       <Zone />
     </PrivateRoute>
   ),
@@ -428,7 +428,7 @@ const router = createBrowserRouter([
 {
   path: "zone/add",
   element: (
-    <PrivateRoute requiredModule="zone" requiredAction="Add">
+    <PrivateRoute requiredModule="Zone" requiredAction="Add">
       <AddZone />
     </PrivateRoute>
   ),
@@ -436,7 +436,7 @@ const router = createBrowserRouter([
 {
   path: "zone/edit/:id",
   element: (
-    <PrivateRoute requiredModule="zone" requiredAction="Edit">
+    <PrivateRoute requiredModule="Zone" requiredAction="Edit">
       <EditZone />
     </PrivateRoute>
   ),
@@ -502,7 +502,7 @@ const router = createBrowserRouter([
 {
   path: "peyment",
   element: (
-    <PrivateRoute requiredModule="peyment" requiredAction="View">
+    <PrivateRoute requiredModule="payments" requiredAction="View">
       <Peyment />
     </PrivateRoute>
   ),
@@ -510,7 +510,7 @@ const router = createBrowserRouter([
 {
   path: "peyment/add",
   element: (
-    <PrivateRoute requiredModule="peyment" requiredAction="Add">
+    <PrivateRoute requiredModule="payments" requiredAction="Add">
       <AddPaymentsa />
     </PrivateRoute>
   ),
@@ -528,7 +528,7 @@ const router = createBrowserRouter([
 {
   path: "subscribtions",
   element: (
-    <PrivateRoute requiredModule="subscribtions" requiredAction="View">
+    <PrivateRoute requiredModule="Subscription" requiredAction="View">
       <Subscribtions />
     </PrivateRoute>
   ),

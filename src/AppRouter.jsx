@@ -13,6 +13,7 @@ import PrivateRoute from "./Auth/PrivateRoute";
 import SaveRoute from "./Auth/SaveRoute";
 import SuperRoute from "./Auth/SuperRoute";
 import LoginSuper from "./Auth/LoginSuper";
+import SuperPrivateRoute from "./Auth/SuperPrivateRoute";
 
 import Home from "./Pages/Admin/Home/Home";
 
@@ -125,6 +126,9 @@ import SuperEditRoles from "./Pages/SuperAdmin/Roles/EditRoles";
 import Installments from './Pages/SuperAdmin/Installments/Installments'
 
 import SuperPayments from "./Pages/SuperAdmin/Payments/Payments";
+import Wallet from "./Pages/SuperAdmin/Wallet/Wallet"
+
+
 const router = createBrowserRouter([
   // {
   //   path: "/",
@@ -549,7 +553,6 @@ const router = createBrowserRouter([
       { path: "*", element: <ErrorPage /> },
     ],
   },
-
   {
     path: "/super",
     element: (
@@ -559,51 +562,291 @@ const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <Home /> },
-      { path: "bustypes", element: <BusTypes /> },
-      { path: "bustypes/add", element: <AddBusTypes /> },
-      { path: "bustypes/edit/:id", element: <EditBusTypes /> },
-      
-      { path: "parentplans", element: <ParentPlans /> },
-      { path: "parentplans/add", element: <AddParentPlans /> },  
-      { path: "parentplans/edit/:id", element: <EditParentPlans /> },
-      
-      { path: "admins", element: <SuperAdmins /> },
-      { path: "admins/add", element: <SuperAddAdmins /> },
-      { path: "admins/edit/:id", element: <SuperEditAdmins /> }   ,
-      
-      
- { path: "roles", element: <SuperRoles /> },
-      { path: "roles/add", element: <SuperAddRoles /> },
-      { path: "roles/edit/:id", element: <SuperEditRoles /> },
 
-      { path: "organization", element: <Organization /> },
-      { path: "organization/add", element: <AddOrganization /> },
-      { path: "organization/edit/:id", element: <EditOrganization /> },
-
-      { path: "promocodes", element: <Promocodes /> },
-      { path: "promocodes/add", element: <AddPromocodes /> },
-      { path: "promocodes/edit/:id", element: <EditPromocodes /> },
-
-      { path: "plans", element: <Plans /> },
-      { path: "plans/add", element: <AddPlans /> },
-      { path: "plans/edit/:id", element: <EditPlans /> },
-
-      { path: "paymentmethods", element: <Paymentmethods /> },
-      { path: "paymentmethods/add", element: <AddPaymentmethods /> },
-      { path: "paymentmethods/edit/:id", element: <EditPaymentmethods /> },
-
-      { path: "typesorganization", element: <OrganizationTypes /> },
-      { path: "typesorganization/add", element: <AddOrganizationTypes /> },
       {
-        path: "typesorganization/edit/:id",
-        element: <EditOrganizationTypes />,
-      },
-      { path: "invoice", element: <SuperInvoices /> },
+  path: "bustypes",
+  element: (
+    <SuperPrivateRoute requiredModule="bustypes" requiredAction="view">
+      <BusTypes />
+    </SuperPrivateRoute>
+  ),
+},
+      {
+  path: "bustypes/add",
+  element: (
+    <SuperPrivateRoute requiredModule="bustypes" requiredAction="create">
+      <AddBusTypes />
+    </SuperPrivateRoute>
+  ),
+},
+      {
+  path: "bustypes/edit/:id",
+  element: (
+    <SuperPrivateRoute requiredModule="bustypes" requiredAction="update">
+      <EditBusTypes />
+    </SuperPrivateRoute>
+  ),
+},
+        
+{
+  path: "parentplans",
+  element: (
+    <SuperPrivateRoute requiredModule="parentplans" requiredAction="view">
+      <BusTypes />
+    </SuperPrivateRoute>
+  ),
+},
+      {
+  path: "parentplans/add",
+  element: (
+    <SuperPrivateRoute requiredModule="parentplans" requiredAction="create">
+      <AddBusTypes />
+    </SuperPrivateRoute>
+  ),
+},
+      {
+  path: "parentplans/edit/:id",
+  element: (
+    <SuperPrivateRoute requiredModule="parentplans" requiredAction="update">
+      <EditBusTypes />
+    </SuperPrivateRoute>
+  ),
+},
+      
+{
+  path: "admins",
+  element: (
+    <SuperPrivateRoute requiredModule="sub_admins" requiredAction="view">
+      <SuperAdmins />
+    </SuperPrivateRoute>
+  ),
+},
+      {
+  path: "admins/add",
+  element: (
+    <SuperPrivateRoute requiredModule="sub_admins" requiredAction="create">
+      <SuperAddAdmins />
+    </SuperPrivateRoute>
+  ),
+},
+      {
+  path: "admins/edit/:id",
+  element: (
+    <SuperPrivateRoute requiredModule="sub_admins" requiredAction="update">
+      <SuperEditAdmins />
+    </SuperPrivateRoute>
+  ),
+},
 
-      { path: "profile", element: <SuperProfile /> },
-      { path: "subscribers", element: <Subscribers /> },
-      { path: "installments", element: <Installments /> },
-      { path: "payments", element: <SuperPayments /> },
+{
+  path: "roles",
+  element: (
+    <SuperPrivateRoute requiredModule="super_admin_roles" requiredAction="view">
+      <SuperRoles />
+    </SuperPrivateRoute>
+  ),
+},
+      {
+  path: "roles/add",
+  element: (
+    <SuperPrivateRoute requiredModule="super_admin_roles" requiredAction="create">
+      <SuperAddRoles />
+    </SuperPrivateRoute>
+  ),
+},
+      {
+  path: "roles/edit/:id",
+  element: (
+    <SuperPrivateRoute requiredModule="super_admin_roles" requiredAction="update">
+      <SuperEditRoles />
+    </SuperPrivateRoute>
+  ),
+},
+
+
+{
+  path: "organization",
+  element: (
+    <SuperPrivateRoute requiredModule="organizations" requiredAction="view">
+      <Organization />
+    </SuperPrivateRoute>
+  ),
+},
+      {
+  path: "organization/add",
+  element: (
+    <SuperPrivateRoute requiredModule="organizations" requiredAction="create">
+      <AddOrganization />
+    </SuperPrivateRoute>
+  ),
+},
+      {
+  path: "organization/edit/:id",
+  element: (
+    <SuperPrivateRoute requiredModule="organizations" requiredAction="update">
+      <EditOrganization />
+    </SuperPrivateRoute>
+  ),
+},
+
+
+
+{
+  path: "promocodes",
+  element: (
+    <SuperPrivateRoute requiredModule="promocodes" requiredAction="view">
+      <Promocodes />
+    </SuperPrivateRoute>
+  ),
+},
+      {
+  path: "promocodes/add",
+  element: (
+    <SuperPrivateRoute requiredModule="promocodes" requiredAction="create">
+      <AddPromocodes />
+    </SuperPrivateRoute>
+  ),
+},
+      {
+  path: "promocodes/edit/:id",
+  element: (
+    <SuperPrivateRoute requiredModule="promocodes" requiredAction="update">
+      <EditPromocodes />
+    </SuperPrivateRoute>
+  ),
+},
+
+{
+  path: "plans",
+  element: (
+    <SuperPrivateRoute requiredModule="plans" requiredAction="view">
+      <Plans />
+    </SuperPrivateRoute>
+  ),
+},
+      {
+  path: "plans/add",
+  element: (
+    <SuperPrivateRoute requiredModule="plans" requiredAction="create">
+      <AddPlans />
+    </SuperPrivateRoute>
+  ),
+},
+      {
+  path: "plans/edit/:id",
+  element: (
+    <SuperPrivateRoute requiredModule="plans" requiredAction="update">
+      <EditPlans />
+    </SuperPrivateRoute>
+  ),
+},
+
+{
+  path: "paymentmethods",
+  element: (
+    <SuperPrivateRoute requiredModule="payment_methods" requiredAction="view">
+      <Paymentmethods />
+    </SuperPrivateRoute>
+  ),
+},
+      {
+  path: "paymentmethods/add",
+  element: (
+    <SuperPrivateRoute requiredModule="payment_methods" requiredAction="create">
+      <AddPaymentmethods />
+    </SuperPrivateRoute>
+  ),
+},
+      {
+  path: "paymentmethods/edit/:id",
+  element: (
+    <SuperPrivateRoute requiredModule="payment_methods" requiredAction="update">
+      <EditPaymentmethods />
+    </SuperPrivateRoute>
+  ),
+},
+
+
+      
+      {
+  path: "typesorganization",
+  element: (
+    <SuperPrivateRoute requiredModule="typesorganization" requiredAction="view">
+      <OrganizationTypes />
+    </SuperPrivateRoute>
+  ),
+},
+      {
+  path: "typesorganization/add",
+  element: (
+    <SuperPrivateRoute requiredModule="typesorganization" requiredAction="create">
+      <AddOrganizationTypes />
+    </SuperPrivateRoute>
+  ),
+},
+      {
+  path: "typesorganization/edit/:id",
+  element: (
+    <SuperPrivateRoute requiredModule="typesorganization" requiredAction="update">
+      <EditOrganizationTypes />
+    </SuperPrivateRoute>
+  ),
+},
+  
+         {
+  path: "invoice",
+  element: (
+    <SuperPrivateRoute requiredModule="invoice" requiredAction="view">
+      <SuperInvoices />
+    </SuperPrivateRoute>
+  ),
+},
+         {
+  path: "profile",
+  element: (
+    <SuperPrivateRoute requiredModule="profile" requiredAction="view">
+      <SuperProfile />
+    </SuperPrivateRoute>
+  ),
+},
+         {
+  path: "subscribers",
+  element: (
+    <SuperPrivateRoute requiredModule="subscribers" requiredAction="view">
+      <Subscribers />
+    </SuperPrivateRoute>
+  ),
+},
+         {
+  path: "installments",
+  element: (
+    <SuperPrivateRoute requiredModule="installments" requiredAction="view">
+      <Installments />
+    </SuperPrivateRoute>
+  ),
+},
+         {
+  path: "payments",
+  element: (
+    <SuperPrivateRoute requiredModule="payments" requiredAction="view">
+      <SuperPayments />
+    </SuperPrivateRoute>
+  ),
+},
+         {
+  path: "wallet",
+  element: (
+    <SuperPrivateRoute requiredModule="wallet" requiredAction="view">
+      <Wallet />
+    </SuperPrivateRoute>
+  ),
+},
+
+
+
+
+            { path: "unauthorized", element: <Unauthorized /> },
+
             { path: "*", element: <ErrorPage /> },
 
     ],

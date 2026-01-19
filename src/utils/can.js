@@ -1,7 +1,12 @@
 export const can = (user, module, action) => {
+  if (!user) return false;
+
   if (user.type === "organizer") return true;
 
-  if (user.type !== "admin") return false;
+  if (user.role === "superadmin") return true;
 
-  return user.permissionsMap?.[module]?.includes(action);
+  if (user.role === "subadmin" || user.type === "admin") {
+    return user.permissionsMap?.[module]?.includes(action);
+  }
+  return false; 
 };

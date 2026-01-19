@@ -106,9 +106,9 @@ const rejectInstallment = async () => {
   return (
         <div className="p-10 bg-background min-h-screen">
 
-      <div className="flex w-full justify-center  gap-3 mb-6">
+      <div className="flex  w-full justify-center  gap-3 mb-6">
       {summary && (
-        <div className="flex gap-4 text-sm font-medium">
+        <div className="flex gap-4  flex-wrap text-sm font-medium">
           <div className="px-4 py-2 rounded-full text-sm font-medium transition  bg-one text-white ">Total: {summary.total}</div>
         <div className="px-4 py-2 rounded-full text-sm font-medium transition bg-one text-white ">Pending: {summary.pending}</div>
           <div className="px-4 py-2 rounded-full text-sm font-medium transition bg-one text-white ">Approved: {summary.approved}</div>

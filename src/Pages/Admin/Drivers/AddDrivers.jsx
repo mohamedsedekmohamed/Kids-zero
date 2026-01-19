@@ -23,6 +23,7 @@ const AddDrivers = () => {
         return null;
       }
     },
+    { name: "email", label: "Gmail", type: "email", placeholder: "Enter email", required: true },
     { name: "password", label: "Password", type: "password", placeholder: "Enter password", required: true },
     { name: "nationalId", label: "National ID", type: "text", placeholder: "Enter National ID" },
     { name: "licenseExpiry", label: "License Expiry Date", type: "date", required: true },

@@ -4,6 +4,13 @@ import toast, { Toaster } from "react-hot-toast";
 import { GiTeacher } from "react-icons/gi";
 import usePost from "@/hooks/usePost";
 
+const buildPermissionsMap = (permissions = []) => {
+  const map = {};
+  permissions.forEach((p) => {
+    map[p.module] = p.actions.map((a) => a.action);
+  });
+  return map;
+};
 const LoginSuper = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -26,10 +33,16 @@ const { postData, loading } = usePost();
       localStorage.setItem("role",  "super");
                   const superAdmin = res.data.superAdmin;
 
-  localStorage.setItem(
+   let permissionsMap = {};
+      if (superAdmin.role === "subadmin" && superAdmin.roleDetails?.permissions) {
+        permissionsMap = buildPermissionsMap(superAdmin.roleDetails.permissions);
+      }
+
+      localStorage.setItem(
         "superAdmin",
         JSON.stringify({
-        superAdmin
+          ...superAdmin,
+          permissionsMap,
         })
       );
 

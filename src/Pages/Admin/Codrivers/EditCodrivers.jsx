@@ -104,6 +104,8 @@ const EditCodrivers = () => {
         return null;
       },
     },
+         { name: "email", label: "Gmail", type: "email", placeholder: "Enter email", required: true },
+
     {
       name: "password",
       label: "Password",

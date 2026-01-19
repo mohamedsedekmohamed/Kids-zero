@@ -106,6 +106,8 @@ const EditDrivers = () => {
         return null;
       },
     },
+        { name: "email", label: "Gmail", type: "email", placeholder: "Enter email", required: true },
+
     { name: "password", label: "Password", type: "password", placeholder: "Leave empty to keep current password" },
     { name: "nationalId", label: "National ID", type: "text" },
     { name: "licenseExpiry", label: "License Expiry Date", type: "date", required: true },

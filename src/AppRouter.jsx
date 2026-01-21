@@ -580,6 +580,24 @@ const router = createBrowserRouter([
       { path: "*", element: <ErrorPage /> },
     ],
   },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   {
     path: "/super",
     element: (
@@ -798,7 +816,7 @@ const router = createBrowserRouter([
       {
   path: "typesorganization",
   element: (
-    <SuperPrivateRoute requiredModule="typesorganization" requiredAction="view">
+    <SuperPrivateRoute requiredModule="type_organizations" requiredAction="view">
       <OrganizationTypes />
     </SuperPrivateRoute>
   ),
@@ -806,7 +824,7 @@ const router = createBrowserRouter([
       {
   path: "typesorganization/add",
   element: (
-    <SuperPrivateRoute requiredModule="typesorganization" requiredAction="create">
+    <SuperPrivateRoute requiredModule="type_organizations" requiredAction="create">
       <AddOrganizationTypes />
     </SuperPrivateRoute>
   ),
@@ -814,7 +832,7 @@ const router = createBrowserRouter([
       {
   path: "typesorganization/edit/:id",
   element: (
-    <SuperPrivateRoute requiredModule="typesorganization" requiredAction="update">
+    <SuperPrivateRoute requiredModule="type_organizations" requiredAction="update">
       <EditOrganizationTypes />
     </SuperPrivateRoute>
   ),
@@ -823,7 +841,7 @@ const router = createBrowserRouter([
          {
   path: "invoice",
   element: (
-    <SuperPrivateRoute requiredModule="invoice" requiredAction="view">
+    <SuperPrivateRoute requiredModule="invoices" requiredAction="view">
       <SuperInvoices />
     </SuperPrivateRoute>
   ),
@@ -839,7 +857,7 @@ const router = createBrowserRouter([
          {
   path: "subscribers",
   element: (
-    <SuperPrivateRoute requiredModule="subscribers" requiredAction="view">
+    <SuperPrivateRoute requiredModule="subscriptions" requiredAction="view">
       <Subscribers />
     </SuperPrivateRoute>
   ),
@@ -863,7 +881,7 @@ const router = createBrowserRouter([
          {
   path: "wallet",
   element: (
-    <SuperPrivateRoute requiredModule="wallet" requiredAction="view">
+    <SuperPrivateRoute requiredModule="wallets" requiredAction="view">
       <Wallet />
     </SuperPrivateRoute>
   ),

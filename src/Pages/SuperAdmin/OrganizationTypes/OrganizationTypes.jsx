@@ -74,17 +74,17 @@ const OrganizationTypes = () => {
         title="Organization Types"
         titleAdd="Organization Type"
         columns={columns}
-        viewAdd={can(user, "typesorganization", "create")}
+        viewAdd={can(user, "type_organizations", "create")}
         data={tableData}
         onAddClick={() => navigate("add")}
         renderActions={(row) => (
           <div className="flex gap-2 items-center">
-            {can(user, "typesorganization", "update") && (
+            {can(user, "type_organizations", "update") && (
               <Button variant="edit" size="sm" onClick={() => handleEdit(row)}>
                 <Pencil className="size-4" /> Edit
               </Button>
             )}
-            {can(user, "typesorganization", "delete") && (
+            {can(user, "type_organizations", "delete") && (
               <Button
                 variant="delete"
                 size="sm"

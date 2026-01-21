@@ -63,10 +63,9 @@ const Invoices = () => {
         title="Invoices"
         columns={columns}
         data={tableData}
-        hideAdd
         renderActions={(row) => (
           <div className="flex gap-2 items-center">
-            {can(user, "invoice", "delete") && (
+            {can(user, "invoices", "delete") && (
             <Button    
               variant="delete"
               size="sm"

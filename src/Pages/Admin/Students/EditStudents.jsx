@@ -77,14 +77,14 @@ const EditStudent = () => {
     { name: "name", label: "Student Name", type: "text", required: true },
     { name: "grade", label: "Grade", type: "text", required: true },
     { name: "classroom", label: "Classroom", type: "text", required: true },
-    {
-      name: "parentId",
-      label: "Select Parent",
-      type: "autocomplete",
-      options: parentsOptions,
-      required: true,
-      fullWidth: true,
-    },
+    // {
+    //   name: "parentId",
+    //   label: "Select Parent",
+    //   type: "autocomplete",
+    //   options: parentsOptions,
+    //   required: true,
+    //   fullWidth: true,
+    // },
     {
       name: "zoneId",
       label: "Select Zone",

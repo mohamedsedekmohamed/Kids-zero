@@ -40,6 +40,7 @@ const Students = () => {
       ),
     },
     { header: "Grade", key: "grade" },
+    { header: "Code", key: "code" },
     { header: "Classroom", key: "classroom" },
     {
       header: "Parent Info",
@@ -63,6 +64,7 @@ const Students = () => {
       classroom: item.classroom,
       status: item.status,
       parent: item.parent,
+      code: item.code,
     })) || [];
 
   /* ================= Handlers ================= */

@@ -25,7 +25,7 @@ const BusTypes = () => {
   } = useGet("/api/superadmin/bustypes");
 
   // ✅ DELETE
-  const { deleteData: deleteBusType } =
+  const { deleteData: deleteBusType  , loading: deleteLoading} =
     useDelete("/api/superadmin/bustypes");
 
   // ✅ UPDATE (Status)
@@ -81,7 +81,7 @@ const BusTypes = () => {
     }
   };
 
-  if (loading) return    
+  if (loading ||deleteLoading) return    
    <div className="flex justify-center items-center h-screen">
         <Loading />
       </div>;

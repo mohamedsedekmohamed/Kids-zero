@@ -17,14 +17,14 @@ const LocationMarker = ({ setPosition }) => {
 };
 
 const MapPicker = ({ lat, lng, onChange }) => {
-  const position = lat && lng ? [lat, lng] : [24.7136, 46.6753];
+const position = lat && lng ? [lat, lng] : [31.2001, 29.9187];
 
   return (
     <MapContainer
       center={position}
       zoom={13}
       className="rounded-xl"
-      style={{ height: '100%', width: '100%' }} // مهم جدًا
+      style={{ height: '100%', width: '100%' }} 
     >
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

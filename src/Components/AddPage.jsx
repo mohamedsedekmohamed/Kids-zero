@@ -205,7 +205,7 @@ const validateForm = () => {
     <label className="text-sm font-semibold uppercase tracking-wider text-four mb-2">
       Select Location on Map
     </label>
-    <div className="w-full h-80"> {/* تحديد ارتفاع ثابت */}
+    <div className="w-full h-80"> 
       <MapPicker
         lat={Number(formData.lat)}
         lng={Number(formData.lng)}
@@ -225,7 +225,7 @@ const validateForm = () => {
 {field.type === 'autocomplete' && (
   <ParentSelect
     value={formData[field.name]}                    // ← object أو null
-  onChange={(selectedOption) =>                   // ← selectedOption → object كامل أو null
+  onChange={(selectedOption) =>                
     setFormData(prev => ({ ...prev, [field.name]: selectedOption }))
   }
     options={field.options || []}

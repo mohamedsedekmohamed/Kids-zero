@@ -55,7 +55,8 @@ const SideBar = ({ menuItems, isExpanded, setIsExpanded, isMobileOpen, setIsMobi
       </div>
 
       {/* Menu Items */}
-      <ul className="flex-1 pt-4 px-3 space-y-2 overflow-y-auto custom-scrollbar"           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      <ul className="flex-1 pt-4 px-3 space-y-2 overflow-y-auto custom-scrollbar"  
+               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
 >
         
         {menuItems.map((item, index) => {

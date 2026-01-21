@@ -10,6 +10,7 @@ import { Button } from "@/Components/UI/button";
 import ConfirmModal from "@/Components/UI/ConfirmModal";
 import StatusSwitch from "@/Components/UI/StatusSwitch";
 import { can } from "@/utils/can"; 
+import { TfiInfo } from "react-icons/tfi";
 
 const Drivers = () => {
   const [openDelete, setOpenDelete] = useState(false);
@@ -119,6 +120,15 @@ const Drivers = () => {
               <Pencil className="size-4" />
             </Button>
                 )}
+                 {can(user, "drivers", "View") && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => navigate(`info/${row.id}`)}
+                              >
+                                <TfiInfo className="size-4 " />
+                              </Button>
+                            )}
                   {can(user, "drivers", "Delete") && (
                 
             <Button

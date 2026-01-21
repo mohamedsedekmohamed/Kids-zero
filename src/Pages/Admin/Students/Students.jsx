@@ -10,6 +10,7 @@ import { Button } from "@/Components/UI/button";
 import ConfirmModal from "@/Components/UI/ConfirmModal";
 import StatusSwitch from "@/Components/UI/StatusSwitch";
 import { can } from "@/utils/can";
+import { TfiInfo } from "react-icons/tfi";
 
 const Students = () => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -123,6 +124,15 @@ const Students = () => {
                 onClick={() => navigate(`edit/${row.id}`)}
               >
                 <Pencil className="size-4" />
+              </Button>
+            )}
+            {can(user, "students", "View") && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate(`info/${row.id}`)}
+              >
+                <TfiInfo className="size-4 " />
               </Button>
             )}
             {can(user, "students", "Delete") && (

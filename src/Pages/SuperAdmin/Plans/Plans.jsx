@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { Trash2, Pencil } from "lucide-react";
 import { Button } from "@/Components/UI/button";
 import ConfirmModal from "@/Components/UI/ConfirmModal";
+import { can } from "@/utils/can";
 
 const Plans = () => {
   const [openDelete, setOpenDelete] = useState(false);
@@ -15,6 +16,7 @@ const Plans = () => {
 
   const { data, loading, refetch } = useGet("/api/superadmin/plans");
   const { deleteData } = useDelete("/api/superadmin/plans");
+  const user = JSON.parse(localStorage.getItem("superAdmin"));
 
   // Table Columns
   const columns = [
@@ -65,27 +67,31 @@ const Plans = () => {
         titleAdd="Plan"
         columns={columns}
         data={tableData}
+        viewAdd={can(user, "plans", "create")}
         onAddClick={() => navigate("add")}
         renderActions={(row) => (
           <div className="flex gap-2 items-center">
-            <Button
-              variant="edit"
-              size="sm"
-              onClick={() => navigate(`edit/${row.id}`)}
-            >
-              <Pencil className="size-4" />
-            </Button>
-
-            <Button
-              variant="delete"
-              size="sm"
-              onClick={() => {
-                setSelectedId(row.id);
-                setOpenDelete(true);
-              }}
-            >
-              <Trash2 className="size-4" />
-            </Button>
+            {can(user, "plans", "update") && (
+              <Button
+                variant="edit"
+                size="sm"
+                onClick={() => navigate(`edit/${row.id}`)}
+              >
+                <Pencil className="size-4" />
+              </Button>
+            )}
+            {can(user, "plans", "delete") && (
+              <Button
+                variant="delete"
+                size="sm"
+                onClick={() => {
+                  setSelectedId(row.id);
+                  setOpenDelete(true);
+                }}
+              >
+                <Trash2 className="size-4" />
+              </Button>
+            )}
           </div>
         )}
       />

@@ -7,11 +7,13 @@ import { useNavigate } from "react-router-dom";
 import { Trash2, Pencil } from "lucide-react";
 import { Button } from "@/Components/UI/button";
 import ConfirmModal from "@/Components/UI/ConfirmModal";
+import { can } from "@/utils/can";
 
 const Organization = () => {
   const [openDelete, setOpenDelete] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("superAdmin"));
 
   // ✅ GET Organizations
   const { data: orgsData, loading, refetch } = useGet("/api/superadmin/organizations");
@@ -74,12 +76,18 @@ const Organization = () => {
         titleAdd="Organization"
         columns={columns}
         data={tableData}
+          viewAdd={can(user, "organizations", "create")}
         onAddClick={() => navigate("add")}
         renderActions={(row) => (
           <div className="flex gap-2 items-center">
+                         {can(user, "organizations", "update") && (
+            
             <Button variant="edit" size="sm" onClick={() => handleEdit(row)}>
               <Pencil className="size-4" /> Edit
             </Button>
+                          )}  
+              {can(user, "organizations", "delete") && (
+
             <Button
               variant="delete"
               size="sm"
@@ -90,6 +98,8 @@ const Organization = () => {
             >
               <Trash2 className="size-4" /> Delete
             </Button>
+                         )} 
+
           </div>
         )}
       />

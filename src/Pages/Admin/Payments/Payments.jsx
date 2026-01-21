@@ -179,7 +179,7 @@ const Payments = () => {
             <img
               src={selectedImage}
               alt="receipt"
-              className="w-full rounded"
+              className="w-full h-100 rounded"
             />
           )
         }

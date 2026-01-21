@@ -4,9 +4,9 @@ import useDelete from "@/hooks/useDelete";
 import ReusableTable from "@/Components/UI/ReusableTable";
 import Loading from "@/Components/Loading";
 import ConfirmModal from "@/Components/UI/ConfirmModal";
-import { useNavigate } from "react-router-dom";
 import { Trash2 } from "lucide-react";
 import { Button } from "@/Components/UI/button";
+import { can } from "@/utils/can";
 
 const Invoices = () => {
   const [openDelete, setOpenDelete] = useState(false);
@@ -15,7 +15,7 @@ const Invoices = () => {
   const { data, loading, refetch } = useGet("/api/superadmin/invoices");
   const { deleteData } = useDelete("/api/superadmin/invoices");
 
-  const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("superAdmin"));
 
   const columns = [
     { header: "Invoice ID", key: "id" },
@@ -66,7 +66,8 @@ const Invoices = () => {
         hideAdd
         renderActions={(row) => (
           <div className="flex gap-2 items-center">
-            <Button
+            {can(user, "invoice", "delete") && (
+            <Button    
               variant="delete"
               size="sm"
               onClick={() => {
@@ -76,7 +77,10 @@ const Invoices = () => {
             >
               <Trash2 className="size-4" />
             </Button>
-          </div>
+
+)} 
+          </div>            
+
         )}
       />
 

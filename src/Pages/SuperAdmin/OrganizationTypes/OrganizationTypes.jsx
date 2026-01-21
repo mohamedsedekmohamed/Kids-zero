@@ -7,11 +7,13 @@ import { useNavigate } from "react-router-dom";
 import { Trash2, Pencil } from "lucide-react";
 import { Button } from "@/Components/UI/button";
 import ConfirmModal from "@/Components/UI/ConfirmModal";
+import { can } from "@/utils/can";
 
 const OrganizationTypes = () => {
   const [openDelete, setOpenDelete] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("superAdmin"));
 
   // ✅ GET Organization Types
   const {
@@ -21,7 +23,9 @@ const OrganizationTypes = () => {
   } = useGet("/api/superadmin/organizations/types");
 
   // ✅ DELETE
-  const { deleteData: deleteOrgType } = useDelete("/api/superadmin/organizations/types");
+  const { deleteData: deleteOrgType } = useDelete(
+    "/api/superadmin/organizations/types",
+  );
 
   // ✅ Table columns
   const columns = [
@@ -70,23 +74,28 @@ const OrganizationTypes = () => {
         title="Organization Types"
         titleAdd="Organization Type"
         columns={columns}
+        viewAdd={can(user, "typesorganization", "create")}
         data={tableData}
         onAddClick={() => navigate("add")}
         renderActions={(row) => (
           <div className="flex gap-2 items-center">
-            <Button variant="edit" size="sm" onClick={() => handleEdit(row)}>
-              <Pencil className="size-4" /> Edit
-            </Button>
-            <Button
-              variant="delete"
-              size="sm"
-              onClick={() => {
-                setSelectedId(row.id);
-                setOpenDelete(true);
-              }}
-            >
-              <Trash2 className="size-4" /> Delete
-            </Button>
+            {can(user, "typesorganization", "update") && (
+              <Button variant="edit" size="sm" onClick={() => handleEdit(row)}>
+                <Pencil className="size-4" /> Edit
+              </Button>
+            )}
+            {can(user, "typesorganization", "delete") && (
+              <Button
+                variant="delete"
+                size="sm"
+                onClick={() => {
+                  setSelectedId(row.id);
+                  setOpenDelete(true);
+                }}
+              >
+                <Trash2 className="size-4" /> Delete
+              </Button>
+            )}
           </div>
         )}
       />

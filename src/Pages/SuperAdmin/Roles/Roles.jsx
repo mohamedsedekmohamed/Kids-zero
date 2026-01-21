@@ -9,19 +9,19 @@ import { Trash2, Pencil } from "lucide-react";
 import { Button } from "@/Components/UI/button";
 import ConfirmModal from "@/Components/UI/ConfirmModal";
 import StatusSwitch from "@/Components/UI/StatusSwitch";
+import { can } from "@/utils/can";
 
 const Roles = () => {
   const [openDelete, setOpenDelete] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("superAdmin"));
 
   const { data: getRoles, loading, refetch } = useGet("/api/superadmin/roles");
   const { deleteData: deleteRole } = useDelete("/api/superadmin/roles");
   const { putData } = usePut("");
 
-  const columns = [
-    { header: "Role Name", key: "name" },
-  ];
+  const columns = [{ header: "Role Name", key: "name" }];
 
   const tableData =
     getRoles?.data?.roles?.map((role) => ({
@@ -45,15 +45,24 @@ const Roles = () => {
   const handleToggleStatus = async (row) => {
     const newStatus = row.status === "active" ? "inactive" : "active";
     try {
-      await putData({ status: newStatus }, `/api/superadmin/roles/${row.id}`, "Status updated!");
+      await putData(
+        { status: newStatus },
+        `/api/superadmin/roles/${row.id}`,
+        "Status updated!",
+      );
       refetch();
     } catch (err) {
       console.error(err);
     }
   };
 
-  if (loading) return <div className="flex justify-center items-center h-screen"> <Loading />  </div>
-
+  if (loading)
+    return (
+      <div className="flex justify-center items-center h-screen">
+        {" "}
+        <Loading />{" "}
+      </div>
+    );
 
   return (
     <div className="p-10 bg-background min-h-screen">
@@ -62,26 +71,37 @@ const Roles = () => {
         titleAdd="Role"
         columns={columns}
         data={tableData}
+        viewAdd={can(user, "super_admin_roles", "create")}
         onAddClick={() => navigate("add")}
         renderActions={(row) => (
           <div className="flex gap-2 items-center">
-              <StatusSwitch
-              checked={row.status === "active"}
-              onChange={() => handleToggleStatus(row)}
-            />
-            <Button variant="edit" size="sm" onClick={() => navigate(`edit/${row.id}`)}>
-              <Pencil className="size-4" />
-            </Button>
-            <Button
-              variant="delete"
-              size="sm"
-              onClick={() => {
-                setSelectedId(row.id);
-                setOpenDelete(true);
-              }}
-            >
-              <Trash2 className="size-4" />
-            </Button>
+            {can(user, "super_admin_roles", "update") && (
+              <>
+                <StatusSwitch
+                  checked={row.status === "active"}
+                  onChange={() => handleToggleStatus(row)}
+                />
+                <Button
+                  variant="edit"
+                  size="sm"
+                  onClick={() => navigate(`edit/${row.id}`)}
+                >
+                  <Pencil className="size-4" />
+                </Button>
+              </>
+            )}
+            {can(user, "super_admin_roles", "delete") && (
+              <Button
+                variant="delete"
+                size="sm"
+                onClick={() => {
+                  setSelectedId(row.id);
+                  setOpenDelete(true);
+                }}
+              >
+                <Trash2 className="size-4" />
+              </Button>
+            )}
           </div>
         )}
       />

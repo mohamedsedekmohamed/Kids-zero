@@ -7,11 +7,13 @@ import { useNavigate } from "react-router-dom";
 import { Trash2, Pencil } from "lucide-react";
 import { Button } from "@/Components/UI/button";
 import ConfirmModal from "@/Components/UI/ConfirmModal";
+import { can } from "@/utils/can";
 
 const Promocodes = () => {
   const [openDelete, setOpenDelete] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("superAdmin"));
 
   // ✅ GET Promo Codes
   const {
@@ -80,9 +82,11 @@ const Promocodes = () => {
         titleAdd="Promo Code"
         columns={columns}
         data={tableData}
+       viewAdd={can(user, "promocodes", "create")}
         onAddClick={() => navigate("add")}
         renderActions={(row) => (
           <div className="flex gap-2 items-center">
+    {can(user, "promocodes", "update") && (
             <Button
               variant="edit"
               size="sm"
@@ -91,6 +95,8 @@ const Promocodes = () => {
               <Pencil className="size-4" />
               Edit
             </Button>
+                 )}  
+        {can(user, "promocodes", "delete") && (
             <Button
               variant="delete"
               size="sm"
@@ -102,6 +108,7 @@ const Promocodes = () => {
               <Trash2 className="size-4" />
               Delete
             </Button>
+                 )}
           </div>
         )}
       />

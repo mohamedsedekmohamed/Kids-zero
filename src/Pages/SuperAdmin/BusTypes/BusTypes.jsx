@@ -9,11 +9,13 @@ import { Trash2, Pencil } from "lucide-react";
 import { Button } from "@/Components/UI/button";
 import ConfirmModal from "@/Components/UI/ConfirmModal";
 import StatusSwitch from "@/Components/UI/StatusSwitch";
+import { can } from "@/utils/can"; 
 
 const BusTypes = () => {
   const [openDelete, setOpenDelete] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const navigate = useNavigate();
+    const user = JSON.parse(localStorage.getItem("superAdmin"));
 
   // ✅ GET Bus Types
   const {
@@ -91,17 +93,25 @@ const BusTypes = () => {
         titleAdd="Bus Type"
         columns={columns}
         data={tableData}
+       viewAdd={can(user, "bustypes", "create")}
         onAddClick={() => navigate("add")}
         renderActions={(row) => (
           <div className="flex gap-2 items-center">
+            {can(user, "bustypes", "update") && (
+              <>
             <StatusSwitch
               checked={row.status === "active"}
               onChange={() => handleToggleStatus(row)}
-            />
+              />
+            
             <Button variant="edit" size="sm" onClick={() => handleEdit(row)}>
               <Pencil className="size-4" />
               Edit
             </Button>
+              </>
+                        )}  
+              {can(user, "bustypes", "delete") && (
+
             <Button
               variant="delete"
               size="sm"
@@ -113,6 +123,8 @@ const BusTypes = () => {
               <Trash2 className="size-4" />
               Delete
             </Button>
+                                    )}  
+
           </div>
         )}
       />

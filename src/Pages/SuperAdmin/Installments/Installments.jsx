@@ -5,6 +5,7 @@ import Loading from "@/Components/Loading";
 import axios from "axios";
 import { getToken } from "@/utils/auth";
 import toast ,{Toaster} from "react-hot-toast";
+import { can } from "@/utils/can";
 
 const Installments = () => {
   const { data, loading } = useGet("/api/superadmin/payments/installments/all");
@@ -12,6 +13,7 @@ const token =getToken();
 const [showRejectModal, setShowRejectModal] = useState(false);
 const [selectedId, setSelectedId] = useState(null);
 const [rejectedReason, setRejectedReason] = useState("");
+  const user = JSON.parse(localStorage.getItem("superAdmin"));
 
   const columns = [
   
@@ -66,34 +68,56 @@ const [rejectedReason, setRejectedReason] = useState("");
   }
 };
 
+
 const approveInstallment = async (id) => {
-  await axios.put(
-    `https://Bcknd.Kidsero.com/api/superadmin/payments/installments/${id}/approve`,
-    null,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  try {
+    await axios.put(
+      `https://Bcknd.Kidsero.com/api/superadmin/payments/installments/${id}/approve`,
+      null,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    toast.success("Installment approved successfully.");
+  } catch (error) {
+    toast.error(
+      error?.response?.data?.message ||
+        "Something went wrong while approving the installment."
+    );
+  }
 };
 
 const rejectInstallment = async () => {
-  if (!rejectedReason.trim()) return;
+  if (!rejectedReason.trim()) {
+    toast.error("Please enter a rejection reason.");
+    return;
+  }
 
-  await axios.put(
-    `https://Bcknd.Kidsero.com/api/superadmin/payments/installments/${selectedId}/reject`,
-    { rejectedReason },
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  try {
+    await axios.put(
+      `https://Bcknd.Kidsero.com/api/superadmin/payments/installments/${selectedId}/reject`,
+      { rejectedReason },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
-  setShowRejectModal(false);
-  setRejectedReason("");
+    toast.success("Installment rejected successfully.");
+    setShowRejectModal(false);
+    setRejectedReason("");
+  } catch (error) {
+    toast.error(
+      error?.response?.data?.message ||
+        "Something went wrong while rejecting the installment."
+    );
+  }
 };
+
   if (loading)
     return (
       <div className="flex justify-center items-center h-screen">
@@ -124,6 +148,8 @@ const rejectInstallment = async () => {
         data={tableData}
 renderActions={(row) =>
   row.status === "pending" && (
+                 can(user, "installments", "update") && (
+    
     <select
       defaultValue=""
       onChange={(e) => handleActionChange(e.target.value, row.id)}
@@ -135,6 +161,7 @@ renderActions={(row) =>
       <option value="approve">Approve</option>
       <option value="reject">Reject</option>
     </select>
+  )
   )
 }
 

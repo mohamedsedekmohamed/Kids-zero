@@ -9,16 +9,20 @@ import { Button } from "@/Components/UI/button";
 import ConfirmModal from "@/Components/UI/ConfirmModal";
 import usePut from "@/hooks/usePut";
 import StatusSwitch from "@/Components/UI/StatusSwitch";
+import { can } from "@/utils/can";
 
 const PaymentMethods = () => {
   const [openDelete, setOpenDelete] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("superAdmin"));
 
   // ✅ GET Payment Methods
-  const { data: paymentData, loading, refetch } = useGet(
-    "/api/superadmin/paymentmethods"
-  );
+  const {
+    data: paymentData,
+    loading,
+    refetch,
+  } = useGet("/api/superadmin/paymentmethods");
   const { putData } = usePut("");
 
   // ✅ DELETE Payment Method
@@ -26,7 +30,7 @@ const PaymentMethods = () => {
 
   // ✅ Table columns
   const columns = [
-      {
+    {
       header: "Student Info",
       key: "logo",
       render: (_, row) => (
@@ -52,17 +56,17 @@ const PaymentMethods = () => {
       name: item.name,
       description: item.description,
       logo: item.logo,
-      isActive: item.isActive ,
-      feeStatus: item.feeStatus ,
+      isActive: item.isActive,
+      feeStatus: item.feeStatus,
       feeAmount: item.feeAmount,
     })) || [];
-      const handleToggleStatus = async (row) => {
-    const newStatus = row.isActive === false ? true : false ;
+  const handleToggleStatus = async (row) => {
+    const newStatus = row.isActive === false ? true : false;
     try {
       await putData(
         { is_active: newStatus },
         `/api/superadmin/paymentmethods/${row.id}`,
-        "Status updated!"
+        "Status updated!",
       );
       refetch();
     } catch (err) {
@@ -102,28 +106,39 @@ const PaymentMethods = () => {
         titleAdd="Payment Method"
         columns={columns}
         data={tableData}
+        viewAdd={can(user, "payment_methods", "create")}
         onAddClick={() => navigate("add")}
         renderActions={(row) => (
           <div className="flex gap-2 items-center">
-              <StatusSwitch
-              checked={row.isActive}
-              onChange={() => handleToggleStatus(row)}
-            />
-            <Button variant="edit" size="sm" onClick={() => handleEdit(row)}>
-              <Pencil className="size-4" />
-              Edit
-            </Button>
-            <Button
-              variant="delete"
-              size="sm"
-              onClick={() => {
-                setSelectedId(row.id);
-                setOpenDelete(true);
-              }}
-            >
-              <Trash2 className="size-4" />
-              Delete
-            </Button>
+            {can(user, "payment_methods", "update") && (
+              <>
+                <StatusSwitch
+                  checked={row.isActive}
+                  onChange={() => handleToggleStatus(row)}
+                />
+                <Button
+                  variant="edit"
+                  size="sm"
+                  onClick={() => handleEdit(row)}
+                >
+                  <Pencil className="size-4" />
+                  Edit
+                </Button>
+              </>
+            )}
+            {can(user, "payment_methods", "delete") && (
+              <Button
+                variant="delete"
+                size="sm"
+                onClick={() => {
+                  setSelectedId(row.id);
+                  setOpenDelete(true);
+                }}
+              >
+                <Trash2 className="size-4" />
+                Delete
+              </Button>
+            )}
           </div>
         )}
       />

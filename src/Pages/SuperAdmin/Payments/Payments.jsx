@@ -4,20 +4,18 @@ import usePut from "@/hooks/usePut";
 import ReusableTable from "@/Components/UI/ReusableTable";
 import Loading from "@/Components/Loading";
 import ConfirmModal from "@/Components/UI/ConfirmModal";
+import { can } from "@/utils/can";
 
 const Payments = () => {
   const [activeTab, setActiveTab] = useState("payments"); // payments | parent
   const { putData } = usePut("");
 
-  const {
-    data,
-    loading,
-    refetch,
-  } = useGet(
+  const { data, loading, refetch } = useGet(
     activeTab === "payments"
       ? "/api/superadmin/payments"
-      : "/api/superadmin/payments/parents"
+      : "/api/superadmin/payments/parents",
   );
+  const user = JSON.parse(localStorage.getItem("superAdmin"));
 
   const [openReject, setOpenReject] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
@@ -29,7 +27,7 @@ const Payments = () => {
         await putData(
           { status: action },
           `/api/superadmin/payments/${row.id}/reply`,
-          "Payment accepted successfully"
+          "Payment accepted successfully",
         );
         refetch();
       }
@@ -53,7 +51,7 @@ const Payments = () => {
           rejectedReason,
         },
         `/api/superadmin/payments/${selectedId}/reply`,
-        "Payment rejected successfully"
+        "Payment rejected successfully",
       );
       refetch();
     } finally {
@@ -130,12 +128,11 @@ const Payments = () => {
         columns={columns}
         data={tableData}
         renderActions={(row) =>
-          row.status === "pending" && (
+          row.status === "pending" &&
+          can(user, "payments", "update") && (
             <select
               defaultValue=""
-              onChange={(e) =>
-                handleActionChange(e.target.value, row)
-              }
+              onChange={(e) => handleActionChange(e.target.value, row)}
               className="border rounded px-2 py-1 text-sm bg-background"
             >
               <option value="" disabled>

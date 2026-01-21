@@ -33,6 +33,7 @@ import EditAdmins from "./Pages/Admin/Admins/EditAdmins";
 import Buses from "./Pages/Admin/Buses/Buses";
 import AddBuses from "./Pages/Admin/Buses/AddBuses";
 import EditBuses from "./Pages/Admin/Buses/EditBuses";
+import InfoBuses from "./Pages/Admin/Buses/InfoBuses";
 
 import Departments from "./Pages/Admin/Departments/Departments";
 import AddDepartments from "./Pages/Admin/Departments/AddDepartments";
@@ -54,6 +55,7 @@ import EditRoutes from "./Pages/Admin/Routes/EditRoutes";
 import Drivers from "./Pages/Admin/Drivers/Drivers";
 import AddDrivers from "./Pages/Admin/Drivers/AddDrivers";
 import EditDrivers from "./Pages/Admin/Drivers/EditDrivers";
+import InfoDrivers from "./Pages/Admin/Drivers/InfoDrivers";
 
 import Codrivers from "./Pages/Admin/Codrivers/Codrivers";
 import AddCodrivers from "./Pages/Admin/Codrivers/AddCodrivers";
@@ -62,6 +64,7 @@ import EditCodrivers from "./Pages/Admin/Codrivers/EditCodrivers";
 import Students from "./Pages/Admin/Students/Students";
 import AddStudents from "./Pages/Admin/Students/AddStudents";
 import EditStudents from "./Pages/Admin/Students/EditStudents";
+import InfoStudents from "./Pages/Admin/Students/InfoStudents"; 
 
 import Parents from "./Pages/Admin/Parents/Parents";
 import AddParents from "./Pages/Admin/Parents/AddParents";
@@ -207,6 +210,14 @@ const router = createBrowserRouter([
   ),
 },
 {
+  path: "buses/info/:id",
+  element: (
+    <PrivateRoute requiredModule="buses" requiredAction="View">
+      <InfoBuses />
+    </PrivateRoute>
+  ),
+},
+{
   path: "departments",
   element: (
     <PrivateRoute requiredModule="departments" requiredAction="View">
@@ -335,6 +346,14 @@ const router = createBrowserRouter([
     </PrivateRoute>
   ),
 },
+{
+  path: "drivers/info/:id",
+  element: (
+    <PrivateRoute requiredModule="drivers" requiredAction="View">
+      <InfoDrivers />
+    </PrivateRoute>
+  ),
+},
 
 
 
@@ -386,6 +405,14 @@ const router = createBrowserRouter([
   element: (
     <PrivateRoute requiredModule="students" requiredAction="Edit">
       <EditStudents />
+    </PrivateRoute>
+  ),
+},
+{
+  path: "students/info/:id",
+  element: (
+    <PrivateRoute requiredModule="students" requiredAction="View">
+      <InfoStudents />
     </PrivateRoute>
   ),
 },

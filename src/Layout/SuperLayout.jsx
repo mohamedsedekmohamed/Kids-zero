@@ -14,6 +14,7 @@ import {
   WalletCards,
   ShieldCheck,
   PenTool,
+  Home
 } from "lucide-react";
 import { MdOutlinePayment } from "react-icons/md";
 import { Menu } from "lucide-react";
@@ -28,6 +29,8 @@ const SuperLayout = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const superAdmin = JSON.parse(localStorage.getItem("superAdmin")) || {};
   const superMenuItems = [
+        { title: "Home", icon: <Home size={20} />, path: "/super", module: null },
+
     {
       title: "Bus Types",
       icon: <Bus size={20} />,

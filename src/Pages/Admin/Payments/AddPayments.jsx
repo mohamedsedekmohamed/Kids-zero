@@ -323,7 +323,10 @@ const handleSave = async (formData) => {
     if (formData.receiptImageplan instanceof File) {
       receiptBase64plan = await convertFileToBase64(formData.receiptImageplan);
     }
-
+if(amountPaid<totalRequiredAmount && !formData.nextDueDate){
+    toast.error("Next due date cannot be empty");
+    return
+}
     const payload = {
       planId: formData.planId?.value,
       paymentMethodId: formData.paymentMethodId?.value,
@@ -335,7 +338,7 @@ const handleSave = async (formData) => {
     };
 
     if (promoData?.code) {
-      payload.promoCode = promoData.code;
+      payload.promocodeCode = promoData.code;
     }
 
     const payload1 = {

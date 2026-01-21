@@ -7,14 +7,15 @@ import { useNavigate } from "react-router-dom";
 import { Trash2, Pencil } from "lucide-react";
 import { Button } from "@/Components/UI/button";
 import ConfirmModal from "@/Components/UI/ConfirmModal";
+import { can } from "@/utils/can";
 
 const Admins = () => {
   const [openDelete, setOpenDelete] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const navigate = useNavigate();
-
   const { data, loading, refetch } = useGet("/api/superadmin/subadmins");
   const { deleteData } = useDelete("/api/superadmin/subadmins");
+  const user = JSON.parse(localStorage.getItem("superAdmin"));
 
   const columns = [
     { header: "Name", key: "name" },
@@ -59,27 +60,31 @@ const Admins = () => {
         titleAdd="Sub Admin"
         columns={columns}
         data={tableData}
+        viewAdd={can(user, "sub_admins", "create")}
         onAddClick={() => navigate("add")}
         renderActions={(row) => (
           <div className="flex gap-2 items-center">
-            <Button
-              variant="edit"
-              size="sm"
-              onClick={() => navigate(`edit/${row.id}`)}
-            >
-              <Pencil className="size-4" />
-            </Button>
-
-            <Button
-              variant="delete"
-              size="sm"
-              onClick={() => {
-                setSelectedId(row.id);
-                setOpenDelete(true);
-              }}
-            >
-              <Trash2 className="size-4" />
-            </Button>
+            {can(user, "sub_admins", "update") && (
+              <Button
+                variant="edit"
+                size="sm"
+                onClick={() => navigate(`edit/${row.id}`)}
+              >
+                <Pencil className="size-4" />
+              </Button>
+            )}
+            {can(user, "sub_admins", "delete") && (
+              <Button
+                variant="delete"
+                size="sm"
+                onClick={() => {
+                  setSelectedId(row.id);
+                  setOpenDelete(true);
+                }}
+              >
+                <Trash2 className="size-4" />
+              </Button>
+            )}
           </div>
         )}
       />

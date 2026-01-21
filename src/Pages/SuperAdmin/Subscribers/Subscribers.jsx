@@ -41,7 +41,6 @@ const Subscribers = () => {
         title="Subscribers"
         columns={columns}
         data={tableData}
-        hideAdd
       />
     </div>
   );

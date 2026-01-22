@@ -19,11 +19,12 @@ const Rides = () => {
   const [selectedId, setSelectedId] = useState(null);
   const [activeTab, setActiveTab] = useState("all");
 
-  const endpoint = activeTab === "current" ? "/api/admin/rides/current" : "/api/admin/rides";
-  
+  const endpoint =
+    activeTab === "current" ? "/api/admin/rides/current" : "/api/admin/rides";
+
   // ✅ إضافة fallback للداتا لتجنب الأخطاء أثناء التحميل
   const { data: getRides, loading, refetch } = useGet(endpoint, [endpoint]);
-  
+
   const { deleteData: deleteRide } = useDelete("/api/admin/rides");
   const { putData } = usePut("");
 
@@ -44,15 +45,19 @@ const Rides = () => {
 
     return getRides.data.all.map((ride) => {
       // حماية إضافية في حال كان الأوبجكت فارغ
-      if (!ride) return {}; 
-      
+      if (!ride) return {};
+
       return {
         id: ride?.id,
         name: ride?.name,
         rideType: ride?.type,
         frequency: ride?.frequency,
-        startDate: ride?.startDate ? new Date(ride.startDate).toLocaleDateString("en-GB") : "-",
-        endDate: ride?.endDate ? new Date(ride.endDate).toLocaleDateString("en-GB") : "-",
+        startDate: ride?.startDate
+          ? new Date(ride.startDate).toLocaleDateString("en-GB")
+          : "-",
+        endDate: ride?.endDate
+          ? new Date(ride.endDate).toLocaleDateString("en-GB")
+          : "-",
         status: ride?.status,
         busNumber: ride?.bus?.busNumber || "-",
         driverName: ride?.driver?.name || "-",
@@ -66,8 +71,10 @@ const Rides = () => {
     if (!getRides) return [];
     if (!ride?.id) return false; // تجاهل الصفوف التالفة
     if (activeTab === "all") return true;
-    if (activeTab === "upcoming") return getRides.data.upcoming?.some((r) => r?.id === ride.id);
-    if (activeTab === "past") return getRides.data.past?.some((r) => r?.id === ride.id);
+    if (activeTab === "upcoming")
+      return getRides.data.upcoming?.some((r) => r?.id === ride.id);
+    if (activeTab === "past")
+      return getRides.data.past?.some((r) => r?.id === ride.id);
     return [];
   });
 
@@ -104,8 +111,6 @@ const Rides = () => {
       </div>
     );
 
-  const summary = getRides?.data?.summary || {};
-
   return (
     <div className="p-10 bg-background min-h-screen">
       {/* Tabs */}
@@ -126,12 +131,12 @@ const Rides = () => {
             {tab === "upcoming" && "Upcoming"}
             {tab === "current" && "Current"}
             {tab === "past" && "Past"}
-            
-            {tab === "all" && summary.total !== undefined && ` (${summary.total})`}
+
+            {/* {tab === "all" && summary.total !== undefined && ` (${summary.total})`}
             {tab === "upcoming" && summary.upcoming !== undefined && ` (${summary.upcoming})`}
             {tab === "current" && summary.current !== undefined && ` (${summary.current})`}
             {tab === "past" && summary.past !== undefined && ` (${summary.past})`}
-            {tab === "current" && activeTab === "current" && summary.total !== undefined && ` (${summary.total})`}
+            {tab === "current" && activeTab === "current" && summary.total !== undefined && ` (${summary.total})`} */}
           </button>
         ))}
       </div>
@@ -148,23 +153,59 @@ const Rides = () => {
       {/* ✅ إصلاح 2: إضافة ?. عند الوصول لـ Key الـ Map */}
       {activeTab === "current" ? (
         <div className="w-full">
-            <h2 className="text-xl font-bold mb-4 text-one">Current Active Rides</h2>
-            {getRides?.data?.rides && getRides.data.rides.length > 0 ? (
-<div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 justify-items-stretch">
-                {getRides.data.rides.map((rideItem, index) => (
-                    // استخدمنا Optional Chaining هنا لمنع الكراش
-                    // واستخدمنا index كبديل (Fallback) لو الـ id غير موجود
-                    <RideCard 
-                        key={rideItem?.occurrence?.id || index} 
-                        data={rideItem} 
-                    />
-                ))}
-                </div>
-            ) : (
-                <div className="text-center py-10 bg-white rounded-xl shadow-sm border border-dashed border-gray-300">
-                    <p className="text-gray-500 font-medium">No active rides at the moment.</p>
-                </div>
-            )}
+          <div className="flex justify-between">
+
+          <h2 className="text-xl font-bold mb-4 text-one">
+            Current Active Rides
+          </h2>
+               <button
+  onClick={refetch}
+  className="
+    flex items-center justify-center gap-2
+    px-4 py-2
+    bg-one
+    text-white text-xs font-semibold
+    rounded-full
+    shadow-md
+    transition-all duration-300
+    hover:scale-105 hover:shadow-lg
+    active:scale-95
+  "
+>
+  <svg
+    className="w-4 h-4 animate-spin-slow"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M4 4v6h6M20 20v-6h-6M5 19a9 9 0 0114-7M19 5a9 9 0 00-14 7"
+    />
+  </svg>
+  Refetch
+</button>
+
+          </div>
+
+          {getRides?.data?.rides && getRides.data.rides.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 justify-items-stretch">
+              {getRides.data.rides.map((rideItem, index) => (
+                <RideCard
+                  key={rideItem?.occurrence?.id || index}
+                  data={rideItem}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-10 bg-white rounded-xl shadow-sm border border-dashed border-gray-300">
+              <p className="text-gray-500 font-medium">
+                No active rides at the moment.
+              </p>
+            </div>
+          )}
         </div>
       ) : (
         <ReusableTable
@@ -191,7 +232,11 @@ const Rides = () => {
               )}
 
               {can(user, "rides", "Edit") && (
-                <Button variant="edit" size="sm" onClick={() => handleEdit(row)}>
+                <Button
+                  variant="edit"
+                  size="sm"
+                  onClick={() => handleEdit(row)}
+                >
                   <Pencil className="size-4" />
                   Edit
                 </Button>

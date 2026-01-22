@@ -234,6 +234,7 @@ const validateForm = () => {
 
 {field.type === 'autocomplete' && (
   <ParentSelect
+  placeholder={field.placeholder}
     value={formData[field.name]}                    // ← object أو null
   onChange={(selectedOption) =>                
     setFormData(prev => ({ ...prev, [field.name]: selectedOption }))

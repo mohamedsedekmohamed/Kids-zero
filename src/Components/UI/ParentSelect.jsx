@@ -1,6 +1,6 @@
 import Select from "react-select";
 
-const ParentSelect = ({ value, onChange, options }) => {
+const ParentSelect = ({ value, onChange, options ,placeholder }) => {
 
 
 // console.log(value)
@@ -10,7 +10,7 @@ const ParentSelect = ({ value, onChange, options }) => {
       onChange={onChange}
       options={options}
       isClearable
-      placeholder="Select or search parent..."
+      placeholder={placeholder}
     />
   );
 };

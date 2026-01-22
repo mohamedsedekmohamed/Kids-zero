@@ -177,67 +177,64 @@ const RideCard = ({ data }) => {
             const isCurrent = index === currentStopIndex;
 
             return (
-              <div
-                key={stop.id || index}
-                className={`relative mb-4 rounded-lg p-2 transition-all
-                  ${isCompleted ? "opacity-80" : ""}
-                  ${
-                    isCurrent
-                      ? "bg-indigo-50 border border-indigo-200 shadow-sm"
-                      : ""
-                  }
-                `}
-              >
-                {isCurrent && (
-                  <span className="absolute left-0 top-0 bottom-0 w-1 bg-indigo-600 rounded-r" />
-                )}
+             <div
+  key={stop.id || index}
+  className="relative mb-4 transition-all"
+>
+  {/* الخط الرأسي */}
+  <div
+    className={`absolute left-4 top-0 bottom-0 w-[2px] rounded
+      ${index < currentStopIndex ? "bg-emerald-400" : "bg-gray-200"}
+    `}
+  />
 
-                <div className="flex gap-3 items-start">
-                  <div
-                    className={`z-10 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold
-                      ${
-                        isCompleted
-                          ? "bg-emerald-500 text-black"
-                          : ""
-                      }
-                      ${
-                        isCurrent
-                          ? "bg-indigo-600 text-white scale-110"
-                          : "bg-gray-200 text-gray-600"
-                      }
-                    `}
-                  >
-                    {isCompleted ? (
-                      <CheckCircle2 size={14} />
-                    ) : isCurrent ? (
-                      <Bus size={12} className="animate-pulse" />
-                    ) : (
-                      index + 1
-                    )}
-                  </div>
+  <div className="flex items-start gap-3 relative z-10">
+    {/* الدائرة + FINISH */}
+    <div className="flex flex-col items-center gap-1">
+      <div
+        className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold
+          ${
+            isCompleted
+              ? "bg-emerald-500 text-white shadow-md"
+              : isCurrent
+              ? "bg-blue-600 text-white scale-110 shadow-md animate-pulse"
+              : "bg-gray-200 text-gray-600"
+          }
+        `}
+      >
+        {isCompleted ? <CheckCircle2 size={14} /> : isCurrent ? <Bus size={12} /> : index + 1}
+      </div>
 
-                  <div className="flex-1 min-w-0">
-                    <p
-                      className={`text-xs font-bold truncate ${
-                        isCurrent
-                          ? "text-indigo-700"
-                          : "text-gray-800"
-                      }`}
-                    >
-                      {stop.name}
-                    </p>
-                    <p className="text-[10px] text-black font-bold truncate">
-                      {stop.address || "No address"}
-                    </p>
+      {/* كلمة FINISH للنقاط المكتملة */}
+      {isCompleted && (
+        <span className="text-[8px] font-bold text-emerald-700 uppercase">
+          FINISH
+        </span>
+      )}
+    </div>
 
-                    {isCurrent && (
-                      <span className="inline-block mt-1 text-[9px] font-bold text-indigo-600 bg-indigo-100 px-2 py-0.5 rounded">
-                        BUS HERE
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
+    {/* معلومات النقطة */}
+    <div className="flex-1 min-w-0">
+      <p
+        className={`text-xs font-bold truncate ${
+          isCurrent ? "text-blue-700" : isCompleted ? "text-emerald-800" : "text-gray-800"
+        }`}
+      >
+        {stop.name}
+      </p>
+      <p className="text-[10px] text-gray-600 truncate">
+        {stop.address || "No address"}
+      </p>
+
+      {isCurrent && (
+        <span className="inline-block mt-1 text-[9px] font-bold text-blue-600 bg-indigo-100 px-2 py-0.5 rounded">
+          Bus going here
+        </span>
+      )}
+    </div>
+  </div>
+</div>
+
             );
           })}
         </div>

@@ -24,6 +24,7 @@ const formSchema = [
      name: "zoneId",
      label: "Select Zone",
      type: "autocomplete",
+     placeholder: "Select Zone",
      options: zoneOptions,
      required: true,
      fullWidth: true,

@@ -57,7 +57,7 @@ const StatusBadge = ({ status }) => {
 
 const ManageRideStudents = () => {
   const { id } = useParams();
-  const { data, loading } = useGet(`api/admin/rides/occurrence/${id}`);
+  const { data, loading } = useGet(`api/admin/rides/occurrences/${id}`);
 
   if (loading || !data?.data) return <Loading />;
 

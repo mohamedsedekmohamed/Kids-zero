@@ -121,22 +121,22 @@ const Payments = () => {
   return (
     <div className="min-h-screen p-4">
       {/* ================= Summary ================= */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        {[
-          { label: "Total", value: data.data.summary.total },
-          { label: "Completed", value: data.data.summary.completed },
-          { label: "Pending", value: data.data.summary.pending },
-          { label: "Rejected", value: data.data.summary.rejected },
-        ].map((item) => (
-          <div
-            key={item.label}
-            className="bg-white rounded-xl p-4 shadow text-center"
-          >
-            <p className="text-sm text-muted-foreground">{item.label}</p>
-            <p className="text-2xl font-bold text-one">{item.value}</p>
-          </div>
-        ))}
-      </div>
+   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+  {[
+    { label: "Total", value: data?.data?.summary?.total ?? 0 },
+    { label: "Completed", value: data?.data?.summary?.completed ?? 0 },
+    { label: "Pending", value: data?.data?.summary?.pending ?? 0 },
+    { label: "Rejected", value: data?.data?.summary?.rejected ?? 0 },
+  ].map((item) => (
+    <div
+      key={item.label}
+      className="bg-white rounded-xl p-4 shadow text-center"
+    >
+      <p className="text-sm text-muted-foreground">{item.label}</p>
+      <p className="text-2xl font-bold text-one">{item.value}</p>
+    </div>
+  ))}
+</div>
 
       {/* ================= Tabs ================= */}
       <div className="flex w-full justify-center gap-3 mb-6">

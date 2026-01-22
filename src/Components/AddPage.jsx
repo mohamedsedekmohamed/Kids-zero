@@ -7,6 +7,8 @@ import MapPicker from './UI/MapPicker';
 import ParentSelect from './UI/ParentSelect';
 // 1. إضافة initialData إلى الـ props
 const AddPage = ({ title, fields, onSave, onCancel, initialData }) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [formData, setFormData] = useState(() => 
     fields.reduce((acc, field) => ({ ...acc, [field.name]: field.defaultValue || '' }), {})
   );
@@ -97,10 +99,18 @@ const validateForm = () => {
     </div>
 
       <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (validateForm()) onSave(formData);
-        }}
+      onSubmit={async (e) => {
+  e.preventDefault();
+  if (!validateForm()) return;
+
+  try {
+    setIsSubmitting(true);
+    await onSave(formData); 
+  } finally {
+    setIsSubmitting(false);
+  }
+}}
+
         className="space-y-6"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-card p-8 rounded-2xl border border-border">
@@ -306,8 +316,25 @@ const validateForm = () => {
      </div>
 
         <div className="flex justify-end gap-4">
-          <button type="button" onClick={onCancel} className="px-6 py-2 border border-border rounded-xl cursor-pointer">Cancel</button>
-          <button type="submit" className="px-10 py-2 bg-one text-white rounded-xl font-bold shadow-lg cursor-pointer">Save Changes</button>
+<button
+  type="button"
+  onClick={onCancel}
+  disabled={isSubmitting}
+  className="px-6 py-2 border border-border rounded-xl cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+>
+  Cancel
+</button>
+<button
+  type="submit"
+  disabled={isSubmitting}
+  className="px-10 py-2 bg-one text-white rounded-xl font-bold shadow-lg cursor-pointer
+             disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2"
+>
+  {isSubmitting && (
+    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+  )}
+  {isSubmitting ? "Saving..." : "Save Changes"}
+</button>
         </div>
       </form>
     </div>

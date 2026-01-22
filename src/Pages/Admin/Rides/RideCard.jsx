@@ -6,7 +6,6 @@ import {
   User
 } from "lucide-react";
 
-/* ================= Utils ================= */
 const getDistanceInMeters = (lat1, lng1, lat2, lng2) => {
   const toRad = (v) => (v * Math.PI) / 180;
   const R = 6371000;
@@ -35,7 +34,13 @@ const RideCard = ({ data }) => {
   const occurrence = rideData.occurrence || {};
   const currentLocation = occurrence.currentLocation;
 
-  /* ===== Detect current stop by GPS ===== */
+  // ✅ FIX: secure occupancy
+  const occupancy = bus.occupancy || {
+    current: 0,
+    max: 0,
+    percentage: 0,
+  };
+
   const currentStopIndex = React.useMemo(() => {
     if (!currentLocation || !stops.length) {
       return route.completedStops || 0;
@@ -66,13 +71,10 @@ const RideCard = ({ data }) => {
   }, [currentLocation, stops, route.completedStops]);
 
   return (
-    <div className="w-full max-w-sm mx-auto
-     bg-white rounded-2xl shadow-sm border
-      border-one overflow-hidden font-sans text-sm h-[350px] overflow-y-scroll"
-      
-                     style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
->
-
+    <div
+      className="w-full max-w-sm mx-auto bg-white rounded-2xl shadow-sm border border-one overflow-hidden font-sans text-sm h-[350px] overflow-y-scroll"
+      style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+    >
       {/* ===== Staff ===== */}
       <div className="flex flex-col divide-y bg-gray-50">
         {/* Driver */}
@@ -89,14 +91,16 @@ const RideCard = ({ data }) => {
             <p className="font-semibold">{driver.name || "N/A"}</p>
             <p className="text-xs text-gray-500">{driver.phone || "-"}</p>
           </div>
-        
         </div>
 
         {/* Co-driver */}
         {codriver?.id ? (
           <div className="flex items-center gap-3 p-3 bg-white">
             <img
-              src={codriver.avatar || `https://ui-avatars.com/api/?name=${codriver.name}`}
+              src={
+                codriver.avatar ||
+                `https://ui-avatars.com/api/?name=${codriver.name}`
+              }
               className="w-12 h-12 rounded-full border"
               alt="Co-driver"
             />
@@ -105,7 +109,9 @@ const RideCard = ({ data }) => {
                 Co-driver
               </p>
               <p className="font-semibold">{codriver.name}</p>
-              <p className="text-xs text-gray-500">{codriver.phone || "-"}</p>
+              <p className="text-xs text-gray-500">
+                {codriver.phone || "-"}
+              </p>
             </div>
             <User size={16} className="text-pink-500" />
           </div>
@@ -115,27 +121,35 @@ const RideCard = ({ data }) => {
           </div>
         )}
       </div>
-<div className="w-full shadow-md rounded-xl p-4 flex flex-col items-end space-y-2">
-  <div className="flex items-center  justify-between space-x-2">
-    <Bus size={24} className="text-one" />
-    <h2 className="text-lg font-semibold text-gray-700">Bus Number: {bus.busNumber}</h2>
-  </div>
 
-  <p className="text-sm text-gray-500">Plate Number: {bus.plateNumber}</p>
+      {/* ===== Bus Info ===== */}
+      <div className="w-full shadow-md rounded-xl p-4 flex flex-col items-end space-y-2">
+        <div className="flex items-center justify-between space-x-2 w-full">
+          <Bus size={24} className="text-one" />
+          <h2 className="text-lg font-semibold text-gray-700">
+            Bus Number: {bus.busNumber || "-"}
+          </h2>
+        </div>
 
-  <div className="w-full mt-2">
-    <div className="flex justify-between text-sm text-gray-600 mb-1">
-      <span>Seats: {bus.occupancy.current}/{bus.occupancy.max}</span>
-      <span>{bus.occupancy.percentage}%</span>
-    </div>
-    <div className="w-full bg-gray-200 rounded-full h-2">
-      <div
-        className="bg-one h-2 rounded-full"
-        style={{ width: `${bus.occupancy.percentage}%` }}
-      ></div>
-    </div>
-  </div>
-</div>
+        <p className="text-sm text-gray-500">
+          Plate Number: {bus.plateNumber || "-"}
+        </p>
+
+        <div className="w-full mt-2">
+          <div className="flex justify-between text-sm text-gray-600 mb-1">
+            <span>
+              Seats: {occupancy.current}/{occupancy.max}
+            </span>
+            <span>{occupancy.percentage}%</span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2">
+            <div
+              className="bg-one h-2 rounded-full"
+              style={{ width: `${occupancy.percentage}%` }}
+            />
+          </div>
+        </div>
+      </div>
 
       {/* ===== Route Header ===== */}
       <div className="bg-one text-white p-3 flex justify-between items-center rounded-bl-4xl">
@@ -148,7 +162,8 @@ const RideCard = ({ data }) => {
           </p>
         </div>
         <p className="text-sm font-bold">
-          {Math.min(currentStopIndex + 1, stops.length)} / {stops.length}
+          {Math.min(currentStopIndex + 1, stops.length)} /{" "}
+          {stops.length}
         </p>
       </div>
 
@@ -166,20 +181,30 @@ const RideCard = ({ data }) => {
                 key={stop.id || index}
                 className={`relative mb-4 rounded-lg p-2 transition-all
                   ${isCompleted ? "opacity-80" : ""}
-                  ${isCurrent ? "bg-indigo-50 border border-indigo-200 shadow-sm" : ""}
+                  ${
+                    isCurrent
+                      ? "bg-indigo-50 border border-indigo-200 shadow-sm"
+                      : ""
+                  }
                 `}
               >
-                {/* Side bar */}
                 {isCurrent && (
                   <span className="absolute left-0 top-0 bottom-0 w-1 bg-indigo-600 rounded-r" />
                 )}
 
                 <div className="flex gap-3 items-start">
-                  {/* Indicator */}
                   <div
                     className={`z-10 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold
-                      ${isCompleted ? "bg-emerald-500 text-black" : ""}
-                      ${isCurrent ? "bg-indigo-600 text-white scale-110" : "bg-gray-200 text-gray-600"}
+                      ${
+                        isCompleted
+                          ? "bg-emerald-500 text-black"
+                          : ""
+                      }
+                      ${
+                        isCurrent
+                          ? "bg-indigo-600 text-white scale-110"
+                          : "bg-gray-200 text-gray-600"
+                      }
                     `}
                   >
                     {isCompleted ? (
@@ -191,11 +216,12 @@ const RideCard = ({ data }) => {
                     )}
                   </div>
 
-                  {/* Stop info */}
                   <div className="flex-1 min-w-0">
                     <p
                       className={`text-xs font-bold truncate ${
-                        isCurrent ? "text-indigo-700" : "text-gray-800"
+                        isCurrent
+                          ? "text-indigo-700"
+                          : "text-gray-800"
                       }`}
                     >
                       {stop.name}

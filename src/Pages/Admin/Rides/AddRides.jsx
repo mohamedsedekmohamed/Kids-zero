@@ -129,8 +129,7 @@ const AddRides = () => {
           { value: "limited", label: "Limited" },
           { value: "unlimited", label: "Unlimited" },
         ],
-        required: true,
-        hidden: (formData) => formData.frequency !== "repeat",
+          hidden: (formData) => formData.frequency !== "repeat",
       },
 {
   name: "startDate",

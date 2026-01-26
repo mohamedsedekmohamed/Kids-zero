@@ -3,7 +3,12 @@ import {
   Bus,
   Navigation,
   CheckCircle2,
-  User
+  User,
+  Users,       // Total
+  LogIn,       // Picked Up
+  LogOut,      // Dropped Off
+  Clock,       // Pending
+  AlertCircle  // Absent
 } from "lucide-react";
 
 const getDistanceInMeters = (lat1, lng1, lat2, lng2) => {
@@ -22,7 +27,10 @@ const getDistanceInMeters = (lat1, lng1, lat2, lng2) => {
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 };
 
-/* ================= Component ================= */
+/* ================= Helper Component for Stats ================= */
+
+
+/* ================= Main Component ================= */
 const RideCard = ({ data }) => {
   const rideData = data || {};
 
@@ -72,7 +80,7 @@ const RideCard = ({ data }) => {
 
   return (
     <div
-      className="w-full max-w-sm mx-auto bg-white rounded-2xl shadow-sm border border-one overflow-hidden font-sans text-sm h-[350px] overflow-y-scroll"
+      className="w-full max-w-sm mx-auto bg-white rounded-2xl shadow-sm border border-one overflow-hidden font-sans text-sm h-[600px] overflow-y-scroll"
       style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
     >
       {/* ===== Staff ===== */}
@@ -123,7 +131,7 @@ const RideCard = ({ data }) => {
       </div>
 
       {/* ===== Bus Info ===== */}
-      <div className="w-full shadow-md rounded-xl p-4 flex flex-col items-end space-y-2">
+      <div className="w-full shadow-md rounded-xl p-4 flex flex-col items-end space-y-2 bg-white mt-2 mb-2">
         <div className="flex items-center justify-between space-x-2 w-full">
           <Bus size={24} className="text-one" />
           <h2 className="text-lg font-semibold text-gray-700">
@@ -170,6 +178,7 @@ const RideCard = ({ data }) => {
       {/* ===== Timeline ===== */}
       <div className="p-4">
         <div className="relative pl-3">
+          {/* الخط الخلفي الثابت */}
           <div className="absolute left-[14px] top-2 bottom-2 w-[2px] bg-gray-200" />
 
           {stops.map((stop, index) => {
@@ -177,64 +186,124 @@ const RideCard = ({ data }) => {
             const isCurrent = index === currentStopIndex;
 
             return (
-             <div
-  key={stop.id || index}
-  className="relative mb-4 transition-all"
->
-  {/* الخط الرأسي */}
-  <div
-    className={`absolute left-4 top-0 bottom-0 w-[2px] rounded
-      ${index < currentStopIndex ? "bg-emerald-400" : "bg-gray-200"}
-    `}
-  />
+              <div
+                key={stop.id || index}
+                className="relative mb-6 transition-all last:mb-0"
+              >
+                {/* الخط الرأسي الملون */}
+                <div
+                  className={`absolute left-4 top-0 bottom-[-24px] w-[2px] rounded z-0
+                    ${index < currentStopIndex ? "bg-emerald-400" : "bg-transparent"}
+                  `}
+                />
 
-  <div className="flex items-start gap-3 relative z-10">
-    {/* الدائرة + FINISH */}
-    <div className="flex flex-col items-center gap-1">
-      <div
-        className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold
-          ${
-            isCompleted
-              ? "bg-emerald-500 text-white shadow-md"
-              : isCurrent
-              ? "bg-blue-600 text-white scale-110 shadow-md animate-pulse"
-              : "bg-gray-200 text-gray-600"
-          }
-        `}
-      >
-        {isCompleted ? <CheckCircle2 size={14} /> : isCurrent ? <Bus size={12} /> : index + 1}
-      </div>
+                <div className="flex items-start gap-3 relative z-10">
+                  {/* الدائرة + FINISH */}
+                  <div className="flex flex-col items-center gap-1 bg-white py-1">
+                    <div
+                      className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0
+                        ${
+                          isCompleted
+                            ? "bg-emerald-500 text-white shadow-md"
+                            : isCurrent
+                            ? "bg-blue-600 text-white scale-110 shadow-md animate-pulse"
+                            : "bg-gray-200 text-gray-600"
+                        }
+                      `}
+                    >
+                      {isCompleted ? <CheckCircle2 size={14} /> : isCurrent ? <Bus size={12} /> : index + 1}
+                    </div>
 
-      {/* كلمة FINISH للنقاط المكتملة */}
-      {isCompleted && (
-        <span className="text-[8px] font-bold text-emerald-700 uppercase">
-          FINISH
-        </span>
-      )}
-    </div>
+                    {/* كلمة FINISH للنقاط المكتملة */}
+                    {isCompleted && (
+                      <span className="text-[8px] font-bold text-emerald-700 uppercase">
+                        FINISH
+                      </span>
+                    )}
+                  </div>
 
-    {/* معلومات النقطة */}
-    <div className="flex-1 min-w-0">
-      <p
-        className={`text-xs font-bold truncate ${
-          isCurrent ? "text-blue-700" : isCompleted ? "text-emerald-800" : "text-gray-800"
-        }`}
-      >
-        {stop.name}
-      </p>
-      <p className="text-[10px] text-gray-600 truncate">
-        {stop.address || "No address"}
-      </p>
+                  {/* معلومات النقطة */}
+                  <div className="flex-1 min-w-0 pt-0.5">
+                    <div className="flex justify-between items-start">
+                      <p
+                        className={`text-xs font-bold truncate ${
+                          isCurrent ? "text-blue-700" : isCompleted ? "text-emerald-800" : "text-gray-800"
+                        }`}
+                      >
+                        {stop.name}
+                      </p>
+                      {isCurrent && (
+                        <span className="text-[8px] font-bold text-blue-600 bg-blue-100 px-1.5 py-0.5 rounded ml-2 whitespace-nowrap">
+                          Arriving
+                        </span>
+                      )}
+                    </div>
+                    
+                    <p className="text-[10px] text-gray-600 truncate mb-2">
+                      {stop.address || "No address"}
+                    </p>
 
-      {isCurrent && (
-        <span className="inline-block mt-1 text-[9px] font-bold text-blue-600 bg-indigo-100 px-2 py-0.5 rounded">
-          Bus going here
-        </span>
-      )}
-    </div>
+                    {/* ===== إضافة الإحصائيات (New Stats Section) ===== */}
+                 {stop.stats?.total > 0 && (
+  <div className="flex flex-wrap items-center gap-2 mt-2">
+    
+    {/* Total Students */}
+    <StatBadge 
+      icon={Users} 
+      label="Total" 
+      value={stop.stats.total} 
+      bgClass="bg-gray-100" 
+      colorClass="text-gray-600" 
+    />
+
+    {/* Picked Up (In Bus) */}
+    {stop.stats.pickedUp > 0 && (
+      <StatBadge 
+        icon={LogIn} 
+        label="On Board" 
+        value={stop.stats.pickedUp} 
+        bgClass="bg-emerald-100" 
+        colorClass="text-emerald-700" 
+      />
+    )}
+
+    {/* Dropped Off */}
+    {stop.stats.droppedOff > 0 && (
+      <StatBadge 
+        icon={LogOut} 
+        label="Dropped" 
+        value={stop.stats.droppedOff} 
+        bgClass="bg-blue-100" 
+        colorClass="text-blue-700" 
+      />
+    )}
+
+    {/* Pending / Waiting */}
+    {stop.stats.pending > 0 && (
+       <StatBadge 
+         icon={Clock} 
+         label="Waiting" 
+         value={stop.stats.pending} 
+         bgClass="bg-amber-100" 
+         colorClass="text-amber-700" 
+       />
+    )}
+
+     {/* Absent */}
+     {stop.stats.absent > 0 && (
+       <StatBadge 
+         icon={AlertCircle} 
+         label="Absent" 
+         value={stop.stats.absent} 
+         bgClass="bg-red-100" 
+         colorClass="text-red-700" 
+       />
+    )}
   </div>
-</div>
-
+)}
+                  </div>
+                </div>
+              </div>
             );
           })}
         </div>
@@ -244,3 +313,23 @@ const RideCard = ({ data }) => {
 };
 
 export default RideCard;
+
+const StatBadge = ({ icon: Icon, label, value, colorClass, bgClass }) => (
+  <div className={`flex items-center gap-1.5 px-2 py-1 rounded-md border ${bgClass} ${colorClass} border-transparent bg-opacity-50`}>
+    {/* الأيقونة */}
+    <Icon size={11} strokeWidth={2.5} />
+    
+    {/* الاسم (Label) */}
+    <span className="text-[9px] font-medium uppercase tracking-wide opacity-80">
+      {label}
+    </span>
+    
+    {/* الفاصل الرأسي الصغير (اختياري للجمالية) */}
+    <span className="w-[1px] h-2 bg-current opacity-20"></span>
+
+    {/* الرقم */}
+    <span className="text-[10px] font-bold">
+      {value}
+    </span>
+  </div>
+);

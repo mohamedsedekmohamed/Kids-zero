@@ -118,7 +118,7 @@ const EditRides = () => {
       label: "Frequency",
       type: "select",
       options: [{ value: "repeat", label: "Repeat" }, { value: "once", label: "Once" }],
-      required: true,
+hidden: () => true
     },
     {
       name: "rideDate",
@@ -132,7 +132,6 @@ const EditRides = () => {
       type: "select",
       options: [{ value: "limited", label: "Limited" }, { value: "unlimited", label: "Unlimited" }],
       hidden: (formData) => formData.frequency !== "repeat",
-      required: true,
     },
     {
       name: "startDate",
@@ -307,24 +306,45 @@ const EditRides = () => {
         })),
       };
 
-      if (formData.codriverId) payload.codriverId = formData.codriverId?.value || formData.codriverId;
+        if (formData.codriverId) {
+      payload.codriverId = formData.codriverId?.value || formData.codriverId;
+    }
 
-      if (formData.frequency === "repeat") {
-        payload.repeatType = formData.repeatType;
-        if (formData.repeatType === "limited") {
-          if (!formData.startDate || !formData.endDate)
-            return toast.error("Start date and End date are required");
-          if (new Date(formData.startDate) > new Date(formData.endDate))
-            return toast.error("Start date must be before end date");
-          payload.startDate = formData.startDate;
-          payload.endDate = formData.endDate;
-        } else {
-          if (!formData.startDate) return toast.error("Start date is required for repeat rides");
-          payload.startDate = formData.startDate;
+    // التعامل مع الرحلات المتكررة
+    if (formData.frequency === "repeat") {
+      payload.repeatType = formData.repeatType;
+
+      // إذا النوع limited نرسل endDate أيضًا
+      if (formData.repeatType === "limited") {
+        if (!formData.startDate || !formData.endDate) {
+          return toast.error("Start date and End date are required");
         }
-      } else if (formData.frequency === "once") {
-        if (!formData.rideDate) return toast.error("Please select a date for this ride");
-        payload.startDate = formData.rideDate;
+
+        const start = new Date(formData.startDate);
+        const end = new Date(formData.endDate);
+
+        if (start > end) {
+          return toast.error("Start date must be before end date");
+        }
+
+        payload.startDate = formData.startDate;
+        if(payload.frequency === "repeat" && payload.repeatType === "limited" )
+        {
+          payload.endDate = formData.endDate;
+        }
+      } else {
+        // النوع unlimited، نرسل startDate فقط
+        if (!formData.startDate) {
+          return toast.error("Start date is required for repeat rides");
+        }
+        payload.startDate = formData.startDate;
+      }
+    } else if (formData.frequency === "once") {
+      // الرحلة مرة واحدة، نرسل startDate فقط
+      if (!formData.rideDate) {
+        return toast.error("Please select a date for this ride");
+      }
+      payload.startDate = formData.rideDate;
       }
 
       await putData(payload, null, "Ride updated successfully!");

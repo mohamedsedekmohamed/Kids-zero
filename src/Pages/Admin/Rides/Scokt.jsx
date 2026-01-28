@@ -1,83 +1,93 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import { io } from "socket.io-client";
 import "leaflet/dist/leaflet.css";
 import { getToken } from "@/utils/auth";
+import { useParams, useLocation } from "react-router-dom";
 
-// 🛠️ حل مشكلة اختفاء أيقونة الماركر في Leaflet مع React
-import icon from "leaflet/dist/images/marker-icon.png";
-import iconShadow from "leaflet/dist/images/marker-shadow.png";
+// =========================================
+// 🚌 1️⃣ إعداد أيقونة الأتوبيس
+// =========================================
+// لو الصورة عندك في المشروع (الأفضل):
+// import busImage from "@/assets/bus-marker.png"; 
 
-let DefaultIcon = L.icon({
-  iconUrl: icon,
-  shadowUrl: iconShadow,
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
+// للتجربة السريعة (رابط خارجي):
+const busImage = "https://cdn-icons-png.flaticon.com/512/3448/3448339.png";
+
+// تعريف كائن الأيقونة
+const BusIcon = L.icon({
+  iconUrl: busImage,
+  iconSize: [40, 40], // حجم الأيقونة [عرض, طول] - عدله حسب صورتك
+  iconAnchor: [20, 20], // النقطة اللي بتشاور على المكان بالظبط (نص العرض ونص الطول عشان تبقى في السنتر)
+  popupAnchor: [0, -20], // مكان ظهور الـ Popup بالنسبة للأيقونة
+  // shadowUrl: 'مسار الضل لو عايز',
 });
-
-L.Marker.prototype.options.icon = DefaultIcon;
 
 export default function LiveLocationMap() {
   const token = getToken();
   const mapRef = useRef(null);
   const markerRef = useRef(null);
   const socketRef = useRef(null);
+  const { id } = useParams();
+  const rideId = id;
 
-  const rideId = "c40deb89-0042-4e70-a4d4-db4ccfb1b02b";
+  const location = useLocation();
+  const { currentLocation } = location.state || {};
+
+  const initialLat = currentLocation?.lat || 31.2109;
+  const initialLng = currentLocation?.lng || 29.9424;
+
+  const [hasStarted, setHasStarted] = useState(!!(currentLocation?.lat && currentLocation?.lng));
 
   useEffect(() => {
-    // 1. 🗺️ تهيئة الخريطة
+    // 🗺️ تهيئة الخريطة
     if (!mapRef.current) {
-      mapRef.current = L.map("map").setView([31.2109, 29.9424], 15);
+      mapRef.current = L.map("map").setView([initialLat, initialLng], 15);
+      
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: "© OpenStreetMap",
       }).addTo(mapRef.current);
+
+      // ✅ رسم الماركر الابتدائي (لو اللوكيشن موجود)
+      if (currentLocation?.lat && currentLocation?.lng) {
+        // 🚌 2️⃣ استخدام أيقونة الأتوبيس هنا
+        markerRef.current = L.marker([initialLat, initialLng], { icon: BusIcon }).addTo(mapRef.current);
+        markerRef.current.bindPopup("Bus Location").openPopup();
+      }
     }
 
-    // 2. 🔌 إعداد السوكيت
+    // 🔌 إعداد السوكيت
     socketRef.current = io("https://Bcknd.Kidsero.com", {
       transports: ["websocket"],
-      auth: {
-        token: token,
-      },
-      // ⚠️ تصحيح: مسحت الـ Hardcoded Token وحطيت المتغير الصح
-      extraHeaders: {
-        Authorization: `Bearer ${token}`, 
-      },
+      auth: { token: token },
+      extraHeaders: { Authorization: `Bearer ${token}` },
     });
 
     socketRef.current.on("connect", () => {
-      console.log("✅ Connected! Socket ID:", socketRef.current.id);
+      console.log("✅ Connected!");
       socketRef.current.emit("joinRide", rideId);
     });
 
-    // 3. 👂 استقبال التحديثات ورسم الماركر
+    // 👂 استقبال التحديثات
     socketRef.current.on("locationUpdate", (data) => {
-      console.log("📍 New Location:", data);
+      console.log("📍 Live Update:", data);
 
       if (data && data.lat && data.lng) {
+        setHasStarted(true);
         const { lat, lng } = data;
 
-        // رسم الماركر لو مش موجود
-        if (!markerRef.current) {
-          markerRef.current = L.marker([lat, lng]).addTo(mapRef.current);
-          
-          // إضافة Popup عشان تتأكد إنه موجود
-          markerRef.current.bindPopup("Saa'eq (Driver)").openPopup(); 
+        if (markerRef.current) {
+            // تحريك الماركر الموجود
+            markerRef.current.setLatLng([lat, lng]);
         } else {
-          // تحريك الماركر
-          markerRef.current.setLatLng([lat, lng]);
+            // رسم ماركر جديد (في حالة عدم وجود لوكيشن ابتدائي)
+            // 🚌 3️⃣ وبرضه لازم نستخدم أيقونة الأتوبيس هنا
+            markerRef.current = L.marker([lat, lng], { icon: BusIcon }).addTo(mapRef.current);
+            markerRef.current.bindPopup("Bus Location").openPopup();
         }
 
-        // تحريك الكاميرا
         mapRef.current.panTo([lat, lng], { animate: true });
-      } else {
-        console.warn("⚠️ Received data but missing lat/lng", data);
       }
-    });
-
-    socketRef.current.on("connect_error", (err) => {
-      console.error("❌ Connection Error:", err.message);
     });
 
     return () => {
@@ -85,9 +95,25 @@ export default function LiveLocationMap() {
       if (mapRef.current) {
         mapRef.current.remove();
         mapRef.current = null;
+        markerRef.current = null;
       }
     };
-  }, []);
+  }, [rideId, token]);
 
-  return <div id="map" style={{ height: "100vh", width: "100%" }} />;
+  return (
+    <div style={{ position: "relative", height: "100vh", width: "100%" }}>
+      {!hasStarted && (
+        <div
+          style={{
+            position: "absolute", top: "20px", left: "50%", transform: "translateX(-50%)", zIndex: 1000,
+            backgroundColor: "rgba(255, 255, 255, 0.9)", padding: "10px 20px", borderRadius: "8px",
+            boxShadow: "0 2px 10px rgba(0,0,0,0.2)", fontWeight: "bold", color: "#d9534f",
+          }}
+        >
+          🚦 جاري الاتصال بالأتوبيس...
+        </div>
+      )}
+      <div id="map" style={{ height: "100%", width: "100%" }} />
+    </div>
+  );
 }

@@ -9,6 +9,7 @@ import { MdSupportAgent } from "react-icons/md";
 import { PiStudentFill } from "react-icons/pi";
 import { AiOutlineGateway } from "react-icons/ai";
 import { canView } from "@/utils/canView";
+import { TbCreditCardPay } from "react-icons/tb";
 
 const AppLayout = () => {
   const [isExpanded, setIsExpanded] = useState(true);
@@ -31,6 +32,7 @@ const AppLayout = () => {
     { title: "Rides", icon: <AiOutlineGateway size={20} />, path: "/admin/rides", module: "rides" },
     { title: "Subscriptions", icon: <Spool size={20} />, path: "/admin/subscribtions", module: "subscriptions" },
     { title: "Payment", icon: <BanknoteArrowDown size={20} />, path: "/admin/peyment", module: "payments" },
+    { title: "Parent Payments", icon: <TbCreditCardPay size={20} />, path: "/admin/parentpay", module: "payments" },
     { title: "Fee Installments", icon: <PenTool size={20} />, path: "/admin/feeinstallments", module: "fee_installments" },
     { title: "Invoices", icon: <WalletCards size={20} />, path: "/admin/invoices", module: "invoices" },
   ];

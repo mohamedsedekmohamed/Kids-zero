@@ -22,6 +22,7 @@ import { RiParentFill } from "react-icons/ri";
 import { RiSecurePaymentFill } from "react-icons/ri";
 import { FaWallet } from "react-icons/fa";
 import { canView } from "@/utils/canView";
+import { TbCreditCardPay } from "react-icons/tb";
 
 const SuperLayout = () => {
   const [isExpanded, setIsExpanded] = useState(true);
@@ -107,6 +108,10 @@ const SuperLayout = () => {
       path: "/super/payments",
       module: "payments"
     },
+        { title: "Parent Payments",
+           icon: <TbCreditCardPay size={20} />
+           , path: "/super/parentpay", module: "payments" },
+    
     { title: "Wallet", icon: <FaWallet size={20} />, path: "/super/wallet",
     module: "wallet"},
   ];

@@ -85,6 +85,8 @@ import Feeinstallments from "./Pages/Admin/Feeinstallments/Feeinstallments";
 import Invoices from "./Pages/Admin/Invoices/Invoices";
 
 import Scokt from './Pages/Admin/Rides/Scokt'
+import ParentPayments from './Pages/Admin/ParentPayments/ParentPayments'
+import AdminParentPayments from './Pages/SuperAdmin/ParentPayments/ParentPayments'
 // super
 import BusTypes from "./Pages/SuperAdmin/BusTypes/BusTypes";
 import AddBusTypes from "./Pages/SuperAdmin/BusTypes/AddBusTypes";
@@ -479,7 +481,7 @@ const router = createBrowserRouter([
   ),
 },
 {
-  path: "Scokt",
+  path: "liverides/:id",
   element: (
     <PrivateRoute requiredModule="rides" requiredAction="View">
       <Scokt />
@@ -540,6 +542,14 @@ const router = createBrowserRouter([
   element: (
     <PrivateRoute requiredModule="payments" requiredAction="View">
       <Peyment />
+    </PrivateRoute>
+  ),
+},
+{
+  path: "parentpay",
+  element: (
+    <PrivateRoute requiredModule="payments" requiredAction="View">
+      <ParentPayments />
     </PrivateRoute>
   ),
 },
@@ -884,6 +894,14 @@ const router = createBrowserRouter([
   element: (
     <SuperPrivateRoute requiredModule="payments" requiredAction="view">
       <SuperPayments />
+    </SuperPrivateRoute>
+  ),
+},
+         {
+  path: "parentpay",
+  element: (
+    <SuperPrivateRoute requiredModule="payments" requiredAction="view">
+      <AdminParentPayments />
     </SuperPrivateRoute>
   ),
 },

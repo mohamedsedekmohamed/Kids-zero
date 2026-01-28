@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import useGet from "@/hooks/useGet";
 import Loading from "@/Components/Loading";
 import { 
   MapPin, Bus, User, Navigation2, Phone, ShieldCheck
 } from "lucide-react";
+import { MdNearbyError } from "react-icons/md";
 
 // 1. استيراد Polyline من المكتبة
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
@@ -57,6 +58,7 @@ const StatusBadge = ({ status }) => {
 
 const ManageRideStudents = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { data, loading } = useGet(`api/admin/rides/occurrences/${id}`);
 
   if (loading || !data?.data) return <Loading />;
@@ -90,7 +92,18 @@ const ManageRideStudents = () => {
               {ride.name} <span className="text-[#C5D89D] font-medium">Monitoring</span>
             </h1>
           </div>
-          <div className="flex items-center gap-4 bg-white p-3 rounded-2xl shadow-sm border border-[#C5D89D]/30">
+          <div
+onClick={() =>
+  navigate(`/admin/liverides/${ride.id}`, {
+    state: {
+      currentLocation: {
+        lat: "31.22654700",
+        lng: "29.95774940",
+      },
+    },
+  })
+}
+          className="flex items-center gap-4 bg-white p-3 rounded-2xl shadow-sm border border-[#C5D89D]/30">
              <div className="text-right">
                 <p className="text-[10px] uppercase text-slate-400 font-bold tracking-widest">Active Ride </p>
              </div>
@@ -220,6 +233,7 @@ const ManageRideStudents = () => {
                       <th className="p-6">Student Info</th>
                       <th className="p-6 text-center">Academic</th>
                       <th className="p-6">Pickup Point</th>
+                      <th className="p-6">Excuse</th>
                       <th className="p-6 text-right">Status</th>
                     </tr>
                   </thead>
@@ -247,6 +261,12 @@ const ManageRideStudents = () => {
                           <div className="flex items-center gap-2 text-xs text-slate-500 font-bold">
                             <MapPin size={14} className="text-[#93BD57]" />
                             {item.pickupPoint.name}
+                          </div>
+                        </td>
+                        <td className="p-6">
+                          <div className="flex items-center gap-2 text-xs text-slate-500 font-bold">
+                            <MdNearbyError  size={14} className="text-[#93BD57]" />
+                            {item.pickupPoint.excuseReason}
                           </div>
                         </td>
                         <td className="p-6 text-right">

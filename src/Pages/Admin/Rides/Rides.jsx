@@ -132,11 +132,6 @@ const Rides = () => {
             {tab === "current" && "Current"}
             {tab === "past" && "Past"}
 
-            {/* {tab === "all" && summary.total !== undefined && ` (${summary.total})`}
-            {tab === "upcoming" && summary.upcoming !== undefined && ` (${summary.upcoming})`}
-            {tab === "current" && summary.current !== undefined && ` (${summary.current})`}
-            {tab === "past" && summary.past !== undefined && ` (${summary.past})`}
-            {tab === "current" && activeTab === "current" && summary.total !== undefined && ` (${summary.total})`} */}
           </button>
         ))}
       </div>
@@ -215,47 +210,55 @@ const Rides = () => {
           data={filteredRides}
           viewAdd={can(user, "rides", "Add")}
           onAddClick={() => navigate("add")}
-          renderActions={(row) => (
-            <div className="flex gap-2 items-center">
-              {can(user, "rides", "Status") && (
-                <select
-                  value={row.status}
-                  onChange={(e) => handleChangeStatus(row.id, e.target.value)}
-                  className="border rounded px-2 py-1 text-sm"
-                >
-                  <option value="">Select</option>
-                  <option value="scheduled">Scheduled</option>
-                  <option value="in_progress">In Progress</option>
-                  <option value="completed">Completed</option>
-                  <option value="cancelled">Cancelled</option>
-                </select>
-              )}
+  renderActions={(row) => (
+  <div className="flex gap-2 items-center">
+    {/* ❌ اخفاء Status و Edit في حالة Past */}
+    {activeTab !== "past" && (
+      <>
+        {can(user, "rides", "Status") && (
+          <select
+            value={row.status}
+            onChange={(e) => handleChangeStatus(row.id, e.target.value)}
+            className="border rounded px-2 py-1 text-sm"
+          >
+            <option value="">Select</option>
+            <option value="scheduled">Scheduled</option>
+            <option value="in_progress">In Progress</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        )}
 
-              {can(user, "rides", "Edit") && (
-                <Button
-                  variant="edit"
-                  size="sm"
-                  onClick={() => handleEdit(row)}
-                >
-                  <Pencil className="size-4" />
-                  Edit
-                </Button>
-              )}
-              {can(user, "rides", "Delete") && (
-                <Button
-                  variant="delete"
-                  size="sm"
-                  onClick={() => {
-                    setSelectedId(row.id);
-                    setOpenDelete(true);
-                  }}
-                >
-                  <Trash2 className="size-4" />
-                  Delete
-                </Button>
-              )}
-            </div>
-          )}
+        {can(user, "rides", "Edit") && (
+          <Button
+            variant="edit"
+            size="sm"
+            onClick={() => handleEdit(row)}
+          >
+            <Pencil className="size-4" />
+            Edit
+          </Button>
+        )}
+      </>
+    )}
+
+    {/* ✅ Delete يفضل يفضل ظاهر (لو حابب تخفيه كمان قولي) */}
+    {can(user, "rides", "Delete") && (
+      <Button
+        variant="delete"
+        size="sm"
+        onClick={() => {
+          setSelectedId(row.id);
+          setOpenDelete(true);
+        }}
+      >
+        <Trash2 className="size-4" />
+        Delete
+      </Button>
+    )}
+  </div>
+)}
+
         />
       )}
 

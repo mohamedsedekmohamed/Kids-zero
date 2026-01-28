@@ -10,7 +10,7 @@ import {
   Clock,       // Pending
   AlertCircle  // Absent
 } from "lucide-react";
-
+import { useNavigate } from "react-router-dom";
 const getDistanceInMeters = (lat1, lng1, lat2, lng2) => {
   const toRad = (v) => (v * Math.PI) / 180;
   const R = 6371000;
@@ -32,8 +32,8 @@ const getDistanceInMeters = (lat1, lng1, lat2, lng2) => {
 
 /* ================= Main Component ================= */
 const RideCard = ({ data }) => {
+  const nav =useNavigate()
   const rideData = data || {};
-
   const driver = rideData.driver || {};
   const codriver = rideData.codriver || {};
   const route = rideData.route || {};
@@ -80,6 +80,7 @@ const RideCard = ({ data }) => {
 
   return (
     <div
+    onClick={()=>nav(`scheduling/manageridestudents/${occurrence.id}`)}
       className="w-full max-w-sm mx-auto bg-white rounded-2xl shadow-sm border border-one overflow-hidden font-sans text-sm h-[600px] overflow-y-scroll"
       style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
     >

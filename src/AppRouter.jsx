@@ -84,6 +84,7 @@ import Subscribtions from "./Pages/Admin/Subscribtions/Subscribtions";
 import Feeinstallments from "./Pages/Admin/Feeinstallments/Feeinstallments";
 import Invoices from "./Pages/Admin/Invoices/Invoices";
 
+import Scokt from './Pages/Admin/Rides/Scokt'
 // super
 import BusTypes from "./Pages/SuperAdmin/BusTypes/BusTypes";
 import AddBusTypes from "./Pages/SuperAdmin/BusTypes/AddBusTypes";
@@ -474,6 +475,14 @@ const router = createBrowserRouter([
   element: (
     <PrivateRoute requiredModule="rides" requiredAction="View">
       <Rides />
+    </PrivateRoute>
+  ),
+},
+{
+  path: "Scokt",
+  element: (
+    <PrivateRoute requiredModule="rides" requiredAction="View">
+      <Scokt />
     </PrivateRoute>
   ),
 },

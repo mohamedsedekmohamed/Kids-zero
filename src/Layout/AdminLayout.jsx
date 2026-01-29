@@ -10,6 +10,7 @@ import { PiStudentFill } from "react-icons/pi";
 import { AiOutlineGateway } from "react-icons/ai";
 import { canView } from "@/utils/canView";
 import { TbCreditCardPay } from "react-icons/tb";
+import { MdMessage } from "react-icons/md";
 
 const AppLayout = () => {
   const [isExpanded, setIsExpanded] = useState(true);
@@ -35,6 +36,7 @@ const AppLayout = () => {
     { title: "Parent Payments", icon: <TbCreditCardPay size={20} />, path: "/admin/parentpay", module: "payments" },
     { title: "Fee Installments", icon: <PenTool size={20} />, path: "/admin/feeinstallments", module: "fee_installments" },
     { title: "Invoices", icon: <WalletCards size={20} />, path: "/admin/invoices", module: "invoices" },
+    { title: "Notes", icon: <MdMessage size={20} />, path: "/admin/notes", module: "notes" },
   ];
 
   const filteredMenu = menuItems.filter((item) => {

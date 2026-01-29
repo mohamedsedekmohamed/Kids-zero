@@ -87,6 +87,10 @@ import Invoices from "./Pages/Admin/Invoices/Invoices";
 import Scokt from './Pages/Admin/Rides/Scokt'
 import ParentPayments from './Pages/Admin/ParentPayments/ParentPayments'
 import AdminParentPayments from './Pages/SuperAdmin/ParentPayments/ParentPayments'
+
+import Notes from "./Pages/Admin/Notes/Notes";
+import AddNotes from "./Pages/Admin/Notes/AddNotes";
+import EditNotes from "./Pages/Admin/Notes/EditNotes";
 // super
 import BusTypes from "./Pages/SuperAdmin/BusTypes/BusTypes";
 import AddBusTypes from "./Pages/SuperAdmin/BusTypes/AddBusTypes";
@@ -196,6 +200,7 @@ const router = createBrowserRouter([
     </PrivateRoute>
   ),
 },
+
 {
   path: "buses/add",
   element: (
@@ -220,6 +225,56 @@ const router = createBrowserRouter([
     </PrivateRoute>
   ),
 },
+
+
+
+
+
+
+
+ {
+  path: "notes",
+  element: (
+    <PrivateRoute requiredModule="Notes" requiredAction="View">
+      <Notes />
+    </PrivateRoute>
+  ),
+},
+
+{
+  path: "notes/add",
+  element: (
+    <PrivateRoute requiredModule="Notes" requiredAction="Add">
+      <AddNotes />
+    </PrivateRoute>
+  ),
+},
+{
+  path: "notes/edit/:id",
+  element: (
+    <PrivateRoute requiredModule="Notes" requiredAction="Edit">
+      <EditNotes />
+    </PrivateRoute>
+  ),
+},
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 {
   path: "departments",
   element: (

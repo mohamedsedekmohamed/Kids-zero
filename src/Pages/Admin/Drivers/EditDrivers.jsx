@@ -123,7 +123,6 @@ const EditDrivers = () => {
       initialData={originalData}
       onSave={handleSave}
       onCancel={() => navigate(-1)}
-      loading={loading}
     />
   );
 };

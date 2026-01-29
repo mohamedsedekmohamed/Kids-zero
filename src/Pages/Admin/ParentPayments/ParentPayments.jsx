@@ -275,6 +275,7 @@ const summary = tableData.reduce(
             onChange={(e) => setRejectedReason(e.target.value)}
           />
         }
+        mes="Reject"
         onClose={() => setOpenReject(false)}
         onConfirm={handleRejectConfirm}
         confirmDisabled={!rejectedReason.trim()}

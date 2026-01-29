@@ -1,6 +1,6 @@
 import { Trash2, X } from "lucide-react";
 
-const ConfirmModal = ({ open, onClose, onConfirm, title, description }) => {
+const ConfirmModal = ({ open, onClose, onConfirm, title, description  , mes="Delete"}) => {
   if (!open) return null;
 
   return (
@@ -36,7 +36,7 @@ const ConfirmModal = ({ open, onClose, onConfirm, title, description }) => {
           >
 
               <Trash2 className="w-4 h-4" />
-            Delete
+            {mes}
           </button>
             )}
         </div>

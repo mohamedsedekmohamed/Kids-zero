@@ -138,7 +138,8 @@ import Installments from './Pages/SuperAdmin/Installments/Installments'
 import SuperPayments from "./Pages/SuperAdmin/Payments/Payments";
 import Wallet from "./Pages/SuperAdmin/Wallet/Wallet"
 
-
+import Privacy from './Pages/Privacy'
+import Support from "./Pages/Support";
 const router = createBrowserRouter([
   // {
   //   path: "/",
@@ -151,6 +152,14 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/privacy",
+    element: <Privacy />,
+  },
+  {
+    path: "/support",
+    element: <Support />,
   },
 
   {

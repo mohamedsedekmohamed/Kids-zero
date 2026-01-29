@@ -85,7 +85,7 @@ const RideCard = ({ data }) => {
       style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
     >
       {/* ===== Staff ===== */}
-      <div className="flex flex-col divide-y bg-gray-50">
+      <div className="flex  divide-y bg-gray-50">
         {/* Driver */}
         <div className="flex items-center gap-3 p-3 bg-white">
           <img

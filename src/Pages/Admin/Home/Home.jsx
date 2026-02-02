@@ -2,19 +2,22 @@ import React from 'react';
 import useGet from '../../../hooks/useGet'; 
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-  PieChart, Pie, Cell, AreaChart, Area
+  PieChart, Pie, Cell, LineChart, Line, AreaChart, Area, ComposedChart
 } from 'recharts';
-import { Users, Bus, UserCheck, MapPin, Navigation, CheckCircle, Clock, Loader2 } from 'lucide-react';
+import { 
+  Users, Bus, UserCheck, MapPin, Navigation, CheckCircle, 
+  Clock, Loader2, Route, ShieldCheck, Wallet 
+} from 'lucide-react';
 
 const Home = () => {
   const { data: response, loading, error } = useGet('/api/admin/dashboard');
 
-  // الألوان الخاصة بك
   const MY_COLORS = {
     one: '#93BD57',    // الأخضر الأساسي
     two: '#C5D89D',    // الأخضر الفاتح
     three: '#980404',  // الأحمر الداكن
     four: '#043915',   // الأخضر الغامق جداً
+    gray: '#f3f4f6'
   };
 
   if (loading) {
@@ -25,74 +28,82 @@ const Home = () => {
     );
   }
 
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-red-600 font-bold">
-        Error: {error}
-      </div>
-    );
-  }
+  if (error) return <div className="p-10 text-red-600 font-bold">Error: {error}</div>;
 
-  const dashboardData = response?.data || {};
-  const stats = dashboardData.stats || {};
+  const d = response?.data || {};
+  const stats = d.stats || {};
 
-  const rideDistribution = [
-    { name: 'Morning Rides', value: dashboardData.chart1?.morningRides || 0 },
-    { name: 'Afternoon Rides', value: dashboardData.chart1?.afternoonRides || 0 }
+  // --- Data Preparation ---
+  
+  // Chart 1: Pie - Ride Type
+  const chart1Data = [
+    { name: 'Morning', value: d.chart1?.morningRides || 0 },
+    { name: 'Afternoon', value: d.chart1?.afternoonRides || 0 }
   ];
 
-  const pickupData = dashboardData.chart4?.pickupPointData || [];
-  
-  const paymentData = dashboardData.chart6?.installmentData?.map(item => ({
-    date: new Date(item.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-    amount: item.amount
+  // Chart 3: Donut - Ride Status
+  const chart3Data = [
+    { name: 'Scheduled', value: d.chart3?.scheduled || 0 },
+    { name: 'In Progress', value: d.chart3?.inProgress || 0 },
+    { name: 'Completed', value: d.chart3?.completed || 0 },
+    { name: 'Cancelled', value: d.chart3?.cancelled || 0 },
+  ];
+
+  // Chart 5: Line - Time Analysis (Time taken per ride)
+  const chart5Data = d.chart5?.rideTimingData?.map((item, index) => ({
+    order: index + 1,
+    time: item.timeTakenMinutes,
+    point: item.pickupPointName
   })) || [];
 
-  // مصفوفة الألوان للرسم الدائري
-  const PIE_COLORS = [MY_COLORS.one, MY_COLORS.four];
+  // Chart 6: Financials
+  const chart6Data = d.chart6?.installmentData?.map(item => ({
+    date: new Date(item.dueDate).toLocaleDateString('en-GB'),
+    amount: item.amount,
+    status: item.statusCategory // Paid vs Not Paid
+  })) || [];
 
   const StatCard = ({ title, value, icon: Icon, bgColor }) => (
-    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center transition-transform hover:scale-105">
-      <div className="p-4 rounded-xl mr-4" style={{ backgroundColor: bgColor }}>
-        <Icon className="w-6 h-6 text-white" />
+    <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center">
+      <div className="p-3 rounded-lg mr-4" style={{ backgroundColor: bgColor }}>
+        <Icon className="w-5 h-5 text-white" />
       </div>
       <div>
-        <p className="text-sm text-gray-500 font-bold uppercase tracking-tight">{title}</p>
-        <h3 className="text-2xl font-black" style={{ color: MY_COLORS.four }}>{value}</h3>
+        <p className="text-xs text-gray-400 font-bold uppercase">{title}</p>
+        <h3 className="text-xl font-black" style={{ color: MY_COLORS.four }}>{value}</h3>
       </div>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8 font-sans text-left" dir="ltr">
-      <header className="mb-10">
-        <h1 className="text-3xl font-black" style={{ color: MY_COLORS.four }}>System Dashboard</h1>
-        <div className="w-20 h-1 mt-2" style={{ backgroundColor: MY_COLORS.one }}></div>
-        <p className="text-gray-500 mt-2">Fleet management and financial overview</p>
+    <div className="min-h-screen bg-gray-50 p-6 font-sans text-left" dir="ltr">
+      <header className="mb-8">
+        <h1 className="text-2xl font-black" style={{ color: MY_COLORS.four }}>Fleet Operations Center</h1>
+        <p className="text-gray-400 text-sm">Real-time school bus monitoring dashboard</p>
       </header>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-        <StatCard title="Total Buses" value={stats.totalBuses} icon={Bus} bgColor={MY_COLORS.one} />
+      {/* --- Stats Section --- */}
+      <div className=" flex flex-wrap  justify-between gap-4 mb-8">
+        <StatCard title="Buses" value={stats.totalBuses} icon={Bus} bgColor={MY_COLORS.one} />
         <StatCard title="Drivers" value={stats.totalDrivers} icon={UserCheck} bgColor={MY_COLORS.four} />
-        <StatCard title="Total Users" value={stats.totalUsers} icon={Users} bgColor={MY_COLORS.two} />
+        <StatCard title="Co-Drivers" value={stats.totalCoDrivers} icon={ShieldCheck} bgColor={MY_COLORS.two} />
+        <StatCard title="Students" value={stats.totalUsers} icon={Users} bgColor={MY_COLORS.one} />
         <StatCard title="Active Rides" value={stats.activeRides} icon={Navigation} bgColor={MY_COLORS.three} />
+        <StatCard title="Completed" value={stats.completedRides} icon={CheckCircle} bgColor={MY_COLORS.one} />
+        <StatCard title="Routes" value={stats.totalRoutes} icon={Route} bgColor={MY_COLORS.four} />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        {/* Ride Distribution Chart */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-          <h3 className="text-lg font-bold mb-6 flex items-center" style={{ color: MY_COLORS.four }}>
-            <Clock className="mr-2 w-5 h-5" style={{ color: MY_COLORS.one }} /> Ride Time Distribution
-          </h3>
+        {/* Chart 1: Ride Type (Pie) */}
+        <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
+          <h4 className="text-sm font-bold mb-4 flex items-center"><Clock className="w-4 h-4 mr-2"/> Ride Type Distribution</h4>
           <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer>
               <PieChart>
-                <Pie data={rideDistribution} innerRadius={60} outerRadius={85} paddingAngle={8} dataKey="value">
-                  {rideDistribution.map((_, index) => (
-                    <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
-                  ))}
+                <Pie data={chart1Data} innerRadius={50} outerRadius={80} dataKey="value" label>
+                  <Cell fill={MY_COLORS.one} />
+                  <Cell fill={MY_COLORS.four} />
                 </Pie>
                 <Tooltip />
                 <Legend />
@@ -101,54 +112,94 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Most Used Pickup Points */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-          <h3 className="text-lg font-bold mb-6 flex items-center" style={{ color: MY_COLORS.four }}>
-            <MapPin className="mr-2 w-5 h-5" style={{ color: MY_COLORS.three }} /> Popular Pickup Points
-          </h3>
+        {/* Chart 3: Ride Status (Donut) */}
+        <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
+          <h4 className="text-sm font-bold mb-4 flex items-center"><Navigation className="w-4 h-4 mr-2"/> Ride Status</h4>
           <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={pickupData}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eee" />
-                <XAxis dataKey="name" tick={{fontSize: 12, fill: MY_COLORS.four}} axisLine={false} />
-                <YAxis axisLine={false} tick={{fill: MY_COLORS.four}} />
-                <Tooltip cursor={{fill: MY_COLORS.two, opacity: 0.2}} />
-                <Bar dataKey="count" fill={MY_COLORS.one} radius={[6, 6, 0, 0]} barSize={40} />
+            <ResponsiveContainer>
+              <PieChart>
+                <Pie data={chart3Data} innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value">
+                  {chart3Data.map((_, i) => <Cell key={i} fill={[MY_COLORS.one, MY_COLORS.two, MY_COLORS.four, MY_COLORS.three][i]} />)}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Chart 4: Students per Pickup (Column) */}
+        <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
+          <h4 className="text-sm font-bold mb-4 flex items-center"><MapPin className="w-4 h-4 mr-2"/> Students per Pickup</h4>
+          <div className="h-64">
+            <ResponsiveContainer>
+              <BarChart data={d.chart4?.pickupPointData}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="name" tick={{fontSize: 10}} />
+                <YAxis />
+                <Tooltip cursor={{fill: MY_COLORS.gray}} />
+                <Bar dataKey="count" fill={MY_COLORS.one} radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Financial Overview */}
-        <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 lg:col-span-2">
-          <h3 className="text-lg font-bold mb-6 flex items-center" style={{ color: MY_COLORS.four }}>
-            <CheckCircle className="mr-2 w-5 h-5" style={{ color: MY_COLORS.one }} /> Approved Installments History
-          </h3>
-          <div className="h-72">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={paymentData}>
+        {/* Chart 5: Time Analysis (Line) */}
+        <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm lg:col-span-1">
+          <h4 className="text-sm font-bold mb-4 flex items-center"><Clock className="w-4 h-4 mr-2"/> Trip Duration (Minutes)</h4>
+          <div className="h-64">
+            <ResponsiveContainer>
+              <LineChart data={chart5Data}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="order" label={{ value: 'Pickup Order', position: 'insideBottom', offset: -5 }} />
+                <YAxis />
+                <Tooltip />
+                <Line type="monotone" dataKey="time" stroke={MY_COLORS.three} strokeWidth={3} dot={{ r: 6, fill: MY_COLORS.three }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Chart 6: School Installments (Line with Markers) */}
+        <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm lg:col-span-2">
+          <h4 className="text-sm font-bold mb-4 flex items-center"><Wallet className="w-4 h-4 mr-2"/> Financials: Installments History</h4>
+          <div className="h-64">
+            <ResponsiveContainer>
+              <AreaChart data={chart6Data}>
                 <defs>
-                  <linearGradient id="colorAmt" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={MY_COLORS.one} stopOpacity={0.4}/>
+                  <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor={MY_COLORS.one} stopOpacity={0.3}/>
                     <stop offset="95%" stopColor={MY_COLORS.one} stopOpacity={0}/>
                   </linearGradient>
                 </defs>
-                <XAxis dataKey="date" tick={{fill: MY_COLORS.four}} />
-                <YAxis tick={{fill: MY_COLORS.four}} />
-                <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.1} />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <Tooltip />
-                <Area 
-                  type="monotone" 
-                  dataKey="amount" 
-                  stroke={MY_COLORS.one} 
-                  strokeWidth={4}
-                  fillOpacity={1} 
-                  fill="url(#colorAmt)" 
-                />
+                <Legend />
+                <Area type="monotone" dataKey="amount" stroke={MY_COLORS.one} fillOpacity={1} fill="url(#colorPrice)" strokeWidth={3} />
+                {/* Marker logic: different colors for paid vs unpaid can be handled via Dot customization */}
               </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>
+
+        {/* Chart 7: Balance Ranges (Bar) */}
+        <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm lg:col-span-3">
+          <h4 className="text-sm font-bold mb-4 flex items-center"><Users className="w-4 h-4 mr-2"/> Student Balance Distribution</h4>
+          <div className="h-64">
+            <ResponsiveContainer>
+              <BarChart data={d.chart7?.balanceRanges} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+                <XAxis type="number" />
+                <YAxis dataKey="range" type="category" width={80} />
+                <Tooltip />
+                <Bar dataKey="count" fill={MY_COLORS.four} radius={[0, 4, 4, 0]} barSize={30} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
       </div>
     </div>
   );

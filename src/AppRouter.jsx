@@ -16,7 +16,7 @@ import LoginSuper from "./Auth/LoginSuper";
 import SuperPrivateRoute from "./Auth/SuperPrivateRoute";
 
 import Home from "./Pages/Admin/Home/Home";
-
+import SuperHome from './Pages/SuperAdmin/Home/Home'
 
 import City from "./Pages/Admin/Cities/City";
 import AddCity from "./Pages/Admin/Cities/AddCity";
@@ -689,7 +689,7 @@ const router = createBrowserRouter([
       </SuperRoute>
     ),
     children: [
-      { index: true, element: <Home /> },
+      { index: true, element: <SuperHome /> },
 
       {
   path: "bustypes",

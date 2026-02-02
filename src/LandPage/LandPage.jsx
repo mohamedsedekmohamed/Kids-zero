@@ -1,10 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
 import { IoBusOutline, IoLocationOutline, IoShieldCheckmarkOutline, IoStatsChartOutline } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
 
 const BusManagementLanding = () => {
   const navigate = useNavigate();
+    const [policy, setPolicy] = useState("");
+  
+ useEffect(() => {
+    const fetchPrivacy = async () => {
+      try {
+        const response = await fetch("https://Bcknd.Kidsero.com/api/information/landing");
+        const result = await response.json();
 
+        if (result.success) {
+          setPolicy(result.data);
+        }
+      } catch (error) {
+        console.error("Error fetching privacy policy:", error);
+      }
+    };
+
+    fetchPrivacy();
+  }, []);
   // Color Palette Constants
   const colors = {
     one: "#93BD57",   // Primary Green
@@ -176,7 +193,7 @@ const BusManagementLanding = () => {
                 <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: colors.one }}></div>
                 <div>
                   <p className="text-[10px] uppercase text-gray-400 font-bold">System Status</p>
-                  <p className="text-sm font-bold" style={{ color: colors.four }}>Active Tracking: 42 Buses</p>
+                  <p className="text-sm font-bold" style={{ color: colors.four }}>Active Tracking: {policy?.liveBusesTracking??0} Buses</p>
                 </div>
               </div>
             </div>

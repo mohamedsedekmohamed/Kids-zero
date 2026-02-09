@@ -211,7 +211,7 @@ const validateForm = () => {
   </div>
 )}
 {field.type === 'map' && (
-  <div className=" md:col-span-2 w-full flex flex-col gap-2 z-10">
+  <div className=" md:col-span-2 w-full flex flex-col gap-2 ">
     <label className="text-sm font-semibold uppercase tracking-wider text-four mb-2">
       Select Location on Map
     </label>
@@ -233,7 +233,6 @@ const validateForm = () => {
 
 
 {field.type === 'autocomplete' && (
-  <div className="relative z-100">
   <ParentSelect
   placeholder={field.placeholder}
     value={formData[field.name]}                    // ← object أو null
@@ -242,7 +241,6 @@ const validateForm = () => {
   }
     options={field.options || []}
   />
-  </div>
 )}
 {field.type === 'switch' && (
   <div className="flex items-center gap-3 mt-2">
@@ -267,7 +265,6 @@ const validateForm = () => {
 
 
               {field.type === 'select' && (
-                <div className="relative z-100">
 
                 <select
                   name={field.name}
@@ -279,7 +276,6 @@ const validateForm = () => {
                   <option value="">Select Option</option>
                   {field.options.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                 </select>
-                </div>
 
               )}
 

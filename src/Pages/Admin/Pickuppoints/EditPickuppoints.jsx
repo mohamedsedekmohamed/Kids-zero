@@ -76,8 +76,11 @@
     );
 
   const formSchema = [
-    { name: "name", label: "Pickup Point Name", type: "text", required: true },
-    { name: "address", label: "Address", type: "text", required: true, fullWidth: true },
+  { name: "name", label: "Pickup Point Name", type: "text", placeholder: "Enter name", required: true },
+  { name: "address", label: "Address", type: "text", placeholder: "Enter address", required: true },
+  { name: "map", type: "map",      fullWidth: true,    },
+  { name: "lat", label: "Latitude", type: "text", placeholder: "24.7136", required: true },
+  { name: "lng", label: "Longitude", type: "text", placeholder: "46.6753", required: true },
     {
       name: "zoneId",
       label: "Select Zone",
@@ -86,12 +89,10 @@
       options: zoneOptions,
       required: true,
       fullWidth: true,
-    },
-    { name: "lat", label: "Latitude", type: "text", required: true },
-    { name: "lng", label: "Longitude", type: "text", required: true },
-    { name: "map", type: "map", fullWidth: true },
-  ];
 
+    
+ },
+];
   return (
     <AddPage
       title="Edit Pickup Point"

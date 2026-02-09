@@ -26,6 +26,7 @@ import Zone from "./Pages/Admin/Zones/Zone";
 import AddZone from "./Pages/Admin/Zones/AddZone";
 import EditZone from "./Pages/Admin/Zones/EditZone";
 
+import ParentInstallment from './Pages/Admin/ParentInstallment/ParentInstallment.jsx'
 import Admins from "./Pages/Admin/Admins/Admins";
 import AddAdmins from "./Pages/Admin/Admins/AddAdmins";
 import EditAdmins from "./Pages/Admin/Admins/EditAdmins";
@@ -91,6 +92,10 @@ import AdminParentPayments from './Pages/SuperAdmin/ParentPayments/ParentPayment
 import Notes from "./Pages/Admin/Notes/Notes";
 import AddNotes from "./Pages/Admin/Notes/AddNotes";
 import EditNotes from "./Pages/Admin/Notes/EditNotes";
+
+import Services from "./Pages/Admin/Services/Services";
+import AddServices from "./Pages/Admin/Services/AddServices";
+import EditServices from "./Pages/Admin/Services/EditServices"; 
 // super
 import BusTypes from "./Pages/SuperAdmin/BusTypes/BusTypes";
 import AddBusTypes from "./Pages/SuperAdmin/BusTypes/AddBusTypes";
@@ -140,6 +145,7 @@ import Wallet from "./Pages/SuperAdmin/Wallet/Wallet"
 
 import Privacy from './Pages/Privacy'
 import Support from "./Pages/Support";
+import AddFeeInstallments from "./Pages/Admin/Feeinstallments/AddFeeInstallments";
 const router = createBrowserRouter([
   // {
   //   path: "/",
@@ -176,6 +182,32 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
   
+      {
+path:'services',
+element:(
+  <PrivateRoute requiredModule="organizationServices" requiredAction="View">
+    <Services />
+  </PrivateRoute>
+),
+      },
+{
+  path: "services/add",
+  element: (
+    <PrivateRoute requiredModule="organizationServices" requiredAction="Add">
+      <AddServices />
+    </PrivateRoute>
+  ),
+},
+{
+  path: "services/edit/:id",
+  element: (
+    <PrivateRoute requiredModule="organizationServices" requiredAction="Edit">
+      <EditServices />
+    </PrivateRoute>
+  ),
+}
+
+,
 {
   path: "admins",
   element: (
@@ -609,14 +641,7 @@ const router = createBrowserRouter([
     </PrivateRoute>
   ),
 },
-{
-  path: "parentpay",
-  element: (
-    <PrivateRoute requiredModule="payments" requiredAction="View">
-      <ParentPayments />
-    </PrivateRoute>
-  ),
-},
+
 {
   path: "peyment/add",
   element: (
@@ -625,12 +650,28 @@ const router = createBrowserRouter([
     </PrivateRoute>
   ),
 },
-
+{
+  path: "parentpay",
+  element: (
+    <PrivateRoute requiredModule="parentpayment" requiredAction="View">
+      <ParentPayments />
+    </PrivateRoute>
+  ),
+},
 {
   path: "feeinstallments",
   element: (
     <PrivateRoute requiredModule="feeinstallments" requiredAction="View">
       <Feeinstallments />
+    </PrivateRoute>
+  ),
+},
+
+{
+  path: "feeinstallments/pay",
+  element: (
+    <PrivateRoute requiredModule="feeinstallments" requiredAction="Add">
+      <AddFeeInstallments />
     </PrivateRoute>
   ),
 },
@@ -654,8 +695,18 @@ const router = createBrowserRouter([
   ),
 },
 
+{
+  path: "parentinstallments",
+  element: (
+    <PrivateRoute requiredModule="parentinstallments" requiredAction="View">
+      <ParentInstallment />
+    </PrivateRoute>
+  ),
+},
+
       { path: "unauthorized", element: <Unauthorized /> },
      
+
 
       // { path: "parents", element: <Parents /> },
       // { path: "parents/add", element: <AddParents /> },

@@ -11,6 +11,8 @@ import { AiOutlineGateway } from "react-icons/ai";
 import { canView } from "@/utils/canView";
 import { TbCreditCardPay } from "react-icons/tb";
 import { MdMessage } from "react-icons/md";
+import { FaHandsHelping } from "react-icons/fa";
+import { FaCoins } from "react-icons/fa";
 
 const AppLayout = () => {
   const [isExpanded, setIsExpanded] = useState(true);
@@ -33,10 +35,12 @@ const AppLayout = () => {
     { title: "Rides", icon: <AiOutlineGateway size={20} />, path: "/admin/rides", module: "rides" },
     { title: "Subscriptions", icon: <Spool size={20} />, path: "/admin/subscribtions", module: "subscriptions" },
     { title: "Payment", icon: <BanknoteArrowDown size={20} />, path: "/admin/peyment", module: "payments" },
-    { title: "Parent Payments", icon: <TbCreditCardPay size={20} />, path: "/admin/parentpay", module: "payments" },
     { title: "Fee Installments", icon: <PenTool size={20} />, path: "/admin/feeinstallments", module: "fee_installments" },
     { title: "Invoices", icon: <WalletCards size={20} />, path: "/admin/invoices", module: "invoices" },
     { title: "Notes", icon: <MdMessage size={20} />, path: "/admin/notes", module: "notes" },
+    { title: "Parent Payments", icon: <TbCreditCardPay size={20} />, path: "/admin/parentpay", module: "payments" },
+    { title: "Parent Installments", icon: <FaCoins size={20} />, path: "/admin/parentinstallments", module: "parentinstallments" },
+    { title: "Services", icon: <FaHandsHelping size={20} />, path: "/admin/services", module: "services" },
   ];
 
   const filteredMenu = menuItems.filter((item) => {

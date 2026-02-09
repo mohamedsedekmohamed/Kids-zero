@@ -78,6 +78,7 @@ const columns = [
     ),
   },
   { header: "Plan", key: "planName" },
+  { header: "type", key: "type" },
   { header: "Amount", key: "amount", render: (value) => <span>{value} EGP</span> },
   { header: "Payment Method", key: "paymentMethod" },
   {
@@ -148,6 +149,7 @@ const tableData =
   data?.data?.payments?.map((payment) => ({
     id: payment.id,
     amount: payment.amount,
+    type: payment.type,
     parentName: payment.parent?.name || "-",
     parentPhone: payment.parent?.phone || "-",
     status: payment.status,

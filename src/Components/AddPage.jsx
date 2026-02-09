@@ -211,11 +211,11 @@ const validateForm = () => {
   </div>
 )}
 {field.type === 'map' && (
-  <div className=" md:col-span-2 w-full flex flex-col gap-2">
+  <div className=" md:col-span-2 w-full flex flex-col gap-2 z-10">
     <label className="text-sm font-semibold uppercase tracking-wider text-four mb-2">
       Select Location on Map
     </label>
-    <div className="w-full h-80"> 
+    <div className="w-full h-80 "> 
       <MapPicker
         lat={Number(formData.lat)}
         lng={Number(formData.lng)}
@@ -233,6 +233,7 @@ const validateForm = () => {
 
 
 {field.type === 'autocomplete' && (
+  <div className="relative z-100">
   <ParentSelect
   placeholder={field.placeholder}
     value={formData[field.name]}                    // ← object أو null
@@ -241,6 +242,7 @@ const validateForm = () => {
   }
     options={field.options || []}
   />
+  </div>
 )}
 {field.type === 'switch' && (
   <div className="flex items-center gap-3 mt-2">
@@ -265,16 +267,20 @@ const validateForm = () => {
 
 
               {field.type === 'select' && (
+                <div className="relative z-100">
+
                 <select
                   name={field.name}
                   value={formData[field.name] || ''}
-                  className="p-3 rounded-xl border border-border bg-background focus:ring-2 focus:ring-one outline-none cursor-pointer"
+                  className="p-3 rounded-xl border border-border bg-background focus:ring-2 focus:ring-one outline-none cursor-pointer "
                   onChange={handleChange}
                   required={field.required}
                 >
                   <option value="">Select Option</option>
                   {field.options.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                 </select>
+                </div>
+
               )}
 
               {field.type === 'textarea' && (

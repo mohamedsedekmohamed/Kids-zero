@@ -10,11 +10,7 @@ const AddStudent = () => {
   const { data: parentsData } = useGet("/api/admin/students/selection");
   const { postData, loading } = usePost("/api/admin/students");
 
-  const parentsOptions =
-    parentsData?.data?.parents?.map((p) => ({
-      value: p.id,
-      label: `${p.name} - ${p.phone}`,
-    })) || [];
+
   const zoneOptions =
     parentsData?.data?.zones?.map((p) => ({
       value: p.id,
@@ -26,14 +22,7 @@ const AddStudent = () => {
     { name: "name", label: "Student Name", type: "text", required: true },
     { name: "grade", label: "Grade", type: "text", required: true },
     { name: "classroom", label: "Classroom", type: "text", required: true },
-  //   {
-  //    name: "parentId",
-  //    label: "Select Parent",
-  //    type: "autocomplete",
-  //    options: parentsOptions,
-  //    required: true,
-  //    fullWidth: true,
-  //  },
+
     {
      name: "zoneId",
      label: "Select Zone",

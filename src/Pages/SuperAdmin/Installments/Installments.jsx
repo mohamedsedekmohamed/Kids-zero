@@ -8,7 +8,7 @@ import toast ,{Toaster} from "react-hot-toast";
 import { can } from "@/utils/can";
 
 const Installments = () => {
-  const { data, loading } = useGet("/api/superadmin/payments/installments/all");
+  const { data, loading ,refetch} = useGet("/api/superadmin/payments/installments/all");
 const token =getToken();
 const [showRejectModal, setShowRejectModal] = useState(false);
 const [selectedId, setSelectedId] = useState(null);
@@ -17,6 +17,7 @@ const [rejectedReason, setRejectedReason] = useState("");
 
   const columns = [
   
+    { header: "name", key: "name" },
     { header: "Installment Amount", key: "installmentAmount" },
     { header: "Payment Method", key: "paymentMethod" },
     { header: "Plan", key: "plan"  },
@@ -47,6 +48,7 @@ const [rejectedReason, setRejectedReason] = useState("");
       paymentMethodId: item.paymentMethodId,
         paymentMethod: item.paymentMethod?.name || "-", // 🔹 حوّل الاسم مباشرة
   plan: item.plan?.name || "-",     
+  name: item.organization?.name || "-", // 🔹 حوّل اسم المؤسسة مباشرة
       installmentAmount: item.installmentAmount.toLocaleString(),
       paidAmount: item.paidAmount.toLocaleString(),
       remainingAmount: item.remainingAmount.toLocaleString(),
@@ -82,6 +84,7 @@ const approveInstallment = async (id) => {
     );
 
     toast.success("Installment approved successfully.");
+    refetch(); // Refresh the table data after approval
   } catch (error) {
     toast.error(
       error?.response?.data?.message ||
